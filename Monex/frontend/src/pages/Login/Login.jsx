@@ -1,13 +1,16 @@
 import { useState } from "react";
 import usuario from "../../assets/icon/usuario.png"
+import { useNavigate } from "react-router-dom";
 
 export function Login (){
 
-const [email, setEmail] = useState("");
-const [password, setPassword] = useState("");
-const [errores, setErrores] = useState({});
+  const navigate = useNavigate();
 
-const validar = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errores, setErrores] = useState({});
+
+  const validar = () => {
     let nuevosErrores = {};
 
     if (!email) {
@@ -20,20 +23,19 @@ const validar = () => {
       nuevosErrores.password = "La contraseña es obligatoria";
     }
 
-return nuevosErrores;
-};   
-  
-const handleSubmit = (e) => {
+    return nuevosErrores;
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-const erroresValidados = validar();
-setErrores(erroresValidados);
+    const erroresValidados = validar();
+    setErrores(erroresValidados);
 
-if (Object.keys(erroresValidados).length === 0) {
-      console.log("Formulario válido");
-     
-}
-};
+    if (Object.keys(erroresValidados).length === 0) {
+      navigate("/home");
+    }
+  };
 
 return(
     <div className="contenedor_login">
@@ -43,7 +45,7 @@ return(
       <div className="login">
         <div className="login_contenido">
 
-          <h1 className="texto_bienvenidos">BIENVENIDOS</h1>
+          <h1 className="texto_bienvenidos">BIENVENIDO</h1>
 
           <img 
             src={usuario} 
@@ -80,7 +82,7 @@ return(
             <button className="boton_ingresar" type="submit">Iniciar sesion</button>
 
           </form>
-            <p>¿Todavía no tienes una cuenta o has olvidado tu contraseña? </p>
+            <p className="texto_olvidar_contraseña">¿Todavía no tienes una cuenta o has olvidado tu contraseña? </p>
 
         </div>
       </div>
