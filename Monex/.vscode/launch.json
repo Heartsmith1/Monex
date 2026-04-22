@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-BkndCategoriesApplication<Bknd_Categories>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.Bknd_Categories.BkndCategoriesApplication",
+            "projectName": "Bknd_Categories",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-BkndUserApplication<Bknd_User>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.Bknd_User.BkndUserApplication",
+            "projectName": "Bknd_User",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
