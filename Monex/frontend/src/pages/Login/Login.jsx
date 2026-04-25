@@ -65,8 +65,8 @@ return(
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              {/* Icono de email (no visible, solo placeholder) */}
-              <span className="input_icon_email">@</span>
+              {/* Icono de email */}
+              <img src={require('../../assets/icon/Frameee.png')} alt="icono email" className="input_icon_email" />
               {errores.email && <span className="error">{errores.email}</span>}
             </div>
 
