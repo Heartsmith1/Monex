@@ -1,5 +1,6 @@
 import { useState } from "react";
 import usuario from "../../assets/icon/icono_usuario_blanco.png"
+import frameee from "../../assets/icon/Frameee.png"
 import { useNavigate } from "react-router-dom";
 
 export function Login (){
@@ -58,29 +59,32 @@ return(
 
             <div className="input_group">
               <label className="text_email">Email</label>
-              <input
-                className="input_email"
-                type="text"
-                placeholder="Ingresa tu correo electronico"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              {/* Icono de email */}
-              <img src={require('../../assets/icon/Frameee.png')} alt="icono email" className="input_icon_email" />
+              <div className="input_wrapper">
+                <input
+                  className="input_email"
+                  type="text"
+                  placeholder="Ingresa tu correo electronico"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <img src={frameee} alt="icono email" className="input_icon_email" />
+              </div>
               {errores.email && <span className="error">{errores.email}</span>}
             </div>
 
             <div className="input_group">
               <label className="text_contraseña">Contraseña</label>
-              <input 
-                className="input_contraseña"
-                type="password"
-                placeholder="Ingresa tu contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              {/* Icono de contraseña (no visible, solo placeholder) */}
-              <span className="input_icon_password">*</span>
+              <div className="input_wrapper">
+                <input 
+                  className="input_contraseña"
+                  type="password"
+                  placeholder="Ingresa tu contraseña"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                {/* Icono de contraseña (no visible, solo placeholder) */}
+                <span className="input_icon_password">*</span>
+              </div>
               {errores.password && <span className="error">{errores.password}</span>}
             </div>
 
