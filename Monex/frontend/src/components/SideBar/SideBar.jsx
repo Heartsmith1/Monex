@@ -7,18 +7,28 @@ export function SideBar(){
 
         <div className="contenedor_slideBar">
             <div className="contenedor_botones">
-                <form action="">
-                    <button className="boton_inicio">Inicio</button>
+                <button type="buttom" className="boton_inicio">Inicio</button>
 
-                    <button className="boton_gastos">Gastos</button>
+                <button type="buttom" className="boton_gastos">Gastos</button>
 
-                    <button className="boton_categoria">Categoria</button>
+                <button type="buttom" className="boton_categoria">Categoria</button>
 
-                    <button className="boton_analisis">Analisis</button>
+                <button type="buttom" className="boton_analisis">Analisis</button>
 
-                    <button className="boton_est_mensual">Est. Mensual</button>
+                <button type="buttom" className="boton_est_mensual">Est. Mensual</button>
+            </div>
 
-                </form>
+
+            <div className="sidebar_footer">
+                <div className="usuario_info">
+                    <div className="icono_usuario">👤</div>
+                    <div>
+                        <p>Nombre usuario</p>
+                        <p>usuario@gmail.com</p>
+                    </div>
+                </div>
+
+                <button className="boton_logout">Cerrar Sesión</button>
             </div>
         </div>
     )
