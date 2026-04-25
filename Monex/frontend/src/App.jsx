@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css'
-import './css/login.css'
+import './css/pages/login.css'
+import './css/components/SideBar.css'
 import { Login } from './pages/Login/Login';
 import {Home} from './pages/home/Home';
 import { SideBar } from './components/SideBar/SideBar';
@@ -15,8 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login/>}/>
           <Route path="/Home" element={<Home/>}/>
-          <Route path="/SideBar" element={<SideBar/>}/>
-          
+          <Route path="/SideBar" element={<SideBar/>}/> 
         </Routes>
       </Router>
     </>
