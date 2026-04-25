@@ -1,5 +1,5 @@
 import { useState } from "react";
-import usuario from "../../assets/icon/icono_usuario_blanco.png"
+import usuario from "../../assets/icon/usuario.png"
 import { useNavigate } from "react-router-dom";
 
 export function Login (){
@@ -55,22 +55,19 @@ return(
 
           <form className="form_login" onSubmit={handleSubmit}>
 
-
-            <div className="input_group">
+            <div>
               <label className="text_email">Email</label>
-              <input
+              <input 
                 className="input_email"
                 type="text"
                 placeholder="Ingresa tu correo electronico"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              {/* Icono de email (no visible, solo placeholder) */}
-              <span className="input_icon_email">@</span>
               {errores.email && <span className="error">{errores.email}</span>}
             </div>
 
-            <div className="input_group">
+            <div>
               <label className="text_contraseña">Contraseña</label>
               <input 
                 className="input_contraseña"
@@ -79,8 +76,6 @@ return(
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              {/* Icono de contraseña (no visible, solo placeholder) */}
-              <span className="input_icon_password">*</span>
               {errores.password && <span className="error">{errores.password}</span>}
             </div>
 
