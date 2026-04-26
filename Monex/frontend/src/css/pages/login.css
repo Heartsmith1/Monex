@@ -15,16 +15,17 @@
 }
 
 .texto_bienvenidos{
+    font-family: 'Mulish', sans-serif;
     font-size: 40px;
     height: 45px;
     width: 190px;
     margin-top: 51px;
-    margin-left: 46px;
+    margin-left: -150px;
 }
 
 .img_login{
   width: 300px;
-  margin-left: 30px;
+  margin-left: 120px;
 }
 
 .login {
@@ -42,12 +43,19 @@
   font-family: 'Outfit', sans-serif;
   font-size: 20px;
   font-weight: 700;
+  margin-left: -20px;
 }
 
 .input_group {
   position: relative;
   margin-left: 71px;
   margin-bottom: 25px;
+  width: 500px;
+}
+
+.input_wrapper {
+  position: relative;
+
   width: 500px;
 }
 
@@ -69,6 +77,9 @@
   line-height: 100%;
   display: block;
   margin: 0;
+  box-sizing: border-box;
+  margin-left: -20px;
+ 
 }
 
 .input_email:focus {
@@ -76,6 +87,15 @@
   opacity: 0.7;
 }
 
+.input_icon_email,
+.input_icon_password {
+  position: absolute;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px; /* Tamaño del icono */
+  pointer-events: none; /* Permite hacer click a través del icono */
+}
 
 .text_contraseña{
     font-family: 'Outfit', sans-serif;
@@ -84,40 +104,43 @@
     display: block;
     margin-left: 30px;
     color: white;
+    margin-left: -20px;
 }
 
 .input_contraseña{
-  font-family: 'Outfit', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  width: 500px;
-  height: 60px;
-  background: #24282C;
-  backdrop-filter: blur(4px);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  box-shadow: 0 4px 4px 0 rgba(0,0,0,0.25);
-  outline: none;
-  opacity: 0.5;
-  transition: box-shadow 0.2s;
-  line-height: 100%;
-  display: block;
-  margin: 0;
+    font-family: 'Outfit', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    width: 500px;
+    height: 60px;
+    background: #24282C;
+    backdrop-filter: blur(4px);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    box-shadow: 0 4px 4px 0 rgba(0,0,0,0.25);
+    outline: none;
+    opacity: 0.5;
+    transition: box-shadow 0.2s;
+    line-height: 100%;
+    display: block;
+    margin: 0;
+    box-sizing: border-box;
+    margin-left: -20px;
 }
 
 .error {
-  color: #d51313;
-  font-size: 12px;
-  margin-top: 5px;
+    color: #d51313;
+    font-size: 12px;
+    margin-top: 5px;
 }
 
 .boton_ingresar{
-  background-color: #D1B475;
-  margin-top: 50px;
-  margin-left: 35px;
-  width: 300px;
-  height: 40px;
+    background-color: #D1B475;
+    margin-top: -60px;
+    margin-left: 100px;
+    width: 400px;
+    height: 40px;
 }
 
 .texto_olvidar_contraseña{
