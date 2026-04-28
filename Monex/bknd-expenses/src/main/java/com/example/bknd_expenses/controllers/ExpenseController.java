@@ -9,10 +9,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -28,16 +30,28 @@ public class ExpenseController {
         this.jwtService = jwtService;
     }
 
-    @Operation(summary = "Listar gastos", security = {@SecurityRequirement(name = "bearerAuth")})
+    @Operation(summary = "Listar gastos con filtros opcionales", security = {@SecurityRequirement(name = "bearerAuth")})
     @GetMapping
-    public ResponseEntity<?> getExpensesByUser(
-            @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<?> getExpenses(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String paymentMethod,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         try {
             Long userId = jwtService.getUserIdFromAuthorizationHeader(authHeader);
-            List<ExpenseResponse> expenses = expenseService.getExpensesByUser(userId);
+
+            List<ExpenseResponse> expenses = expenseService.getExpensesByFilters(
+                    userId,
+                    categoryId,
+                    paymentMethod,
+                    startDate,
+                    endDate
+            );
+
             return ResponseEntity.ok(expenses);
         } catch (IllegalArgumentException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            return handleIllegalArgument(ex);
         }
     }
 
@@ -51,11 +65,7 @@ public class ExpenseController {
             ExpenseResponse expense = expenseService.getExpenseById(id, userId);
             return ResponseEntity.ok(expense);
         } catch (IllegalArgumentException ex) {
-            String message = ex.getMessage();
-            if ("Token invalido".equals(message) || "El token no contiene userId valido".equals(message)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+            return handleIllegalArgument(ex);
         }
     }
 
@@ -69,13 +79,7 @@ public class ExpenseController {
             ExpenseResponse response = expenseService.createExpense(request, userId);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalArgumentException ex) {
-            String message = ex.getMessage();
-            if ("Token invalido".equals(message) || "El token no contiene userId valido".equals(message)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-            }
-            return ResponseEntity.badRequest().body(message);
-        } catch (IllegalStateException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
+            return handleIllegalArgument(ex);
         }
     }
 
@@ -90,13 +94,7 @@ public class ExpenseController {
             ExpenseResponse updatedExpense = expenseService.updateExpense(id, request, userId);
             return ResponseEntity.ok(updatedExpense);
         } catch (IllegalArgumentException ex) {
-            String message = ex.getMessage();
-            if ("Token invalido".equals(message) || "El token no contiene userId valido".equals(message)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-            }
-            return ResponseEntity.badRequest().body(message);
-        } catch (IllegalStateException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
+            return handleIllegalArgument(ex);
         }
     }
 
@@ -110,11 +108,7 @@ public class ExpenseController {
             expenseService.deleteExpense(id, userId);
             return ResponseEntity.noContent().build();
         } catch (IllegalArgumentException ex) {
-            String message = ex.getMessage();
-            if ("Token invalido".equals(message) || "El token no contiene userId valido".equals(message)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-            }
-            return ResponseEntity.badRequest().body(message);
+            return handleIllegalArgument(ex);
         }
     }
 
@@ -128,29 +122,36 @@ public class ExpenseController {
             List<ExpenseResponse> expenses = expenseService.getExpensesByPaymentMethod(userId, paymentMethod);
             return ResponseEntity.ok(expenses);
         } catch (IllegalArgumentException ex) {
-            String message = ex.getMessage();
-            if ("Token invalido".equals(message) || "El token no contiene userId valido".equals(message)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-            }
-            return ResponseEntity.badRequest().body(message);
+            return handleIllegalArgument(ex);
         }
     }
 
     @Operation(summary = "Filtrar gastos por categoría", security = {@SecurityRequirement(name = "bearerAuth")})
-    @GetMapping("/category/{category}")
+    @GetMapping("/category/{categoryId}")
     public ResponseEntity<?> getExpensesByCategory(
-            @PathVariable String category,
+            @PathVariable Long categoryId,
             @RequestHeader("Authorization") String authHeader) {
         try {
             Long userId = jwtService.getUserIdFromAuthorizationHeader(authHeader);
-            List<ExpenseResponse> expenses = expenseService.getExpensesByCategory(userId, category);
+            List<ExpenseResponse> expenses = expenseService.getExpensesByCategory(userId, categoryId);
             return ResponseEntity.ok(expenses);
         } catch (IllegalArgumentException ex) {
-            String message = ex.getMessage();
-            if ("Token invalido".equals(message) || "El token no contiene userId valido".equals(message)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-            }
-            return ResponseEntity.badRequest().body(message);
+            return handleIllegalArgument(ex);
+        }
+    }
+
+    @Operation(summary = "Filtrar gastos por rango de fechas", security = {@SecurityRequirement(name = "bearerAuth")})
+    @GetMapping("/date-range")
+    public ResponseEntity<?> getExpensesByDateRange(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        try {
+            Long userId = jwtService.getUserIdFromAuthorizationHeader(authHeader);
+            List<ExpenseResponse> expenses = expenseService.getExpensesByDateRange(userId, startDate, endDate);
+            return ResponseEntity.ok(expenses);
+        } catch (IllegalArgumentException ex) {
+            return handleIllegalArgument(ex);
         }
     }
 
@@ -163,11 +164,19 @@ public class ExpenseController {
             MonthlyEstimateResponse response = expenseService.calculateMonthlyEstimate(userId);
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException ex) {
-            String message = ex.getMessage();
-            if ("Token invalido".equals(message) || "El token no contiene userId valido".equals(message)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-            }
-            return ResponseEntity.badRequest().body(message);
+            return handleIllegalArgument(ex);
         }
+    }
+
+    private ResponseEntity<?> handleIllegalArgument(IllegalArgumentException ex) {
+        String message = ex.getMessage();
+
+        if ("Token invalido".equals(message) ||
+                "El token no contiene userId valido".equals(message) ||
+                "Header Authorization invalido".equals(message)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+        }
+
+        return ResponseEntity.badRequest().body(message);
     }
 }

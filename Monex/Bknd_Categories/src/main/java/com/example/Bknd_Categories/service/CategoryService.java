@@ -19,16 +19,17 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<CategoryResponse> listAll() {
-        return categoryRepository.findAll()
+    public List<CategoryResponse> listAll(Long userId) {
+        return categoryRepository.findByCreatedByUserId(userId)
                 .stream()
                 .map(this::toResponse)
                 .toList();
     }
 
-    public CategoryResponse getById(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Categoria no encontrada"));
+    public CategoryResponse getById(Long id, Long userId) {
+        Category category = categoryRepository.findByIdAndCreatedByUserId(id, userId)
+                .orElseThrow(() -> new NoSuchElementException("Categoría no encontrada"));
+
         return toResponse(category);
     }
 
@@ -36,8 +37,12 @@ public class CategoryService {
     public CategoryResponse create(CategoryRequest request, Long userId) {
         String normalizedName = normalizeName(request.getName());
 
-        if (categoryRepository.existsByNameIgnoreCase(normalizedName)) {
-            throw new IllegalStateException("La categoria ya existe");
+        if (normalizedName.isBlank()) {
+            throw new IllegalArgumentException("El nombre de la categoría es obligatorio");
+        }
+
+        if (categoryRepository.existsByNameAndCreatedByUserId(normalizedName, userId)) {
+            throw new IllegalStateException("La categoría ya existe");
         }
 
         Category category = new Category();
@@ -48,27 +53,31 @@ public class CategoryService {
     }
 
     @Transactional
-    public CategoryResponse update(Long id, CategoryRequest request) {
-        Category existing = categoryRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Categoria no encontrada"));
+    public CategoryResponse update(Long id, CategoryRequest request, Long userId) {
+        Category existing = categoryRepository.findByIdAndCreatedByUserId(id, userId)
+                .orElseThrow(() -> new NoSuchElementException("Categoría no encontrada"));
 
         String normalizedName = normalizeName(request.getName());
-        categoryRepository.findByNameIgnoreCase(normalizedName)
-                .filter(category -> !category.getId().equals(id))
-                .ifPresent(category -> {
-                    throw new IllegalStateException("La categoria ya existe");
-                });
+
+        if (normalizedName.isBlank()) {
+            throw new IllegalArgumentException("El nombre de la categoría es obligatorio");
+        }
+
+        if (categoryRepository.existsByNameAndCreatedByUserIdAndIdNot(normalizedName, userId, id)) {
+            throw new IllegalStateException("La categoría ya existe");
+        }
 
         existing.setName(normalizedName);
+
         return toResponse(categoryRepository.save(existing));
     }
 
     @Transactional
-    public void delete(Long id) {
-        if (!categoryRepository.existsById(id)) {
-            throw new NoSuchElementException("Categoria no encontrada");
-        }
-        categoryRepository.deleteById(id);
+    public void delete(Long id, Long userId) {
+        Category existing = categoryRepository.findByIdAndCreatedByUserId(id, userId)
+                .orElseThrow(() -> new NoSuchElementException("Categoría no encontrada"));
+
+        categoryRepository.delete(existing);
     }
 
     private String normalizeName(String name) {

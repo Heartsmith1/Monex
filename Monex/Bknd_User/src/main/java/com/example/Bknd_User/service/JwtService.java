@@ -16,12 +16,9 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String jwtSecret;
     
-    @Value("${jwt.expiration:86400000}")  // 24 horas por defecto
+    @Value("${jwt.expiration:86400000}")
     private long jwtExpiration;
     
-    /**
-     * Genera un token JWT para el usuario
-     */
     public String generarToken(User user) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
@@ -34,15 +31,11 @@ public class JwtService {
                 .expiration(expiryDate)
                 .claim("userId", user.getId())
                 .claim("username", user.getUsername())
+                .claim("role", user.getRole())
                 .signWith(key)
                 .compact();
     }
     
-    /**
-     * Valida el token JWT y extrae el usuario
-     * @param authHeader Header Authorization con formato "Bearer <token>"
-     * @return User del token
-     */
     public User comprobarToken(String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new IllegalArgumentException("Token inválido");
@@ -52,12 +45,10 @@ public class JwtService {
         return extraerUsuarioDelToken(token);
     }
     
-
     public String extraerEmail(String token) {
         return extraerClaims(token).getSubject();
     }
     
-   
     public boolean esTokenValido(String token) {
         try {
             extraerClaims(token);
@@ -67,7 +58,6 @@ public class JwtService {
         }
     }
     
-   
     private Claims extraerClaims(String token) {
         SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         
@@ -78,15 +68,14 @@ public class JwtService {
                 .getPayload();
     }
     
-   
     private User extraerUsuarioDelToken(String token) {
         Claims claims = extraerClaims(token);
         
-        // Aquí podrías reconstruir el usuario o simplemente retornar los datos del token
         User user = new User();
         user.setEmail(claims.getSubject());
         user.setId(((Number) claims.get("userId")).longValue());
         user.setUsername((String) claims.get("username"));
+        user.setRole((String) claims.get("role"));
         
         return user;
     }

@@ -1,5 +1,6 @@
 package com.example.bknd_expenses.dto;
 
+import com.example.bknd_expenses.entity.PaymentMethod;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -13,10 +14,11 @@ public class ExpenseResponse {
 
     private Long id;
     private String description;
-    private String category;
+    private Long categoryId;
     private LocalDate date;
+    private LocalDate startDate;
     private BigDecimal amount;
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
     private Integer installments;
     private Long userId;
 }

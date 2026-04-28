@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,31 +34,36 @@ public class UserController {
     @Autowired
     private JwtService jwtService;
     
-    @Operation(
-        summary = "Obtener usuario por ID",
-        description = "Obtiene los datos de un usuario específico por su ID"
-    )
+    @Operation(summary = "Obtener usuario por ID", description = "Obtiene los datos de un usuario específico por su ID")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado"),
         @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
         @ApiResponse(responseCode = "401", description = "No autorizado")
     })
     @GetMapping("/{id}")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<UserDTO> obtenerUsuario(
-            @Parameter(description = "ID del usuario", required = true)
-            @PathVariable Long id) {
+            @PathVariable Long id,
+            @Parameter(hidden = true)
+            @RequestHeader("Authorization") String authHeader) {
+
+        User authUser = jwtService.comprobarToken(authHeader);
+
+        if (!esMismoUsuarioOAdmin(authUser, id)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         User user = userService.obtenerPorId(id);
+
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
+
         return ResponseEntity.ok(convertirADTO(user));
     }
     
-    @Operation(
-        summary = "Obtener datos del usuario autenticado",
-        description = "Retorna los datos del usuario actualmente autenticado"
-    )
+    @Operation(summary = "Obtener datos del usuario autenticado", description = "Retorna los datos del usuario actualmente autenticado")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Datos del usuario"),
         @ApiResponse(responseCode = "401", description = "Token inválido")
@@ -66,79 +73,80 @@ public class UserController {
     public ResponseEntity<UserDTO> obtenerMiPerfil(
             @Parameter(hidden = true)
             @RequestHeader("Authorization") String authHeader) {
+
         User user = jwtService.comprobarToken(authHeader);
         return ResponseEntity.ok(convertirADTO(user));
     }
     
-    @Operation(
-        summary = "Actualizar usuario",
-        description = "Actualiza la información de un usuario específico"
-    )
+    @Operation(summary = "Actualizar usuario", description = "Actualiza la información de un usuario específico")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Usuario actualizado"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado"),
         @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
         @ApiResponse(responseCode = "400", description = "Datos inválidos"),
         @ApiResponse(responseCode = "401", description = "No autorizado")
     })
     @PutMapping("/{id}")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<UserDTO> actualizarUsuario(
-            @Parameter(description = "ID del usuario", required = true)
+    public ResponseEntity<?> actualizarUsuario(
             @PathVariable Long id,
             @Valid @RequestBody UserUpdateRequest updateRequest,
             @Parameter(hidden = true)
             @RequestHeader("Authorization") String authHeader) {
         
-        // Verificar que el usuario autenticado sea el mismo o admin
         User authUser = jwtService.comprobarToken(authHeader);
-        if (!authUser.getId().equals(id)) {
+
+        if (!esMismoUsuarioOAdmin(authUser, id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         
-        User user = userService.actualizarUsuario(id, updateRequest);
-        if (user == null) {
-            return ResponseEntity.notFound().build();
+        try {
+            User user = userService.actualizarUsuario(id, updateRequest);
+
+            if (user == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.ok(convertirADTO(user));
+
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
         }
-        return ResponseEntity.ok(convertirADTO(user));
     }
     
-    @Operation(
-        summary = "Eliminar usuario",
-        description = "Elimina un usuario del sistema"
-    )
+    @Operation(summary = "Eliminar usuario", description = "Elimina un usuario del sistema")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Usuario eliminado"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado"),
         @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
         @ApiResponse(responseCode = "401", description = "No autorizado")
     })
     @DeleteMapping("/{id}")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> eliminarUsuario(
-            @Parameter(description = "ID del usuario", required = true)
             @PathVariable Long id,
             @Parameter(hidden = true)
             @RequestHeader("Authorization") String authHeader) {
         
-        // Verificar que el usuario autenticado sea el mismo o admin
         User authUser = jwtService.comprobarToken(authHeader);
-        if (!authUser.getId().equals(id)) {
+
+        if (!esMismoUsuarioOAdmin(authUser, id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         
         boolean eliminado = userService.eliminarUsuario(id);
+
         if (!eliminado) {
             return ResponseEntity.notFound().build();
         }
+
         return ResponseEntity.noContent().build();
     }
     
-    @Operation(
-        summary = "Cambiar contraseña",
-        description = "Permite al usuario autenticado cambiar su contraseña"
-    )
+    @Operation(summary = "Cambiar contraseña", description = "Permite al usuario autenticado cambiar su contraseña")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Contraseña actualizada"),
-        @ApiResponse(responseCode = "400", description = "Contraseña actual incorrecta"),
+        @ApiResponse(responseCode = "400", description = "Contraseña actual incorrecta o datos inválidos"),
         @ApiResponse(responseCode = "401", description = "No autorizado")
     })
     @PostMapping("/cambiar-password")
@@ -149,35 +157,42 @@ public class UserController {
             @Valid @RequestBody ChangePasswordRequest request) {
         
         User authUser = jwtService.comprobarToken(authHeader);
-        boolean success = userService.cambiarPassword(authUser.getId(), request.getCurrentPassword(), request.getNewPassword());
+
+        boolean success = userService.cambiarPassword(
+                authUser.getId(),
+                request.getCurrentPassword(),
+                request.getNewPassword()
+        );
         
         if (!success) {
             return ResponseEntity.badRequest().body("Contraseña actual incorrecta");
         }
+
         return ResponseEntity.ok("Contraseña actualizada exitosamente");
     }
     
-    /**
-     * Convierte un User a UserDTO para la respuesta
-     */
+    private boolean esMismoUsuarioOAdmin(User authUser, Long id) {
+        return authUser.getId().equals(id) || "ADMIN".equalsIgnoreCase(authUser.getRole());
+    }
+
     private UserDTO convertirADTO(User user) {
         return UserDTO.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .enabled(user.getEnabled())
+                .role(user.getRole())
                 .build();
     }
     
-    /**
-     * DTO para cambiar contraseña
-     */
     @Schema(description = "Request para cambiar contraseña")
     public static class ChangePasswordRequest {
-        @Parameter(description = "Contraseña actual", required = true)
+
+        @NotBlank(message = "La contraseña actual es requerida")
         private String currentPassword;
         
-        @Parameter(description = "Nueva contraseña", required = true)
+        @NotBlank(message = "La nueva contraseña es requerida")
+        @Size(min = 8, message = "La nueva contraseña debe tener al menos 8 caracteres")
         private String newPassword;
         
         public ChangePasswordRequest() {}
@@ -187,10 +202,20 @@ public class UserController {
             this.newPassword = newPassword;
         }
         
-        public String getCurrentPassword() { return currentPassword; }
-        public void setCurrentPassword(String currentPassword) { this.currentPassword = currentPassword; }
+        public String getCurrentPassword() {
+            return currentPassword;
+        }
+
+        public void setCurrentPassword(String currentPassword) {
+            this.currentPassword = currentPassword;
+        }
         
-        public String getNewPassword() { return newPassword; }
-        public void setNewPassword(String newPassword) { this.newPassword = newPassword; }
+        public String getNewPassword() {
+            return newPassword;
+        }
+
+        public void setNewPassword(String newPassword) {
+            this.newPassword = newPassword;
+        }
     }
 }

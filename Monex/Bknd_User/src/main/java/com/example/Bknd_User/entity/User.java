@@ -52,9 +52,14 @@ public class User implements UserDetails {
     @Default
     private Boolean credentialsNonExpired = true;
 
+    // 🔥 NUEVO: rol del usuario (USER o ADMIN)
+    @Column(nullable = false)
+    @Default
+    private String role = "USER";
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role));
     }
 
     @Override

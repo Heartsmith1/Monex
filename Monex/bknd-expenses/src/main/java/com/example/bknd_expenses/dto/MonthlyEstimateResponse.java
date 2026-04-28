@@ -11,5 +11,5 @@ import java.math.BigDecimal;
 public class MonthlyEstimateResponse {
 
     private BigDecimal totalMonthlyEstimate;
-    private Integer totalCreditExpenses;
+    private Long totalCreditExpenses;
 }
