@@ -21,8 +21,9 @@ public class Expense {
     @Column(nullable = false, length = 150)
     private String description;
 
-    @Column(nullable = false, length = 100)
-    private String category;
+    // Idealmente viene desde el microservicio de categorías
+    @Column(nullable = false)
+    private Long categoryId;
 
     @Column(nullable = false)
     private LocalDate date;
@@ -30,12 +31,20 @@ public class Expense {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
-    @Column(nullable = false, length = 50)
-    private String paymentMethod;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private PaymentMethod paymentMethod;
 
+    // Por defecto 1 cuota. Efectivo y débito deberían usar 1.
     @Column(nullable = false)
-    private Integer installments;
+    @Builder.Default
+    private Integer installments = 1;
 
+    // Fecha desde la cual comienza el cálculo de cuotas
+    @Column(nullable = false)
+    private LocalDate startDate;
+
+    // ID del usuario autenticado obtenido desde el JWT
     @Column(nullable = false)
     private Long userId;
 }

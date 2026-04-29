@@ -12,19 +12,17 @@ import org.springframework.context.annotation.Configuration;
 public class OpenAPIConfig {
 
     @Bean
-    public OpenAPI categoriesOpenAPI() {
-        final String securitySchemeName = "bearerAuth";
-
+    public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("API de Categorias")
-                        .description("Endpoints para crear, listar, modificar y eliminar categorias")
-                        .version("v1"))
-                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
+                        .title("API Microservicio Categorías")
+                        .version("1.0")
+                        .description("Documentación de endpoints para gestionar categorías de Monex"))
+                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .components(new Components()
-                        .addSecuritySchemes(securitySchemeName,
+                        .addSecuritySchemes("bearerAuth",
                                 new SecurityScheme()
-                                        .name(securitySchemeName)
+                                        .name("bearerAuth")
                                         .type(SecurityScheme.Type.HTTP)
                                         .scheme("bearer")
                                         .bearerFormat("JWT")));

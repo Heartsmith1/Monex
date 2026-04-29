@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import jakarta.validation.Valid;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,25 +37,33 @@ public class AuthenticationController {
     @PostMapping("login")
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
         String token = userService.intentarLogin(loginRequest.getEmail(), loginRequest.getPassword());
-        return ResponseEntity.ok(new LoginResponse(token));
+        return ResponseEntity.ok(new LoginResponse(token, 86400000L));
     }
 
     @Operation(summary = "Registro de usuario", description = "Crea un nuevo usuario en el sistema.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuario creado correctamente"),
-        @ApiResponse(responseCode = "400", description = "Datos invalidos o email ya registrado")
+        @ApiResponse(responseCode = "201", description = "Usuario creado correctamente"),
+        @ApiResponse(responseCode = "400", description = "Datos inválidos, email o username ya registrado")
     })
     @PostMapping("register")
     public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request) {
         try {
-            User created = userService.registrar(request.getUsername(), request.getEmail(), request.getPassword());
+            User created = userService.registrar(
+                    request.getUsername(),
+                    request.getEmail(),
+                    request.getPassword()
+            );
+
             UserDTO response = UserDTO.builder()
                     .id(created.getId())
                     .username(created.getUsername())
                     .email(created.getEmail())
                     .enabled(created.getEnabled())
+                    .role(created.getRole())
                     .build();
-            return ResponseEntity.ok(response);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
@@ -63,10 +72,20 @@ public class AuthenticationController {
     @Operation(summary = "Obtener mi perfil", description = "Devuelve los datos del usuario autenticado actualmente.")
     @GetMapping("me")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<User> getCurrentUser(
-            @Parameter(hidden = true) 
+    public ResponseEntity<UserDTO> getCurrentUser(
+            @Parameter(hidden = true)
             @RequestHeader("Authorization") String authHeader) {
+
         User user = jwtService.comprobarToken(authHeader);
-        return ResponseEntity.ok(user);
+
+        UserDTO response = UserDTO.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .enabled(user.getEnabled())
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 }

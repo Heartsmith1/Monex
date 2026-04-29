@@ -19,7 +19,10 @@ public class LoginResponse {
     @JsonProperty("expires_in")
     private Long expiresIn;
 
-    public LoginResponse(String token) {
+    // Constructor simple (seguro)
+    public LoginResponse(String token, Long expiresIn) {
         this.accessToken = token;
+        this.tokenType = "Bearer";
+        this.expiresIn = expiresIn;
     }
 }
