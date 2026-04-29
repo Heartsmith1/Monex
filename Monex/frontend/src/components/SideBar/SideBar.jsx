@@ -21,10 +21,9 @@ export function SideBar(){
 
             <div className="sidebar_footer">
                 <div className="usuario_info">
-                    <div className="icono_usuario">👤</div>
                     <div>
-                        <p>Nombre usuario</p>
-                        <p>usuario@gmail.com</p>
+                        <p className="texto_usuario_sidebar">Nombre usuario</p>
+                        <p className="texto_email_sidebar">usuario@gmail.com</p>
                     </div>
                 </div>
 
