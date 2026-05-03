@@ -1,3 +1,9 @@
+.contenedor_sideBar{
+  margin-top: 50px;
+  margin-left: 20px;
+}
+
+
 .boton_inicio{
   display: block;
   width: 150px;
@@ -49,6 +55,7 @@
     flex-direction: column;
     gap: 15px;
     padding-top: 15px;
+    margin-top: 40px;
     border-top: 1px solid #bdbdbd; /* línea separadora */
 }
 
@@ -58,6 +65,11 @@
     align-items: center;
     gap: 12px;
 }
+
+.texto_email_sidebar{
+  color: black;
+}
+
 
 /* ICONO (círculo tipo avatar) */
 .usuario_info::before {
@@ -76,7 +88,7 @@
     border-radius: 10px;
     background: #D1B475;
     color: white;
-    
+    margin-top: 50px;
     font-weight: 500;
     cursor: pointer;
 }

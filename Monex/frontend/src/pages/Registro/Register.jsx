@@ -1,6 +1,7 @@
 import { useState } from "react";
 import usuario from "../../assets/icon/icono_usuario_blanco.png"
 import frameee from "../../assets/icon/Frameee.png"
+import logo from "../../assets/logo/Logo_Monex_Azul.png"
 import ocultar from "../../assets/icon/ocultar_contrasena.png"
 import { useNavigate } from "react-router-dom";
 
@@ -11,6 +12,8 @@ export function Register (){
     const [email, setEmail] = useState("");
     const [contraseña, setContraseña] = useState("");
     const [confirmarContraseña, setConfirmarContraseña] = useState("");
+    const [showPassword, setShowPassword] = useState(false); // Nuevo estado para la visibilidad de la contraseña
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Nuevo estado para la visibilidad de la confirmación de contraseña
 
     // --- Estados para mensajes de validación ---
     const [mensajeContraseñas, setMensajeContraseñas] = useState("");
@@ -108,14 +111,12 @@ return(
       <div className="register">
         <div className="register_contenido">
 
-          <h1 className="texto_bienvenidos">REGISTRO</h1>
-
           <img 
             src={usuario} 
-            className="img_register" 
+            className="img_registro" 
             alt="Imagen logo usuario" 
           />
-
+          <img src={logo} alt="Logo Monex azul" className="img_logo_registro" />
           <form className="form_register" onSubmit={handleSubmit}>
 
               <div className="input_group">
@@ -131,7 +132,7 @@ return(
                       validarNombre(e.target.value);
                     }}
                   />
-                  <img src={frameee} alt="icono usuario" className="input_icon_usuario" />
+           
                 </div>
                 <span style={{ color: colorMensajeNombre }}>{mensajeNombre}</span>
               </div>
@@ -149,7 +150,7 @@ return(
                       validarEmail(e.target.value);
                     }}
                   />
-                  <img src={frameee} alt="icono email" className="input_icon_email" />
+        
                 </div>
                 <span style={{ color: colorMensajeEmail }}>{mensajeEmail}</span>
               </div>
@@ -159,7 +160,7 @@ return(
                 <div className="input_wrapper">
                   <input 
                     className="input_contraseña"
-                    type="password"
+                    type={showPassword ? "text" : "password"} // Cambia el tipo basado en el estado showPassword
                     placeholder="Ingresa tu contraseña"
                     value={contraseña}
                     onChange={(e) => {
@@ -167,7 +168,12 @@ return(
                       validarContraseña(e.target.value);
                     }}
                   />
-                  <img src={ocultar} alt="icono contraseña" className="input_icon_password" />
+                  <img 
+                    src={ocultar} 
+                    alt="icono contraseña" 
+                    className="input_icon_password" 
+                    onClick={() => setShowPassword(!showPassword)} // Agrega el evento onClick para alternar la visibilidad
+                  />
                 </div>
                 <span style={{ color: colorMensajeContraseña }}>{mensajeContraseña}</span>
               </div>
@@ -177,7 +183,7 @@ return(
                 <div className="input_wrapper">
                   <input 
                     className="input_contraseña"
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"} // Cambia el tipo basado en el estado showConfirmPassword
                     placeholder="Repite tu contraseña"
                     value={confirmarContraseña}
                     onChange={(e) => {
@@ -185,13 +191,18 @@ return(
                       confirmarContraseñas(e.target.value);
                     }}
                   />
-                  <img src={ocultar} alt="icono contraseña" className="input_icon_password" />
+                  <img 
+                    src={ocultar} 
+                    alt="icono contraseña" 
+                    className="input_icon_password" 
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Agrega el evento onClick para alternar la visibilidad
+                  />
                 </div>
                 <span style={{ color: colorMensajeContraseñas }}>{mensajeContraseñas}</span>
               </div>
-
-              <button className="boton_ingresar" type="submit">Registrarse</button>
-
+            <div className="contenedor-botones">
+              <button className="boton_registrarse" type="submit">Registrarse</button>
+            </div>
             </form>
                         
   

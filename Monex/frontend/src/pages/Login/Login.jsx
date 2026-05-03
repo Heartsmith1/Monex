@@ -1,6 +1,7 @@
 import { useState } from "react";
 import usuario from "../../assets/icon/icono_usuario_blanco.png"
 import frameee from "../../assets/icon/Frameee.png"
+import logo from "../../assets/logo/Logo_Monex_Azul.png"
 import ocultar from "../../assets/icon/ocultar_contrasena.png"
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +11,7 @@ export function Login (){
 
     const [email, setEmail] = useState("");
     const [contraseña, setContraseña] = useState("");
+    const [showPassword, setShowPassword] = useState(false); // Nuevo estado para controlar la visibilidad de la contraseña
 
     // --- Estados para mensajes de validación ---
     const [mensajeContraseñas, setMensajeContraseñas] = useState("");
@@ -76,14 +78,12 @@ return(
 
       <div className="login">
         <div className="login_contenido">
-
-          <h1 className="texto_bienvenidos">Bienvenido</h1>
-
           <img 
             src={usuario} 
             className="img_login" 
             alt="Imagen logo usuario" 
           />
+          <img src={logo} alt="Logo Monex azul" className="img_logo" />
 
           <form className="form_login" onSubmit={handleSubmit}>
 
@@ -109,21 +109,29 @@ return(
                   <label className="text_contraseña">Contraseña</label>
                   <div className="input_wrapper">
                       <input 
-                      className="input_contraseña"
-                      type="password"
-                      placeholder="Ingresa tu contraseña"
-                      value={contraseña}
-                      onChange={(e) => {
-                      setContraseña(e.target.value);
-                      validarContraseña(e.target.value);
-                      }}
+                        className="input_contraseña"
+                        type={showPassword ? "text" : "password"} // Cambia el tipo basado en el estado showPassword
+                        placeholder="Ingresa tu contraseña"
+                        value={contraseña}
+                        onChange={(e) => {
+                          setContraseña(e.target.value);
+                          validarContraseña(e.target.value);
+                        }}
                       />
-                      <img src={ocultar} alt="icono contraseña" className="input_icon_password" />
+                      <img 
+                        src={ocultar} // Puedes cambiar esto a `showPassword ? mostrar : ocultar` si tienes dos iconos
+                        alt="icono contraseña" 
+                        className="input_icon_password" 
+                        onClick={() => setShowPassword(!showPassword)} // Agrega el evento onClick para alternar la visibilidad
+                      />
                   </div>
                   <span style={{ color: colorMensajeContraseña }}>{mensajeContraseña}</span>
             </div>
-
-            <button className="boton_ingresar" type="submit">Iniciar sesión</button>
+            
+            <div className="contenedor-botones">
+              <button className="boton_ingresar" type="submit">Iniciar sesión</button>
+              <button className="boton_registro" type="button" onClick={() => navigate("/Register")}>Registraste</button>
+            </div>
 
           </form>
            
