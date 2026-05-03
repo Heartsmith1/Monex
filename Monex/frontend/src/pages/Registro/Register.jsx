@@ -11,10 +11,6 @@ export function Register (){
     const [email, setEmail] = useState("");
     const [contraseña, setContraseña] = useState("");
     const [confirmarContraseña, setConfirmarContraseña] = useState("");
-    const [telefono, setTelefono] = useState("");
-    const [direccion, setDireccion] = useState("");
-    const [region, setRegion] = useState("");
-    const [comuna, setComuna] = useState("");
 
     // --- Estados para mensajes de validación ---
     const [mensajeContraseñas, setMensajeContraseñas] = useState("");
@@ -25,8 +21,6 @@ export function Register (){
     const [colorMensajeContraseña, setColorMensajeContraseña] = useState("");
     const [mensajeEmail, setMensajeEmail] = useState("");
     const [colorMensajeEmail, setColorMensajeEmail] = useState("");
-    const [mensajeDireccion, setMensajeDireccion] = useState("");
-    const [colorMensajeDireccion, setColorMensajeDireccion] = useState("");
 
     // --- Expresiones regulares para validación ---
     const regexEmail = /^[a-zA-Z0-9._%+-]+@(duocuc\.cl|gmail\.com|duocProfesor\.com)$/;
@@ -90,18 +84,6 @@ export function Register (){
         validarContraseña(contraseña);
         validarEmail(email);
 
-        if (!regexNombre.test(nombre)) {
-            alert("El nombre no es válido.");
-            return;
-        }
-        if (!regexEmail.test(email)) {
-            alert("El correo no es válido.");
-            return;
-        }
-        if (!regexContraseña.test(contraseña)) {
-            alert("La contraseña no cumple los requisitos.");
-            return;
-        }
         if (contraseña !== confirmarContraseña) {
             alert("Las contraseñas no coinciden.");
             return;
