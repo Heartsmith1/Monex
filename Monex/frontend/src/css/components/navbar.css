@@ -1,0 +1,28 @@
+.navbar {
+    height: 55px;
+    width: 100%;
+    background-color: #f1f2f4;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 20px;
+    padding: 0 25px;
+    box-sizing: border-box;
+}
+
+.btn_Agregar_Gasto {
+    background-color: #45ad4d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.icono_Usuario {
+    width: 35px;
+    height: 35px;
+    background-color: #45ad4d;
+    border-radius: 50%;
+}
