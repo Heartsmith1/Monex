@@ -1,8 +1,7 @@
 
 
 
-
-export function Home(){
+.export function Home(){
 
 
 
