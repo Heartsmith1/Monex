@@ -28,17 +28,20 @@ export function Register (){
     const regexContraseña = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
 
     const validarNombre = (valor) => {
-        if (valor === "") {
-            setMensajeNombre("Debe ingresar un nombre.");
-            setColorMensajeNombre("red");
-        } else if (!regexNombre.test(valor)) {
-            setMensajeNombre("El nombre solo puede contener letras y espacios (3-40 caracteres).");
-            setColorMensajeNombre("red");
-        } else {
-            setMensajeNombre("Nombre válido");
-            setColorMensajeNombre("#0d47a1");
-        }
-    };
+    if (valor === "") {
+        setMensajeNombre("Debe ingresar un nombre.");
+        setColorMensajeNombre("red");
+        return false;
+    } else if (!regexNombre.test(valor)) {
+        setMensajeNombre("Nombre inválido.");
+        setColorMensajeNombre("red");
+        return false;
+    } else {
+        setMensajeNombre("Nombre válido");
+        setColorMensajeNombre("#0d47a1");
+        return true;
+    }
+};
 
     const validarEmail = (valor) => {
         if (valor === "") {
@@ -77,20 +80,25 @@ export function Register (){
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+    e.preventDefault();
 
-        // Validaciones antes de enviar
-        validarNombre(nombre);
-        validarContraseña(contraseña);
-        validarEmail(email);
+    const esNombreValido = validarNombre(nombre);
+    const esEmailValido = validarEmail(email);
+    const esPasswordValida = validarContraseña(contraseña);
+    const coinciden = contraseña === confirmarContraseña;
 
-        if (contraseña !== confirmarContraseña) {
-            alert("Las contraseñas no coinciden.");
-            return;
-        }
-
-        navigate("/home");
+    if (!coinciden) {
+        setMensajeContraseñas("Las contraseñas no coinciden.");
+        setColorMensajeContraseñas("red");
+        return;
     }
+
+    if (!esNombreValido || !esEmailValido || !esPasswordValida) {
+        return; 
+    }
+
+    navigate("/home")
+};
 
 return(
     <div className="contenedor_registro">
