@@ -6,38 +6,68 @@ import { useNavigate } from "react-router-dom";
 
 export function Login (){
 
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errores, setErrores] = useState({});
+    const [email, setEmail] = useState("");
+    const [contraseña, setContraseña] = useState("");
 
-  const validar = () => {
-    let nuevosErrores = {};
+    // --- Estados para mensajes de validación ---
+    const [mensajeContraseñas, setMensajeContraseñas] = useState("");
+    const [colorMensajeContraseñas, setColorMensajeContraseñas] = useState("");
+    const [mensajeContraseña, setMensajeContraseña] = useState("");
+    const [colorMensajeContraseña, setColorMensajeContraseña] = useState("");
+    const [mensajeEmail, setMensajeEmail] = useState("");
+    const [colorMensajeEmail, setColorMensajeEmail] = useState("");
 
-    if (!email) {
-      nuevosErrores.email = "El email es obligatorio";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      nuevosErrores.email = "El email no es válido";
+    // --- Expresiones regulares para validación ---
+    const regexEmail = /^[a-zA-Z0-9._%+-]+@(duocuc\.cl|gmail\.com|duocProfesor\.com)$/;
+    const regexNombre = /^[a-zA-ZÀ-ÿ\s]{3,40}$/;
+    const regexContraseña = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
+    
+  const validarEmail = (valor) => {
+    if (valor === "") {
+        setMensajeEmail("Debe ingresar un correo.");
+        setColorMensajeEmail("red");
+        return false;
+    } else if (!regexEmail.test(valor)) {
+        setMensajeEmail("Correo inválido");
+        setColorMensajeEmail("red");
+        return false;
+    } else {
+        setMensajeEmail("Correo válido");
+        setColorMensajeEmail("#0d47a1");
+        return true;
     }
+};
 
-    if (!password) {
-      nuevosErrores.password = "La contraseña es obligatoria";
+const validarContraseña = (valor) => {
+    if (valor === "") {
+        setMensajeContraseña("Debe ingresar una contraseña.");
+        setColorMensajeContraseña("red");
+        return false;
+    } else if (!regexContraseña.test(valor)) {
+        setMensajeContraseña("Contraseña inválida");
+        setColorMensajeContraseña("red");
+        return false;
+    } else {
+        setMensajeContraseña("Contraseña válida");
+        setColorMensajeContraseña("#0d47a1");
+        return true;
     }
+};
 
-    return nuevosErrores;
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const erroresValidados = validar();
-    setErrores(erroresValidados);
+    const esPasswordValida = validarContraseña(contraseña);
+    const esEmailValido = validarEmail(email);
 
-    if (Object.keys(erroresValidados).length === 0) {
-      navigate("/home");
+    if (!esPasswordValida || !esEmailValido) {
+        return; 
     }
-  };
+
+    navigate("/home"); 
+};
 
 return(
     <div className="contenedor_login">
@@ -57,37 +87,40 @@ return(
 
           <form className="form_login" onSubmit={handleSubmit}>
 
-
-            <div className="input_group">
-              <label className="text_email">Email</label>
-              <div className="input_wrapper">
-                <input
-                  className="input_email"
-                  type="text"
-                  placeholder="Ingresa tu correo electronico"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <img src={frameee} alt="icono email" className="input_icon_email" />
+              <div className="input_group">
+                  <label className="text_email">Email</label>
+                  <div className="input_wrapper">
+                      <input
+                      className="input_email"
+                      type="text"
+                      placeholder="Ingresa tu correo electronico"
+                      value={email}
+                      onChange={(e) => {
+                      setEmail(e.target.value);
+                      validarEmail(e.target.value);
+                      }}
+                      />
+                      <img src={frameee} alt="icono email" className="input_icon_email" />
+                  </div>
+                  <span style={{ color: colorMensajeEmail }}>{mensajeEmail}</span>
               </div>
-              {errores.email && <span className="error">{errores.email}</span>}
-            </div>
 
-            <div className="input_group">
-              <label className="text_contraseña">Contraseña</label>
-              <div className="input_wrapper">
-                <input 
-                  className="input_contraseña"
-                  type="password"
-                  placeholder="Ingresa tu contraseña"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                /> 
-                  {/* Agregar funcionalidad de este icono  */}
-                 <img src={ocultar} alt="icono contraseña" className="input_icon_password" />
-              </div>
-              {errores.password && <span className="error">{errores.password}</span>}
-               <h3 className="texto_olvidar_contraseña">¿Olvidaste tu contraseña?</h3>
+              <div className="input_group">
+                  <label className="text_contraseña">Contraseña</label>
+                  <div className="input_wrapper">
+                      <input 
+                      className="input_contraseña"
+                      type="password"
+                      placeholder="Ingresa tu contraseña"
+                      value={contraseña}
+                      onChange={(e) => {
+                      setContraseña(e.target.value);
+                      validarContraseña(e.target.value);
+                      }}
+                      />
+                      <img src={ocultar} alt="icono contraseña" className="input_icon_password" />
+                  </div>
+                  <span style={{ color: colorMensajeContraseña }}>{mensajeContraseña}</span>
             </div>
 
             <button className="boton_ingresar" type="submit">Iniciar sesión</button>
