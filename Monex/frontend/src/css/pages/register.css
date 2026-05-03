@@ -1,9 +1,10 @@
 /*--------------------------.--------*/
-/*----------------LOGIN--------------*/
+/*----------------Registro--------------*/
 /*-----------------------------------*/
-.contenedor_register {
+.contenedor_registro {
   display: flex;
-  height: 100%;
+  height: 100vh;
+  width: 100%;
 }
 
 .fondo_imagen {
@@ -14,18 +15,19 @@
   background-repeat: no-repeat;
 }
 
-.texto_bienvenidos{
-    font-family: 'Mulish', sans-serif;
-    font-size: 40px;
-    height: 45px;
-    width: 190px;
-    margin-top: 51px;
-    margin-left: -150px;
+.img_logo_registro{
+  display: block;
+  width: 1000px;
+  margin: 20px auto 0 auto;
+  margin-left: -240px;
+  margin-bottom: -70px;
 }
 
-.img_login{
-  width: 300px;
-  margin-left: 120px;
+.img_registro{
+  display: flex;
+  width: 200px;
+  margin-left: 200px;
+  margin-bottom: -150px;
 }
 
 .register {
@@ -33,7 +35,19 @@
   background-color: #4CAF50;
   display: flex;            
   justify-content: center;   
-  align-items: center;   
+  align-items: center; 
+  padding: 40px 0; /* Agrega algo de espacio vertical */
+  overflow-y: auto;  
+}
+
+.text_usuario{
+  display: block;
+  margin-left: 30px;
+  color: white;
+  font-family: 'Outfit', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-left: -20px;
 }
 
 .text_email{
@@ -48,7 +62,6 @@
 
 .input_group {
   position: relative;
-  margin-left: 71px;
   margin-bottom: 25px;
   width: 500px;
 }
@@ -57,6 +70,28 @@
   position: relative;
 
   width: 500px;
+}
+
+.input_usuario {
+  font-family: 'Outfit', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  width: 500px;
+  height: 60px;
+  background: #24282C;
+  backdrop-filter: blur(4px);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 4px 4px 0 rgba(0,0,0,0.25);
+  outline: none;
+  opacity: 0.5;
+  transition: box-shadow 0.2s;
+  line-height: 100%;
+  display: block;
+  margin: 0;
+  box-sizing: border-box;
+  margin-left: -20px;
 }
 
 .input_email {
@@ -94,7 +129,7 @@
   top: 50%;
   transform: translateY(-50%);
   width: 28px; /* Tamaño del icono */
-  pointer-events: none; /* Permite hacer click a través del icono */
+  cursor: pointer; /* Indica que el icono es clicable */
 }
 
 .text_contraseña{
@@ -135,38 +170,31 @@
     margin-top: 5px;
 }
 
-.boton_ingresar{
-    background-color: #D1B475;
-    margin-top: -60px;
-    margin-left: 100px;
-    width: 400px;
-    height: 40px;
+.contenedor-botones {
+   display: flex;
+    flex-direction: column;
+    align-items: center; /* Esto es suficiente para centrar */
+    gap: 15px;
+    width: 100%;        /* Asegúrate de que el contenedor ocupe el ancho disponible */
+    margin-top: 20px;   /* Un poco de aire respecto al último input */
+    font-family: 'Outfit', sans-serif;
+    margin-left: -70px;
+    
 }
 
-.texto_olvidar_contraseña{
-  margin-right: 50px;
+.boton_registrarse{
+  background-color: #D1B475;
+  color: #3E2723;
+  border: none; /* Mejor sin borde negro para que se vea más moderno */
+  border-radius: 25px;
+  width: 100%;
+  max-width: 400px;
+  height: 50px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-
-.input_usuario {
-  font-family: 'Outfit', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  width: 500px;
-  height: 60px;
-  background: #24282C;
-  backdrop-filter: blur(4px);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  box-shadow: 0 4px 4px 0 rgba(0,0,0,0.25);
-  outline: none;
-  opacity: 0.5;
-  transition: box-shadow 0.2s;
-  line-height: 100%;
-  display: block;
-  margin: 0;
-  box-sizing: border-box;
-  margin-left: -20px;
- 
+.boton_registrarse:hover {
+    background-color: #bc9e62; /* Oscurece un poco al pasar el mouse */
 }

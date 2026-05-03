@@ -3,7 +3,8 @@
 /*-----------------------------------*/
 .contenedor_login {
   display: flex;
-  height: 100%;
+  height: 100vh;
+  width: 100%;
 }
 
 .fondo_imagen {
@@ -18,13 +19,13 @@
   display: block;
   width: 1000px;
   margin: 20px auto 0 auto;
-  margin-left: -220px;
+  margin-left: -240px;
 }
 
 .img_login{
   display: flex;
   width: 200px;
-  margin-left: 120px;
+  margin-left: 200px;
   margin-bottom: -150px;
 }
 
@@ -94,7 +95,7 @@
   top: 50%;
   transform: translateY(-50%);
   width: 28px; /* Tamaño del icono */
-  pointer-events: none; /* Permite hacer click a través del icono */
+  cursor: pointer; /* Indica que el icono es clicable */
 }
 
 .text_contraseña{
@@ -135,14 +136,48 @@
     margin-top: 5px;
 }
 
-.boton_ingresar{
-    background-color: #D1B475;
-    margin-top: -60px;
-    margin-left: 100px;
-    width: 400px;
-    height: 40px;
+.contenedor-botones {
+    display: flex;
+    flex-direction: column; /* Alinea los hijos verticalmente */
+    align-items: center;    /* Centra los botones horizontalmente */
+    gap: 15px;              /* Espacio exacto entre los dos botones */
+    margin-top: 50px;
+    margin-left: -160px;
+    font-family: 'Outfit', sans-serif;
+    
 }
 
+.boton_ingresar{
+  background-color: #D1B475;
+    color: #3E2723;
+    font-weight: bold;
+    border: black;
+    border-radius: 25px; /* Bordes redondeados modernos */
+    width: 100%; /* Que ocupe lo mismo que los inputs */
+    max-width: 400px;
+    height: 50px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.boton_registro{
+    background-color: #D1B475; /* Sin fondo */
+    color: #3E2723;
+    border: black; /* Solo el borde */
+    border-radius: 25px;
+    width: 100%;
+    max-width: 400px;
+    height: 50px;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.boton_ingresar:hover {
+    background-color: #bc9e62; /* Oscurece un poco al pasar el mouse */
+}
+.boton_registro:hover {
+    background-color: #bc9e62; /* Oscurece un poco al pasar el mouse */
+}
 .texto_olvidar_contraseña{
   margin-right: 50px;
 }
