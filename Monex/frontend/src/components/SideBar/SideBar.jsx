@@ -5,7 +5,7 @@ export function SideBar(){
 
     return(
 
-        <div className="contenedor_slideBar">
+        <div className="contenedor_sideBar">
             <div className="contenedor_botones">
                 <button type="buttom" className="boton_inicio">Inicio</button>
 
