@@ -4,6 +4,7 @@ import './App.css'
 import './css/pages/login.css'
 import './css/pages/register.css'
 import './css/components/sideBar.css'
+import './css/components/navbar.css'
 import { Login } from './pages/Login/Login';
 import {Home} from './pages/home/Home';
 import { SideBar } from './components/SideBar/SideBar';
