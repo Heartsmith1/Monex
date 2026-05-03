@@ -1,6 +1,7 @@
 import { useState } from "react";
 import usuario from "../../assets/icon/icono_usuario_blanco.png"
 import frameee from "../../assets/icon/Frameee.png"
+import logo from "../../assets/logo/Logo_Monex_Azul.png"
 import ocultar from "../../assets/icon/ocultar_contrasena.png"
 import { useNavigate } from "react-router-dom";
 
@@ -76,14 +77,12 @@ return(
 
       <div className="login">
         <div className="login_contenido">
-
-          <h1 className="texto_bienvenidos">Bienvenido</h1>
-
           <img 
             src={usuario} 
             className="img_login" 
             alt="Imagen logo usuario" 
           />
+          <img src={logo} alt="Logo Monex azul" className="img_logo" />
 
           <form className="form_login" onSubmit={handleSubmit}>
 

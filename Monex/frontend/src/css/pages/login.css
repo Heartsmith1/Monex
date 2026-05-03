@@ -14,18 +14,18 @@
   background-repeat: no-repeat;
 }
 
-.texto_bienvenidos{
-    font-family: 'Mulish', sans-serif;
-    font-size: 40px;
-    height: 45px;
-    width: 190px;
-    margin-top: 51px;
-    margin-left: -150px;
+.img_logo{
+  display: block;
+  width: 1000px;
+  margin: 20px auto 0 auto;
+  margin-left: -220px;
 }
 
 .img_login{
-  width: 300px;
+  display: flex;
+  width: 200px;
   margin-left: 120px;
+  margin-bottom: -150px;
 }
 
 .login {
