@@ -3,14 +3,13 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css'
 import './css/pages/login.css'
 import './css/pages/register.css'
-import './css/components/SideBar.css'
+import './css/components/sideBar.css'
 import { Login } from './pages/Login/Login';
 import {Home} from './pages/home/Home';
 import { SideBar } from './components/SideBar/SideBar';
 import { Register } from './pages/Registro/Register'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
