@@ -1,5 +1,5 @@
 html, body, #root {
-    height: 100%;   
+    height: 100%;
     margin: 0;
     padding: 0;
 }
@@ -14,4 +14,14 @@ html, body, #root {
     background-color: white;
 }
 
+/* HOME LAYOUT */
+.contenedor_Home {
+    display: flex;
+    height: 100%;
+}
 
+.contenido_Home {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
