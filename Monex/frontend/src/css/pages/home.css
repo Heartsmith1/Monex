@@ -14,10 +14,10 @@
 
 
 .box_grafico_torta_home{
-    background: #7bb10d;
+    background: #102e02;
     padding: 40px;
     flex: 1;
-    height: 300px;
+    height: 250px;
     margin-right: 10px;
     border-radius: 10px;
 }
@@ -42,4 +42,12 @@
     background: khaki;
     padding: 20px;
     border-radius: 10px;
+    height: 300px;
+}
+
+.contenedor_pago_tarjeta_home{
+    background: gold;
+    height: 215px;
+    border-radius: 10px;
+    margin-right: 10px;
 }

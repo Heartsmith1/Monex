@@ -12,7 +12,6 @@ export function Home() {
 
                 <div className="layout_home">
 
-                    {/* IZQUIERDA */}
                     <div className="col_izquierda">
                         <div className="box_grafico_lineal_home">
                             <h1>Total Gastos del Mes</h1>
@@ -23,10 +22,15 @@ export function Home() {
                         </div>
                     </div>
 
-                    {/* DERECHA */}
+
                     <div className="col_derecha">
                         <div className="box_grafico_torta_home">
                             <h2>Gastos por categoria</h2>
+                        </div>
+
+
+                        <div className="contenedor_pago_tarjeta_home">
+                            <h2>Pago Tarjeta</h2>
                         </div>
                     </div>
 
