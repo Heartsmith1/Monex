@@ -5,6 +5,7 @@ import './css/pages/login.css'
 import './css/pages/register.css'
 import './css/components/sideBar.css'
 import './css/components/navbar.css'
+import './css/pages/home.css'
 import './css/pages/categorias.css'
 import { Categorias } from './pages/categorias/Categorias'
 import { Login } from './pages/Login/Login';
