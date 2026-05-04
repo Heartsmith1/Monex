@@ -72,6 +72,7 @@ export async function editarCategoria(id, nombre) {
     return await response.json();
 }
 
+
 export async function eliminarCategoria(id) {
     const token = obtenerToken();
 
