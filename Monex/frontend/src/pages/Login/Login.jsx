@@ -36,8 +36,6 @@ export function Login (){
         setColorMensajeEmail("red");
         return false;
     } else {
-        setMensajeEmail("Correo válido");
-        setColorMensajeEmail("#0d47a1");
         return true;
     }
 };
@@ -128,7 +126,7 @@ return(
             
             <div className="contenedor-botones">
               <button className="boton_ingresar" type="submit">Iniciar sesión</button>
-              <button className="boton_registro" type="button" onClick={() => navigate("/Register")}>Registrate</button>
+              <button className="boton_registro" type="button" onClick={() => navigate("/Register")}>Registraste</button>
             </div>
 
           </form>
