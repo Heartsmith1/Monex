@@ -126,7 +126,7 @@ return(
             
             <div className="contenedor-botones">
               <button className="boton_ingresar" type="submit">Iniciar sesión</button>
-              <button className="boton_registro" type="button" onClick={() => navigate("/Register")}>Registraste</button>
+              <button className="boton_registro" type="button" onClick={() => navigate("/Register")}>Registrate</button>
             </div>
 
           </form>
