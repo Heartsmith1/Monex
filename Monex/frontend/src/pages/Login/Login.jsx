@@ -52,8 +52,6 @@ const validarContraseña = (valor) => {
         setColorMensajeContraseña("red");
         return false;
     } else {
-       // setMensajeContraseña("Contraseña válida");
-        setColorMensajeContraseña("#0d47a1");
         return true;
     }
 };
