@@ -1,6 +1,16 @@
 .contenedor_sideBar{
-  margin-top: 50px;
-  margin-left: 20px;
+  width: 283px;
+  height: calc(100vh - 110px); /* El alto total menos el alto de la navbar */
+  position: fixed;
+  left: 0;
+  top: 110px;                  /* BAJA la sidebar para que no tape la navbar */
+  background-color: #fff;
+  border-right: 1px solid #ced4da;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box;
+  z-index: 100;
 }
 
 
