@@ -1,28 +1,40 @@
 .navbar {
-    height: 55px;
+  height: 110px;
     width: 100%;
     background-color: #f1f2f4;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start; /* Todo empieza desde la izquierda */
     align-items: center;
-    gap: 20px;
-    padding: 0 25px;
+    padding: 0 40px;
     box-sizing: border-box;
+    border-bottom: 3px solid #ced4da;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 101;
 }
-
+.img_logo{
+    width: 400px;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    /* Ajusta este valor al ancho real de tu sidebar para que no choque */
+    margin-left: -150px; 
+    /* Este auto empuja al botón y al usuario al extremo derecho */
+    margin-right: auto; 
+    flex-shrink: 0;
+}
 .btn_Agregar_Gasto {
     background-color: #45ad4d;
     color: white;
-    border: none;
-    border-radius: 6px;
     padding: 8px 18px;
     font-weight: bold;
+    margin-right: 30px;
     cursor: pointer;
 }
 
 .icono_Usuario {
-    width: 35px;
-    height: 35px;
-    background-color: #45ad4d;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
 }

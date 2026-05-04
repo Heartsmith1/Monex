@@ -1,8 +1,5 @@
 export function SideBar(){
 
-
-
-
     return(
 
         <div className="contenedor_sideBar">
