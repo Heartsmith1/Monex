@@ -1,18 +1,40 @@
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import home from "../../assets/icon/home.png";
+import gastos from "../../assets/icon/gastos.png";
+import categoria from "../../assets/icon/categorias.png";
+import analisis from "../../assets/icon/analisis.png";
+import estMensual from "../../assets/icon/est_mensual.png";
+import logout from "../../assets/icon/cerrar_sesion.png";
 export function SideBar(){
-
+    const navigate = useNavigate(); // Inicializa useNavigate
     return(
 
         <div className="contenedor_sideBar">
             <div className="contenedor_botones">
-                <button type="buttom" className="boton_inicio">Inicio</button>
+                <button type="button" className="boton_inicio" onClick={() => navigate("/Home")}>
+                    Inicio
+                    <img src={home} alt="Inicio" />
+                </button>
 
-                <button type="buttom" className="boton_gastos">Gastos</button>
+                <button type="button" className="boton_gastos" onClick={() => navigate("/Gastos")}>
+                    Gastos
+                    <img src={gastos} alt="Gastos" />
+                </button>
 
-                <button type="buttom" className="boton_categoria">Categoria</button>
+                <button type="button" className="boton_categoria" onClick={() => navigate("/categorias")}>
+                    Categoria
+                    <img src={categoria} alt="Categoria" />
+                </button>
 
-                <button type="buttom" className="boton_analisis">Analisis</button>
+                <button type="button" className="boton_analisis" onClick={() => navigate("/Analisis")}>
+                    Analisis
+                    <img src={analisis} alt="Analisis" />
+                </button>
 
-                <button type="buttom" className="boton_est_mensual">Est. Mensual</button>
+                <button type="button" className="boton_est_mensual" onClick={() => navigate("/EstMensual")}>
+                    Est. Mensual
+                    <img src={estMensual} alt="Est. Mensual" />
+                </button>
             </div>
 
 
@@ -24,7 +46,10 @@ export function SideBar(){
                     </div>
                 </div>
 
-                <button className="boton_logout">Cerrar Sesión</button>
+                <button className="boton_logout" onClick={() => navigate("/")}>
+                    <img src={logout} alt="Cerrar Sesión" /> {/* La imagen va primero */}
+                    Cerrar Sesión {/* El texto va después */}
+                </button>
             </div>
         </div>
     )
