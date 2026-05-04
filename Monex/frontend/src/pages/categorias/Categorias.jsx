@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { SideBar } from "../../components/SideBar/SideBar";
 import { Navbar } from "../../components/Navbar/Navbar";
 import lupa from "../../assets/icon/material-symbols_search.png";
-
 import { obtenerCategorias } from "../../services/categoriasService";
+import "../../css/pages/categorias.css";
 
 export function Categorias() {
     const [categorias, setCategorias] = useState([]);
@@ -27,7 +27,7 @@ export function Categorias() {
     }, []);
 
     const categoriasFiltradas = categorias.filter((categoria) =>
-        (categoria.name || "")
+        (categoria.name || categoria.nombre || "")
             .toLowerCase()
             .includes(busqueda.toLowerCase())
     );
@@ -63,17 +63,11 @@ export function Categorias() {
 
                     <div className="tabla_Categorias">
                         {loading ? (
-                            <p className="mensaje_Sin_Categorias">
-                                Cargando categorías...
-                            </p>
+                            <p className="mensaje_Sin_Categorias">Cargando categorías...</p>
                         ) : categorias.length === 0 ? (
-                            <p className="mensaje_Sin_Categorias">
-                                No hay categorías registradas
-                            </p>
+                            <p className="mensaje_Sin_Categorias">No hay categorías registradas</p>
                         ) : categoriasFiltradas.length === 0 ? (
-                            <p className="mensaje_Sin_Categorias">
-                                No se encontraron resultados
-                            </p>
+                            <p className="mensaje_Sin_Categorias">No se encontraron resultados</p>
                         ) : (
                             <table>
                                 <thead>
@@ -89,16 +83,11 @@ export function Categorias() {
                                     {categoriasFiltradas.map((categoria) => (
                                         <tr key={categoria.id}>
                                             <td>{categoria.id}</td>
-                                            <td>{categoria.name}</td>
-                                            <td>Sin descripción</td>
+                                            <td>{categoria.name || categoria.nombre || "Sin nombre"}</td>
+                                            <td>{categoria.description || categoria.descripcion || "Sin descripción"}</td>
                                             <td>
-                                                <button className="btn_editar">
-                                                    Editar
-                                                </button>
-
-                                                <button className="btn_eliminar">
-                                                    Eliminar
-                                                </button>
+                                                <button className="btn_editar">Editar</button>
+                                                <button className="btn_eliminar">Eliminar</button>
                                             </td>
                                         </tr>
                                     ))}
