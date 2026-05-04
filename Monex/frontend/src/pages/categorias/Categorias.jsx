@@ -3,22 +3,22 @@ import { SideBar } from "../../components/SideBar/SideBar";
 import { Navbar } from "../../components/Navbar/Navbar";
 import lupa from "../../assets/icon/material-symbols_search.png";
 
+import { obtenerCategorias } from "../../services/categoriasService";
+
 export function Categorias() {
     const [categorias, setCategorias] = useState([]);
     const [busqueda, setBusqueda] = useState("");
+    const [loading, setLoading] = useState(true);
 
     const cargarCategorias = async () => {
         try {
-            const response = await fetch("http://localhost:8082/api/categorias");
-
-            if (!response.ok) {
-                throw new Error("Error al obtener las categorías");
-            }
-
-            const data = await response.json();
+            setLoading(true);
+            const data = await obtenerCategorias();
             setCategorias(data);
         } catch (error) {
             console.error("Error al cargar categorías:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -27,7 +27,9 @@ export function Categorias() {
     }, []);
 
     const categoriasFiltradas = categorias.filter((categoria) =>
-        categoria.nombre.toLowerCase().includes(busqueda.toLowerCase())
+        (categoria.name || "")
+            .toLowerCase()
+            .includes(busqueda.toLowerCase())
     );
 
     return (
@@ -60,9 +62,17 @@ export function Categorias() {
                     </div>
 
                     <div className="tabla_Categorias">
-                        {categoriasFiltradas.length === 0 ? (
+                        {loading ? (
+                            <p className="mensaje_Sin_Categorias">
+                                Cargando categorías...
+                            </p>
+                        ) : categorias.length === 0 ? (
                             <p className="mensaje_Sin_Categorias">
                                 No hay categorías registradas
+                            </p>
+                        ) : categoriasFiltradas.length === 0 ? (
+                            <p className="mensaje_Sin_Categorias">
+                                No se encontraron resultados
                             </p>
                         ) : (
                             <table>
@@ -79,8 +89,8 @@ export function Categorias() {
                                     {categoriasFiltradas.map((categoria) => (
                                         <tr key={categoria.id}>
                                             <td>{categoria.id}</td>
-                                            <td>{categoria.nombre}</td>
-                                            <td>{categoria.descripcion}</td>
+                                            <td>{categoria.name}</td>
+                                            <td>Sin descripción</td>
                                             <td>
                                                 <button className="btn_editar">
                                                     Editar
