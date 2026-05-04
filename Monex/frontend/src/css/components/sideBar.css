@@ -1,7 +1,7 @@
 .contenedor_sideBar{
   width: 283px;
   height: calc(100vh - 110px); /* El alto total menos el alto de la navbar */
-  position: fixed;
+  margin-top: 100px;
   left: 0;
   top: 110px;                  /* BAJA la sidebar para que no tape la navbar */
   background-color: #fff;
@@ -13,40 +13,107 @@
   z-index: 100;
 }
 
-
 .boton_inicio{
-  display: block;
-  width: 150px;
-  margin-top: 50px;
+  display: flex; /* Usar flexbox para alinear contenido */
+  align-items: center; /* Centrar verticalmente */
+  justify-content: space-between; /* Empujar texto a la izquierda, imagen a la derecha */
+  width: 223px; /* Aumentado el ancho */
+  height: 42px;
+  margin-top: 40px;
   background-color: #4CAF50;
+  padding: 10px 15px; /* Añadir padding para mejor apariencia */
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: white;
+  font-size: 24px;
+  
+}
+
+.boton_inicio img{
+  width: 40px;
+  height: 40px;
 }
 
 .boton_gastos{
-  display: block;
-  margin-top: 50px;
-  width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 80px; /* Ajuste de la separación vertical */
+  width: 223px; /* Aumentado el ancho */
   background-color: #4CAF50;
+  padding: 10px 15px;
+  height: 42px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: white;
+  font-size: 24px;
+}
+.boton_gastos img{
+  width: 30px;
+  height: 30px;
 }
 
 .boton_categoria{
-  display: block;
-  width: 150px;
-  margin-top: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 223px; /* Aumentado el ancho */
+  height: 42px;
+  margin-top: 30px; /* Ajuste de la separación vertical */
   background-color: #4CAF50;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: white;
+  font-size: 24px;
+}
+.boton_categoria img{
+  width: 30px;
+  height: 30px;
 }
 
 .boton_analisis{
-  display: block;
-  width: 150px;
-  margin-top: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 223px; /* Aumentado el ancho */
+  height: 42px;
+  margin-top: 30px; /* Ajuste de la separación vertical */
   background-color: #4CAF50;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: white;
+  font-size: 24px;
+}
+.boton_analisis img{
+  width: 30px;
+  height: 30px;
 }
 
+
 .boton_est_mensual{
-  display: block;
-  width: 150px;
-  margin-top: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 223px; /* Aumentado el ancho */
+  height: 42px;
+  margin-top: 30px; /* Ajuste de la separación vertical */
   background-color: #4CAF50;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: white;
+  font-size: 24px;
+}
+.boton_est_mensual img{
+  width: 30px;
+  height: 30px;
 }
 
 .texto_usuario_sidebar{
@@ -101,4 +168,17 @@
     margin-top: 50px;
     font-weight: 500;
     cursor: pointer;
+    display: flex; /* Usar flexbox para alinear contenido */
+    align-items: center; /* Centrar verticalmente */
+    justify-content: space-between; /* Empujar la imagen a la izquierda y el texto a la derecha */
+    /* Eliminamos 'gap' porque 'space-between' maneja la distribución del espacio */
+    width: 190px; /* Ajustar ancho si es necesario */
+    padding: 12px 15px; /* Ajustar padding */
+    font-size: 20px;
+    color: white; /* Asegurar color de texto */
+    border-radius: 10px; /* Mantener border-radius */
+}
+.boton_logout img {
+    width: 20px;
+    height: 20px;
 }
