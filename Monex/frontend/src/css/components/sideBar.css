@@ -172,9 +172,9 @@
     align-items: center; /* Centrar verticalmente */
     justify-content: space-between; /* Empujar la imagen a la izquierda y el texto a la derecha */
     /* Eliminamos 'gap' porque 'space-between' maneja la distribución del espacio */
-    width: 150px; /* Ajustar ancho si es necesario */
+    width: 190px; /* Ajustar ancho si es necesario */
     padding: 12px 15px; /* Ajustar padding */
-    font-size: 16px;
+    font-size: 20px;
     color: white; /* Asegurar color de texto */
     border-radius: 10px; /* Mantener border-radius */
 }
