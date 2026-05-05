@@ -1,5 +1,6 @@
 import iconoNombre from "../../assets/icon/editarCategoriaNombre.png";
 import iconoDescripcion from "../../assets/icon/editarCategoriaDescripcion.png";
+import "../../css/components/EditcategoriesModal.css";
 
 export function EditcategoriesModal({
     nombreEditado,
@@ -12,7 +13,10 @@ export function EditcategoriesModal({
     return (
         <div className="modal_overlay">
             <div className="modal_editar">
-                <button className="btn_cerrar_modal" onClick={cerrarModalEditar}>
+                <button
+                    className="btn_cerrar_modal"
+                    onClick={cerrarModalEditar}
+                >
                     X
                 </button>
 
@@ -23,6 +27,7 @@ export function EditcategoriesModal({
                     <input
                         type="text"
                         value={nombreEditado}
+                        placeholder="Ej: Almuerzo"
                         onChange={(e) => setNombreEditado(e.target.value)}
                     />
                     <img src={iconoNombre} alt="Editar nombre" />
@@ -33,17 +38,24 @@ export function EditcategoriesModal({
                     <input
                         type="text"
                         value={descripcionEditada}
+                        placeholder="Ej: Descripción del gasto"
                         onChange={(e) => setDescripcionEditada(e.target.value)}
                     />
                     <img src={iconoDescripcion} alt="Editar descripción" />
                 </div>
 
                 <div className="modal_botones">
-                    <button className="btn_cancelar_modal" onClick={cerrarModalEditar}>
+                    <button
+                        className="btn_cancelar_modal"
+                        onClick={cerrarModalEditar}
+                    >
                         Cancelar
                     </button>
 
-                    <button className="btn_guardar_modal" onClick={guardarCambios}>
+                    <button
+                        className="btn_guardar_modal"
+                        onClick={guardarCambios}
+                    >
                         Guardar
                     </button>
                 </div>

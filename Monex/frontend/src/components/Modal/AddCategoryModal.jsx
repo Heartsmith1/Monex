@@ -1,5 +1,6 @@
 import iconoNombre from "../../assets/icon/editarCategoriaNombre.png";
 import iconoDescripcion from "../../assets/icon/editarCategoriaDescripcion.png";
+import "../../css/components/AddCategoryModal.css";
 
 export function AddCategoryModal({
     nombre,
@@ -11,7 +12,7 @@ export function AddCategoryModal({
 }) {
     return (
         <div className="modal_overlay">
-            <div className="modal_editar">
+            <div className="modal_agregar">
                 <button className="btn_cerrar_modal" onClick={cerrarModal}>
                     X
                 </button>
