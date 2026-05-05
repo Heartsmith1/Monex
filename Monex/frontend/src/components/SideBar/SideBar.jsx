@@ -1,12 +1,56 @@
-import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import home from "../../assets/icon/home.png";
 import gastos from "../../assets/icon/gastos.png";
 import categoria from "../../assets/icon/categorias.png";
 import analisis from "../../assets/icon/analisis.png";
 import estMensual from "../../assets/icon/est_mensual.png";
 import logout from "../../assets/icon/cerrar_sesion.png";
+import usuario_avatar from "../../assets/icon/usuario.png";
+
 export function SideBar(){
-    const navigate = useNavigate(); // Inicializa useNavigate
+    const navigate = useNavigate();
+    const [usuario, setUsuario] = useState({ username: "Usuario", email: "" });
+
+    useEffect(() => {
+        const cargarUsuario = async () => {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                return;
+            }
+
+            try {
+                const response = await fetch("http://localhost:8081/api/auth/me", {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    return;
+                }
+
+                const data = await response.json();
+                setUsuario({
+                    username: data.username || "Usuario",
+                    email: data.email || "",
+                });
+            } catch (error) {
+                console.error("Error al cargar usuario:", error);
+            }
+        };
+
+        cargarUsuario();
+    }, []);
+
+    const cerrarSesion = () => {
+        localStorage.removeItem("token");
+        sessionStorage.removeItem("usuario");
+        navigate("/");
+    };
+
     return(
 
         <div className="contenedor_sideBar">
@@ -40,15 +84,18 @@ export function SideBar(){
 
             <div className="sidebar_footer">
                 <div className="usuario_info">
-                    <div>
-                        <p className="texto_usuario_sidebar">Nombre usuario</p>
-                        <p className="texto_email_sidebar">usuario@gmail.com</p>
+                    <div className="usuario_avatar_container">
+                        <img src={usuario_avatar} alt="Imagen de usuario" className="usuario_avatar_img"/>
+                    </div>
+                    <div className="usuario_datos">
+                        <p className="texto_usuario_sidebar">{usuario.username}</p>
+                        <p className="texto_email_sidebar">{usuario.email}</p>
                     </div>
                 </div>
 
-                <button className="boton_logout" onClick={() => navigate("/")}>
-                    <img src={logout} alt="Cerrar Sesión" /> {/* La imagen va primero */}
-                    Cerrar Sesión {/* El texto va después */}
+                <button className="boton_logout" onClick={cerrarSesion}>
+                    <img src={logout} alt="Cerrar Sesión" />
+                    Cerrar Sesión
                 </button>
             </div>
         </div>

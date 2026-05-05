@@ -1,4 +1,74 @@
-.layout_expenses{
+.contenedor_expenses {
+    display: flex;
+    height: 100vh;
+}
+
+.contenido_expenses {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.layout_expenses {
     display: flex;
     gap: 20px;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 180px;
+    margin-left: 20px;
+    width: 1340px;
+    height: 100px;
+    background-color: #F3F4F6;
+}
+
+.buscar_gasto_nombre{
+    border: 1px solid #D1D5DB;
+    border-radius: 10px;
+    width: 200px;
+    height: 35px;
+    margin-top: 33px;
+    margin-left:110px;
+    background-color: #E5E7EB;
+}
+
+.buscar_gasto_fecha{
+    border: 1px solid #D1D5DB;
+    border-radius: 10px;
+    width: 200px;
+    height: 35px;
+    margin-top: 33px;
+    margin-left: 250px;
+    background-color: #E5E7EB;
+}
+
+.select_gasto{
+    border: 1px solid #D1D5DB;
+    border-radius: 10px;
+    width: 200px;
+    height: 35px;
+    margin-left: 250px;
+    margin-top: 33px;
+    background-color: #E5E7EB;
+
+}
+
+.nav_tabla_gastos{
+    background-color:#DCE7DF;
+    gap: 20px;
+    display: flex;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 50px;
+    margin-left: 20px;
+    width: 1340px;
+    height: 70px;
+    font-size: 30px;
+    
+}
+
+.nav_tabla_gastos th{
+    padding: 0 30px;
+    vertical-align: middle;
+    text-align: left;
+    color: #374151;
 }

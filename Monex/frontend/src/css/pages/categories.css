@@ -48,8 +48,8 @@
     height: 44px;
     padding: 0 12px 0 50px;
     border-radius: 10px;
-    border: 1px solid #c9ced6;
-    background-color: #d1d5db;
+    border: 1px solid #d1d5db;
+    background-color: #e5e7eb;
     outline: none;
     color: #374151;
     font-weight: 600;
@@ -132,7 +132,7 @@
 
 /* BOTONES TABLA */
 .btn_editar {
-    background-color: #8bcf93;
+    background-color: #4caf50;
     color: #1f2937;
     border: none;
     border-radius: 8px;
@@ -141,6 +141,7 @@
     cursor: pointer;
     font-weight: bold;
     font-size: 14px;
+    opacity: 90%;
 }
 
 .btn_editar:hover {
@@ -148,7 +149,7 @@
 }
 
 .btn_eliminar {
-    background-color: #ef8f86;
+    background-color: #e74c3c;
     color: #1f2937;
     border: none;
     border-radius: 8px;
@@ -156,6 +157,7 @@
     cursor: pointer;
     font-weight: bold;
     font-size: 14px;
+    opacity: 90%;
 }
 
 .btn_eliminar:hover {
