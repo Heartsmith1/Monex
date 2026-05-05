@@ -75,7 +75,6 @@ const validarContraseña = (valor) => {
 
         if (!res.ok) {
             const text = await res.text().catch(() => "");
-            alert(`Error: ${res.status} ${text}`);
             return;
         }
 

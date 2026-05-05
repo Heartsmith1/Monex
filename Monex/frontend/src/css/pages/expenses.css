@@ -1,0 +1,35 @@
+.contenedor_Expenses {
+    display: flex;
+    min-height: calc(100vh - 110px);
+    background-color: #f8fafc;
+}
+
+.contenido_Expenses {
+    flex: 1;
+    padding: 140px 30px 30px;
+    background-color: #f8fafc;
+    color: #1f2937;
+}
+
+.contenido_Expenses h1 {
+    color: #1f2937;
+    font-size: 2rem;
+    margin-bottom: 16px;
+}
+
+.contenedor_filtros_expenses {
+    background-color: #e5f7ea;
+    border: 1px solid #d1e7d0;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.tabla_expenses {
+    background-color: #ffffff;
+    border: 1px solid #dbe1e7;
+    border-radius: 14px;
+    padding: 24px;
+    height: 460px;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+}
