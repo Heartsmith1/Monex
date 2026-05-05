@@ -15,9 +15,9 @@
 }
 .img_logo_navbar{
     width: 400px;
-    height: auto;
+    height: 110px;
     display: block;
-    object-fit: contain;
+    object-fit: cover;
     /* Ajusta este valor al ancho real de tu sidebar para que no choque */
     margin-left: -150px; 
     /* Este auto empuja al botón y al usuario al extremo derecho */
