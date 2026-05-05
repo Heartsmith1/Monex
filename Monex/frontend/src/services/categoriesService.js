@@ -16,7 +16,7 @@ export async function obtenerCategorias() {
     const response = await fetch(API_URL, {
         method: "GET",
         headers: {
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
         },
     });
 
@@ -28,17 +28,18 @@ export async function obtenerCategorias() {
     return await response.json();
 }
 
-export async function crearCategoria(nombre) {
+export async function crearCategoria(nombre, descripcion = "") {
     const token = obtenerToken();
 
     const response = await fetch(API_URL, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
             name: nombre,
+            description: descripcion,
         }),
     });
 
@@ -50,17 +51,18 @@ export async function crearCategoria(nombre) {
     return await response.json();
 }
 
-export async function editarCategoria(id, nombre) {
+export async function editarCategoria(id, nombre, descripcion = "") {
     const token = obtenerToken();
 
     const response = await fetch(`${API_URL}/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
             name: nombre,
+            description: descripcion,
         }),
     });
 
@@ -72,14 +74,13 @@ export async function editarCategoria(id, nombre) {
     return await response.json();
 }
 
-
 export async function eliminarCategoria(id) {
     const token = obtenerToken();
 
     const response = await fetch(`${API_URL}/${id}`, {
         method: "DELETE",
         headers: {
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
         },
     });
 

@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css'
 import './css/pages/login.css'
@@ -10,7 +9,7 @@ import './css/pages/categorias.css'
 import './css/pages/expenses.css'
 import { Categorias } from './pages/categorias/Categorias'
 import { Login } from './pages/Login/Login';
-import {Home} from './pages/home/Home';
+import { Home } from './pages/home/Home';
 import { SideBar } from './components/SideBar/SideBar';
 import { Register } from './pages/Registro/Register';
 import { Expenses } from './pages/expenses/expenses';
