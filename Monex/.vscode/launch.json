@@ -19,6 +19,16 @@
             "projectName": "Bknd_User",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-BkndExpensesApplication<bknd-expenses>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.bknd_expenses.BkndExpensesApplication",
+            "projectName": "bknd-expenses",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

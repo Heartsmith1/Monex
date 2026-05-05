@@ -57,14 +57,40 @@ const validarContraseña = (valor) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validaciones
     const esPasswordValida = validarContraseña(contraseña);
     const esEmailValido = validarEmail(email);
 
-    if (!esPasswordValida || !esEmailValido) {
-        return; 
-    }
+    if (!esPasswordValida || !esEmailValido) return;
 
-    navigate("/home"); 
+    try {
+        const res = await fetch("http://localhost:8081/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+                email: email, 
+                password: contraseña 
+            })
+        });
+
+        if (!res.ok) {
+            const text = await res.text().catch(() => "");
+            alert(`Error: ${res.status} ${text}`);
+            return;
+        }
+
+        const data = await res.json();
+
+        // Guardar usuario
+        sessionStorage.setItem("usuario", JSON.stringify(data));
+
+        // Redirigir
+        navigate("/home");
+
+    } catch (error) {
+        console.error(error);
+        alert("Error de conexión con el servidor");
+    }
 };
 
 return(
