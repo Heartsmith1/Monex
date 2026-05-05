@@ -1,7 +1,7 @@
 import iconoNombre from "../../assets/icon/editarCategoriaNombre.png";
 import iconoDescripcion from "../../assets/icon/editarCategoriaDescripcion.png";
 
-export function ModalEditarCategoria({
+export function EditcategoriesModal({
     nombreEditado,
     setNombreEditado,
     descripcionEditada,

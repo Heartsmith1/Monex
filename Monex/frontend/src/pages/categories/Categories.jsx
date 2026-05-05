@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { SideBar } from "../../components/SideBar/SideBar";
 import { Navbar } from "../../components/Navbar/Navbar";
-import { ModalEditarCategoria } from "../../components/ModalEditarCategoria/ModalEditarCategoria";
+import { EditcategoriesModal } from "../../components/Modal/EditcategoriesModal";
 import lupa from "../../assets/icon/material-symbols_search.png";
-import { obtenerCategorias, editarCategoria,} from "../../services/categoriasService";
-import "../../css/pages/categorias.css";
+import { obtenerCategorias, editarCategoria } from "../../services/categoriesService";
+import "../../css/pages/categories.css";
 
 export function Categorias() {
     const [categorias, setCategorias] = useState([]);
@@ -56,10 +56,11 @@ export function Categorias() {
                 return;
             }
 
-            // Por ahora el backend solo recibe name y no descripcion
+            // Por ahora el backend solo recibe name y no descripcio.
             await editarCategoria(
                 categoriaSeleccionada.id,
-                nombreEditado
+                nombreEditado,
+                descripcionEditada
             );
 
             cerrarModalEditar();
@@ -155,7 +156,7 @@ export function Categorias() {
             </div>
 
             {modalEditar && (
-                <ModalEditarCategoria
+                <EditcategoriesModal
                     nombreEditado={nombreEditado}
                     setNombreEditado={setNombreEditado}
                     descripcionEditada={descripcionEditada}
