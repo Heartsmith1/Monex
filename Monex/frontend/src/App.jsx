@@ -6,6 +6,7 @@ import './css/components/sideBar.css';
 import './css/components/navbar.css';
 import './css/pages/home.css';
 import './css/pages/categories.css';
+import './css/pages/expenses.css';
 
 import { Categorias } from './pages/categories/Categories';
 import { Login } from './pages/Login/Login';
