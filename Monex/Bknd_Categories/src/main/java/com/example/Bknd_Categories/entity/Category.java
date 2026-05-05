@@ -24,6 +24,10 @@ public class Category {
     @Column(name = "name", nullable = false, length = 120)
     private String name;
 
+    //NUEVO CAMPO
+    @Column(name = "description", length = 255)
+    private String description;
+
     @Column(name = "created_by_user_id", nullable = false)
     private Long createdByUserId;
 
@@ -41,6 +45,16 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    //GETTER NUEVO
+    public String getDescription() {
+        return description;
+    }
+
+    //SETTER NUEVO
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Long getCreatedByUserId() {
