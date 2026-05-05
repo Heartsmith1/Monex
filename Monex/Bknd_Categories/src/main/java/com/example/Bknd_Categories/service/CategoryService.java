@@ -47,6 +47,7 @@ public class CategoryService {
 
         Category category = new Category();
         category.setName(normalizedName);
+        category.setDescription(request.getDescription());
         category.setCreatedByUserId(userId);
 
         return toResponse(categoryRepository.save(category));
@@ -68,6 +69,7 @@ public class CategoryService {
         }
 
         existing.setName(normalizedName);
+        existing.setDescription(request.getDescription());
 
         return toResponse(categoryRepository.save(existing));
     }
@@ -88,6 +90,7 @@ public class CategoryService {
         return new CategoryResponse(
                 category.getId(),
                 category.getName(),
+                category.getDescription(),
                 category.getCreatedByUserId()
         );
     }

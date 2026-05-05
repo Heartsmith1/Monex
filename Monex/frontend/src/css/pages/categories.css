@@ -85,6 +85,7 @@
     background-color: #eef0f2;
     border-radius: 10px;
     padding: 12px;
+    box-sizing: border-box;
 }
 
 .mensaje_Sin_Categorias {
@@ -99,6 +100,7 @@
     background-color: white;
     border-radius: 10px;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 .tabla_Categorias th {
