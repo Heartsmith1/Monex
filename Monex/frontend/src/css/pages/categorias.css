@@ -6,14 +6,12 @@
     box-sizing: border-box;
 }
 
-/* TÍTULO */
 .contenido_Categorias h1 {
     font-size: 30px;
     margin-bottom: 6px;
     color: #374151;
 }
 
-/* DESCRIPCIÓN */
 .contenido_Categorias > p {
     color: #374151;
     font-weight: 600;
@@ -29,14 +27,12 @@
     gap: 30px;
 }
 
-/* CONTENEDOR INPUT + ICONO */
 .input_con_icono {
     position: relative;
     width: 65%;
     max-width: 650px;
 }
 
-/* ICONO LUPA */
 .icono_buscar {
     position: absolute;
     left: 14px;
@@ -47,7 +43,6 @@
     opacity: 0.7;
 }
 
-/* INPUT BUSCAR */
 .input_Buscar {
     width: 100%;
     height: 44px;
@@ -67,7 +62,6 @@
     color: #9ca3af;
 }
 
-/* BOTÓN AGREGAR */
 .btn_Agregar_Categoria {
     background-color: #45ad4d;
     color: white;
@@ -85,7 +79,7 @@
     background-color: #3b9642;
 }
 
-/* CONTENEDOR TABLA */
+/* TABLA */
 .tabla_Categorias {
     width: 100%;
     background-color: #eef0f2;
@@ -93,14 +87,12 @@
     padding: 12px;
 }
 
-/* MENSAJE SIN DATOS */
 .mensaje_Sin_Categorias {
     text-align: center;
     color: #6b7280;
     padding: 20px;
 }
 
-/* TABLA */
 .tabla_Categorias table {
     width: 100%;
     border-collapse: collapse;
@@ -109,7 +101,6 @@
     overflow: hidden;
 }
 
-/* HEADER TABLA */
 .tabla_Categorias th {
     background-color: #d9e2dc;
     text-align: center;
@@ -118,7 +109,6 @@
     color: #374151;
 }
 
-/* CELDAS */
 .tabla_Categorias td {
     padding: 16px 10px;
     border-bottom: 1px solid #e5e7eb;
@@ -127,23 +117,19 @@
     text-align: center;
 }
 
-/* DESCRIPCIÓN MÁS ANCHA */
 .tabla_Categorias th:nth-child(3),
 .tabla_Categorias td:nth-child(3) {
     width: 45%;
 }
 
-/* ACCIONES */
 .tabla_Categorias td:last-child {
     white-space: nowrap;
 }
 
-/* ÚLTIMA FILA SIN BORDE */
 .tabla_Categorias tr:last-child td {
     border-bottom: none;
 }
 
-/* BOTÓN EDITAR */
 .btn_editar {
     background-color: #8bcf93;
     color: #1f2937;
@@ -160,7 +146,6 @@
     background-color: #6bbf7c;
 }
 
-/* BOTÓN ELIMINAR */
 .btn_eliminar {
     background-color: #ef8f86;
     color: #1f2937;
@@ -176,7 +161,7 @@
     background-color: #e06f6f;
 }
 
-/* MODAL FONDO */
+/* MODAL */
 .modal_overlay {
     position: fixed;
     top: 0;
@@ -190,7 +175,6 @@
     z-index: 300;
 }
 
-/* CAJA MODAL */
 .modal_editar {
     width: 520px;
     background-color: #f1f2f4;
@@ -200,7 +184,6 @@
     box-sizing: border-box;
 }
 
-/* BOTÓN X */
 .btn_cerrar_modal {
     position: absolute;
     top: 20px;
@@ -213,15 +196,13 @@
     cursor: pointer;
 }
 
-/* TÍTULO MODAL */
 .modal_editar h2 {
     text-align: center;
     color: #374151;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     font-size: 28px;
 }
 
-/* LABEL */
 .modal_editar label {
     display: block;
     color: #374151;
@@ -229,18 +210,35 @@
     margin-bottom: 6px;
 }
 
-/* INPUT MODAL */
-.modal_editar input {
+/* INPUT CON ICONO EN MODAL */
+.input_con_icono_modal {
+    position: relative;
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.input_con_icono_modal input {
     width: 100%;
     height: 40px;
     border: 1px solid #c9ced6;
     border-radius: 8px;
     background-color: #d1d5db;
-    padding: 0 12px;
-    margin-bottom: 25px;
+    padding: 0 45px 0 12px;
     box-sizing: border-box;
     color: #374151;
     font-weight: 600;
+    outline: none;
+}
+
+.input_con_icono_modal img {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    opacity: 0.6;
+    pointer-events: none;
 }
 
 /* BOTONES MODAL */
@@ -248,7 +246,7 @@
     display: flex;
     justify-content: space-between;
     gap: 25px;
-    margin-top: 20px;
+    margin-top: 35px;
 }
 
 .btn_cancelar_modal,

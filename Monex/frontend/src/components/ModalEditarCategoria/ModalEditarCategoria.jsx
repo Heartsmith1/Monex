@@ -1,6 +1,11 @@
+import iconoNombre from "../../assets/icon/editarCategoriaNombre.png";
+import iconoDescripcion from "../../assets/icon/editarCategoriaDescripcion.png";
+
 export function ModalEditarCategoria({
     nombreEditado,
     setNombreEditado,
+    descripcionEditada,
+    setDescripcionEditada,
     cerrarModalEditar,
     guardarCambios,
 }) {
@@ -14,11 +19,24 @@ export function ModalEditarCategoria({
                 <h2>Editar categoría</h2>
 
                 <label>Nombre</label>
-                <input
-                    type="text"
-                    value={nombreEditado}
-                    onChange={(e) => setNombreEditado(e.target.value)}
-                />
+                <div className="input_con_icono_modal">
+                    <input
+                        type="text"
+                        value={nombreEditado}
+                        onChange={(e) => setNombreEditado(e.target.value)}
+                    />
+                    <img src={iconoNombre} alt="Editar nombre" />
+                </div>
+
+                <label>Descripción</label>
+                <div className="input_con_icono_modal">
+                    <input
+                        type="text"
+                        value={descripcionEditada}
+                        onChange={(e) => setDescripcionEditada(e.target.value)}
+                    />
+                    <img src={iconoDescripcion} alt="Editar descripción" />
+                </div>
 
                 <div className="modal_botones">
                     <button className="btn_cancelar_modal" onClick={cerrarModalEditar}>

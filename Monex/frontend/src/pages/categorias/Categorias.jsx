@@ -16,7 +16,9 @@ export function Categorias() {
 
     const [modalEditar, setModalEditar] = useState(false);
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+
     const [nombreEditado, setNombreEditado] = useState("");
+    const [descripcionEditada, setDescripcionEditada] = useState(""); // ✅ NUEVO
 
     const cargarCategorias = async () => {
         try {
@@ -37,6 +39,9 @@ export function Categorias() {
     const abrirModalEditar = (categoria) => {
         setCategoriaSeleccionada(categoria);
         setNombreEditado(categoria.name || categoria.nombre || "");
+        setDescripcionEditada(
+            categoria.description || categoria.descripcion || ""
+        ); // ✅ NUEVO
         setModalEditar(true);
     };
 
@@ -44,6 +49,7 @@ export function Categorias() {
         setModalEditar(false);
         setCategoriaSeleccionada(null);
         setNombreEditado("");
+        setDescripcionEditada(""); // ✅ NUEVO
     };
 
     const guardarCambios = async () => {
@@ -53,7 +59,11 @@ export function Categorias() {
                 return;
             }
 
-            await editarCategoria(categoriaSeleccionada.id, nombreEditado);
+            // ⚠️ POR AHORA tu backend solo recibe name
+            await editarCategoria(
+                categoriaSeleccionada.id,
+                nombreEditado
+            );
 
             cerrarModalEditar();
             cargarCategorias();
@@ -151,6 +161,8 @@ export function Categorias() {
                 <ModalEditarCategoria
                     nombreEditado={nombreEditado}
                     setNombreEditado={setNombreEditado}
+                    descripcionEditada={descripcionEditada} // ✅ NUEVO
+                    setDescripcionEditada={setDescripcionEditada} // ✅ NUEVO
                     cerrarModalEditar={cerrarModalEditar}
                     guardarCambios={guardarCambios}
                 />
