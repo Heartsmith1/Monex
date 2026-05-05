@@ -3,6 +3,23 @@ const API_URL = "http://localhost:8082/api/categorias";
 function obtenerToken() {
     const token = localStorage.getItem("token");
 
+    if (token) {
+        return token;
+    }
+
+    const usuarioGuardado = sessionStorage.getItem("usuario");
+    if (usuarioGuardado) {
+        try {
+            const usuario = JSON.parse(usuarioGuardado);
+            if (usuario?.access_token) {
+                localStorage.setItem("token", usuario.access_token);
+                return usuario.access_token;
+            }
+        } catch (error) {
+            // Ignorar JSON inválido y caer en el error normal
+        }
+    }
+
     if (!token) {
         throw new Error("No hay token guardado. Debes iniciar sesión primero.");
     }
