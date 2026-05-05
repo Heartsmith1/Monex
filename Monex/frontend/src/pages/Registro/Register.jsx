@@ -123,7 +123,7 @@ export function Register (){
           email: email,
           password: contraseña,
         });
-        window.alert("¡Registro exitoso! Redirigiendo al login...");
+        window.alert("¡Registro exitoso! Redirigiendo al login");
         setTimeout(() => {
           navigate("/");
         }, 1800);
