@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { SideBar } from "../../components/SideBar/SideBar";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { EditcategoriesModal } from "../../components/Modal/EditcategoriesModal";
+import { AddCategoryModal } from "../../components/Modal/AddCategoryModal";
 import lupa from "../../assets/icon/material-symbols_search.png";
-import { obtenerCategorias, editarCategoria } from "../../services/categoriesService";
+import { obtenerCategorias, editarCategoria, crearCategoria } from "../../services/categoriesService";
 import "../../css/pages/categories.css";
 
 export function Categorias() {
@@ -16,6 +17,10 @@ export function Categorias() {
 
     const [nombreEditado, setNombreEditado] = useState("");
     const [descripcionEditada, setDescripcionEditada] = useState("");
+
+    const [modalAgregar, setModalAgregar] = useState(false);
+    const [nombreNuevo, setNombreNuevo] = useState("");
+    const [descripcionNueva, setDescripcionNueva] = useState("");
 
     const cargarCategorias = async () => {
         try {
@@ -36,9 +41,7 @@ export function Categorias() {
     const abrirModalEditar = (categoria) => {
         setCategoriaSeleccionada(categoria);
         setNombreEditado(categoria.name || categoria.nombre || "");
-        setDescripcionEditada(
-            categoria.description || categoria.descripcion || ""
-        );
+        setDescripcionEditada(categoria.description || categoria.descripcion || "");
         setModalEditar(true);
     };
 
@@ -56,7 +59,6 @@ export function Categorias() {
                 return;
             }
 
-            // Por ahora el backend solo recibe name y no descripcio.
             await editarCategoria(
                 categoriaSeleccionada.id,
                 nombreEditado,
@@ -68,6 +70,35 @@ export function Categorias() {
         } catch (error) {
             console.error("Error al editar categoría:", error);
             alert("Error al editar categoría");
+        }
+    };
+
+    const abrirModalAgregar = () => {
+        setNombreNuevo("");
+        setDescripcionNueva("");
+        setModalAgregar(true);
+    };
+
+    const cerrarModalAgregar = () => {
+        setModalAgregar(false);
+        setNombreNuevo("");
+        setDescripcionNueva("");
+    };
+
+    const guardarCategoria = async () => {
+        try {
+            if (!nombreNuevo.trim()) {
+                alert("El nombre de la categoría no puede estar vacío");
+                return;
+            }
+
+            await crearCategoria(nombreNuevo, descripcionNueva);
+
+            cerrarModalAgregar();
+            cargarCategorias();
+        } catch (error) {
+            console.error("Error al crear categoría:", error);
+            alert("Error al crear categoría");
         }
     };
 
@@ -101,7 +132,10 @@ export function Categorias() {
                             />
                         </div>
 
-                        <button className="btn_Agregar_Categoria">
+                        <button
+                            className="btn_Agregar_Categoria"
+                            onClick={abrirModalAgregar}
+                        >
                             + Agregar Categoría
                         </button>
                     </div>
@@ -163,6 +197,17 @@ export function Categorias() {
                     setDescripcionEditada={setDescripcionEditada}
                     cerrarModalEditar={cerrarModalEditar}
                     guardarCambios={guardarCambios}
+                />
+            )}
+
+            {modalAgregar && (
+                <AddCategoryModal
+                    nombre={nombreNuevo}
+                    setNombre={setNombreNuevo}
+                    descripcion={descripcionNueva}
+                    setDescripcion={setDescripcionNueva}
+                    cerrarModal={cerrarModalAgregar}
+                    guardarCategoria={guardarCategoria}
                 />
             )}
         </div>
