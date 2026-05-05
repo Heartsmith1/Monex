@@ -117,8 +117,9 @@
     text-align: center;
 }
 
-.tabla_Categorias th:nth-child(3),
-.tabla_Categorias td:nth-child(3) {
+/* 🔧 CORREGIDO POR ELIMINAR EL ID */
+.tabla_Categorias th:nth-child(2),
+.tabla_Categorias td:nth-child(2) {
     width: 45%;
 }
 
