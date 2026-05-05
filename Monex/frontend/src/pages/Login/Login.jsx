@@ -22,17 +22,13 @@ export function Login (){
     const [colorMensajeEmail, setColorMensajeEmail] = useState("");
 
     // --- Expresiones regulares para validación ---
-    const regexEmail = /^[a-zA-Z0-9._%+-]+@(duocuc\.cl|gmail\.com|duocProfesor\.com)$/;
+    //const regexEmail = /^[a-zA-Z0-9._%+-]+@(duocuc\.cl|gmail\.com|duocProfesor\.com)$/;
     const regexNombre = /^[a-zA-ZÀ-ÿ\s]{3,40}$/;
     const regexContraseña = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
     
   const validarEmail = (valor) => {
     if (valor === "") {
         setMensajeEmail("Debe ingresar un correo.");
-        setColorMensajeEmail("red");
-        return false;
-    } else if (!regexEmail.test(valor)) {
-        setMensajeEmail("Correo inválido");
         setColorMensajeEmail("red");
         return false;
     } else {
@@ -43,10 +39,6 @@ export function Login (){
 const validarContraseña = (valor) => {
     if (valor === "") {
         setMensajeContraseña("Debe ingresar una contraseña.");
-        setColorMensajeContraseña("red");
-        return false;
-    } else if (!regexContraseña.test(valor)) {
-        setMensajeContraseña("Contraseña inválida");
         setColorMensajeContraseña("red");
         return false;
     } else {
