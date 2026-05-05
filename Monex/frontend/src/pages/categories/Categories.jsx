@@ -3,8 +3,14 @@ import { SideBar } from "../../components/SideBar/SideBar";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { EditcategoriesModal } from "../../components/Modal/EditcategoriesModal";
 import { AddCategoryModal } from "../../components/Modal/AddCategoryModal";
+import { DeleteCategoryModal } from "../../components/Modal/DeleteCategoryModal";
 import lupa from "../../assets/icon/material-symbols_search.png";
-import { obtenerCategorias, editarCategoria, crearCategoria } from "../../services/categoriesService";
+import {
+    obtenerCategorias,
+    editarCategoria,
+    crearCategoria,
+    eliminarCategoria,
+} from "../../services/categoriesService";
 import "../../css/pages/categories.css";
 
 export function Categorias() {
@@ -21,6 +27,9 @@ export function Categorias() {
     const [modalAgregar, setModalAgregar] = useState(false);
     const [nombreNuevo, setNombreNuevo] = useState("");
     const [descripcionNueva, setDescripcionNueva] = useState("");
+
+    const [modalEliminar, setModalEliminar] = useState(false);
+    const [categoriaEliminar, setCategoriaEliminar] = useState(null);
 
     const cargarCategorias = async () => {
         try {
@@ -102,6 +111,28 @@ export function Categorias() {
         }
     };
 
+    const abrirModalEliminar = (categoria) => {
+        setCategoriaEliminar(categoria);
+        setModalEliminar(true);
+    };
+
+    const cerrarModalEliminar = () => {
+        setModalEliminar(false);
+        setCategoriaEliminar(null);
+    };
+
+    const eliminarConfirmado = async (id) => {
+        try {
+            await eliminarCategoria(id);
+
+            cerrarModalEliminar();
+            cargarCategorias();
+        } catch (error) {
+            console.error("Error al eliminar categoría:", error);
+            alert("Error al eliminar categoría");
+        }
+    };
+
     const categoriasFiltradas = categorias.filter((categoria) =>
         (categoria.name || categoria.nombre || "")
             .toLowerCase()
@@ -176,7 +207,10 @@ export function Categorias() {
                                                     Editar
                                                 </button>
 
-                                                <button className="btn_eliminar">
+                                                <button
+                                                    className="btn_eliminar"
+                                                    onClick={() => abrirModalEliminar(categoria)}
+                                                >
                                                     Eliminar
                                                 </button>
                                             </td>
@@ -202,13 +236,20 @@ export function Categorias() {
 
             {modalAgregar && (
                 <AddCategoryModal
-                
                     nombre={nombreNuevo}
                     setNombre={setNombreNuevo}
                     descripcion={descripcionNueva}
                     setDescripcion={setDescripcionNueva}
                     cerrarModal={cerrarModalAgregar}
                     guardarCategoria={guardarCategoria}
+                />
+            )}
+
+            {modalEliminar && (
+                <DeleteCategoryModal
+                    categoria={categoriaEliminar}
+                    cerrarModal={cerrarModalEliminar}
+                    eliminarCategoriaConfirmada={eliminarConfirmado}
                 />
             )}
         </div>
