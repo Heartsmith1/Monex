@@ -103,10 +103,10 @@
 
 .tabla_Categorias th {
     background-color: #d9e2dc;
-    text-align: center;
     padding: 18px 10px;
     font-weight: bold;
     color: #374151;
+    text-align: center;
 }
 
 .tabla_Categorias td {
@@ -117,9 +117,20 @@
     text-align: center;
 }
 
+/* ANCHOS DE COLUMNAS */
+.tabla_Categorias th:nth-child(1),
+.tabla_Categorias td:nth-child(1) {
+    width: 30%;
+}
+
+.tabla_Categorias th:nth-child(2),
+.tabla_Categorias td:nth-child(2) {
+    width: 45%;
+}
+
 .tabla_Categorias th:nth-child(3),
 .tabla_Categorias td:nth-child(3) {
-    width: 45%;
+    width: 25%;
 }
 
 .tabla_Categorias td:last-child {
@@ -137,7 +148,7 @@
     border: none;
     border-radius: 8px;
     padding: 6px 14px;
-    margin-right: 8px;
+    margin-right: 10px;
     cursor: pointer;
     font-weight: bold;
     font-size: 14px;
