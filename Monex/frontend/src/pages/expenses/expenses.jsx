@@ -18,11 +18,44 @@ export function Expenses() {
                 <Navbar />
 
                 <div className="layout_expenses">
-                    <h1>hello</h1>
+                    <form action="POST">
+                        <input className="buscar_gasto_nombre" type="text" />
 
+                        <input className="buscar_gasto_fecha" type="text" />
 
+                        <input className="select_gasto" type="text" />
+
+                    </form>
                 </div>
                 
+                <div class="tabla_expeses">
+
+                    <table>
+                        <thead className="nav_tabla_gastos">
+                            <tr>
+                                
+                                <th>Nombre</th>
+                                <th>Fecha de ingreso</th>
+                                <th>Metodo de pago</th>
+                                <th>Monto</th>
+                                <th>Cantidad</th>
+                                <th>Acciones</th>
+
+                            </tr>
+                        </thead>
+                        <tbody className="body_tabla_gastos">
+
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
 
