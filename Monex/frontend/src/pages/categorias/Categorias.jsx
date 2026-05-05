@@ -3,10 +3,7 @@ import { SideBar } from "../../components/SideBar/SideBar";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { ModalEditarCategoria } from "../../components/ModalEditarCategoria/ModalEditarCategoria";
 import lupa from "../../assets/icon/material-symbols_search.png";
-import {
-    obtenerCategorias,
-    editarCategoria,
-} from "../../services/categoriasService";
+import { obtenerCategorias, editarCategoria,} from "../../services/categoriasService";
 import "../../css/pages/categorias.css";
 
 export function Categorias() {
@@ -18,7 +15,7 @@ export function Categorias() {
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
 
     const [nombreEditado, setNombreEditado] = useState("");
-    const [descripcionEditada, setDescripcionEditada] = useState(""); // ✅ NUEVO
+    const [descripcionEditada, setDescripcionEditada] = useState("");
 
     const cargarCategorias = async () => {
         try {
@@ -41,7 +38,7 @@ export function Categorias() {
         setNombreEditado(categoria.name || categoria.nombre || "");
         setDescripcionEditada(
             categoria.description || categoria.descripcion || ""
-        ); // ✅ NUEVO
+        );
         setModalEditar(true);
     };
 
@@ -49,7 +46,7 @@ export function Categorias() {
         setModalEditar(false);
         setCategoriaSeleccionada(null);
         setNombreEditado("");
-        setDescripcionEditada(""); // ✅ NUEVO
+        setDescripcionEditada("");
     };
 
     const guardarCambios = async () => {
@@ -59,7 +56,7 @@ export function Categorias() {
                 return;
             }
 
-            // ⚠️ POR AHORA tu backend solo recibe name
+            // Por ahora el backend solo recibe name y no descripcion
             await editarCategoria(
                 categoriaSeleccionada.id,
                 nombreEditado
@@ -161,8 +158,8 @@ export function Categorias() {
                 <ModalEditarCategoria
                     nombreEditado={nombreEditado}
                     setNombreEditado={setNombreEditado}
-                    descripcionEditada={descripcionEditada} // ✅ NUEVO
-                    setDescripcionEditada={setDescripcionEditada} // ✅ NUEVO
+                    descripcionEditada={descripcionEditada}
+                    setDescripcionEditada={setDescripcionEditada}
                     cerrarModalEditar={cerrarModalEditar}
                     guardarCambios={guardarCambios}
                 />
