@@ -80,7 +80,13 @@ const validarContraseña = (valor) => {
 
         const data = await res.json();
 
-        // Guardar usuario
+        // Guardar token para llamadas autenticadas
+        const token = data.access_token;
+        if (token) {
+          localStorage.setItem("token", token);
+        }
+
+        // Guardar respuesta completa por si se necesita luego
         sessionStorage.setItem("usuario", JSON.stringify(data));
 
         // Redirigir
