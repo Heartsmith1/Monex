@@ -1,19 +1,17 @@
 /* CONTENIDO GENERAL */
 .contenido_Categorias {
-    padding: 135px 40px 30px 40px; /* <-- ajuste clave por navbar */
+    padding: 135px 40px 30px 40px;
     width: 100%;
     max-width: none;
     box-sizing: border-box;
 }
 
-/* TÍTULO */
 .contenido_Categorias h1 {
     font-size: 30px;
     margin-bottom: 6px;
     color: #374151;
 }
 
-/* DESCRIPCIÓN */
 .contenido_Categorias > p {
     color: #374151;
     font-weight: 600;
@@ -29,14 +27,12 @@
     gap: 30px;
 }
 
-/* CONTENEDOR INPUT + ICONO */
 .input_con_icono {
     position: relative;
     width: 65%;
     max-width: 650px;
 }
 
-/* ICONO LUPA */
 .icono_buscar {
     position: absolute;
     left: 14px;
@@ -47,7 +43,6 @@
     opacity: 0.7;
 }
 
-/* INPUT BUSCAR */
 .input_Buscar {
     width: 100%;
     height: 44px;
@@ -67,7 +62,6 @@
     color: #9ca3af;
 }
 
-/* BOTÓN AGREGAR */
 .btn_Agregar_Categoria {
     background-color: #45ad4d;
     color: white;
@@ -79,10 +73,13 @@
     font-size: 16px;
     cursor: pointer;
     white-space: nowrap;
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* CONTENEDOR TABLA */
+.btn_Agregar_Categoria:hover {
+    background-color: #3b9642;
+}
+
+/* TABLA */
 .tabla_Categorias {
     width: 100%;
     background-color: #eef0f2;
@@ -90,14 +87,12 @@
     padding: 12px;
 }
 
-/* MENSAJE SIN DATOS */
 .mensaje_Sin_Categorias {
     text-align: center;
     color: #6b7280;
     padding: 20px;
 }
 
-/* TABLA */
 .tabla_Categorias table {
     width: 100%;
     border-collapse: collapse;
@@ -106,7 +101,6 @@
     overflow: hidden;
 }
 
-/* HEADER TABLA */
 .tabla_Categorias th {
     background-color: #d9e2dc;
     text-align: center;
@@ -115,7 +109,6 @@
     color: #374151;
 }
 
-/* CELDAS */
 .tabla_Categorias td {
     padding: 16px 10px;
     border-bottom: 1px solid #e5e7eb;
@@ -124,23 +117,19 @@
     text-align: center;
 }
 
-/* DESCRIPCIÓN MÁS ANCHA */
 .tabla_Categorias th:nth-child(3),
 .tabla_Categorias td:nth-child(3) {
     width: 45%;
 }
 
-/* ACCIONES */
 .tabla_Categorias td:last-child {
     white-space: nowrap;
 }
 
-/* ÚLTIMA FILA SIN BORDE */
 .tabla_Categorias tr:last-child td {
     border-bottom: none;
 }
 
-/* BOTÓN EDITAR */
 .btn_editar {
     background-color: #8bcf93;
     color: #1f2937;
@@ -153,7 +142,10 @@
     font-size: 14px;
 }
 
-/* BOTÓN ELIMINAR */
+.btn_editar:hover {
+    background-color: #6bbf7c;
+}
+
 .btn_eliminar {
     background-color: #ef8f86;
     color: #1f2937;
@@ -163,4 +155,124 @@
     cursor: pointer;
     font-weight: bold;
     font-size: 14px;
+}
+
+.btn_eliminar:hover {
+    background-color: #e06f6f;
+}
+
+/* MODAL */
+.modal_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.35);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 300;
+}
+
+.modal_editar {
+    width: 520px;
+    background-color: #f1f2f4;
+    border-radius: 10px;
+    padding: 35px 45px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.btn_cerrar_modal {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    background: none;
+    border: none;
+    font-size: 26px;
+    font-weight: bold;
+    color: #374151;
+    cursor: pointer;
+}
+
+.modal_editar h2 {
+    text-align: center;
+    color: #374151;
+    margin-bottom: 25px;
+    font-size: 28px;
+}
+
+.modal_editar label {
+    display: block;
+    color: #374151;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+/* INPUT CON ICONO EN MODAL */
+.input_con_icono_modal {
+    position: relative;
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.input_con_icono_modal input {
+    width: 100%;
+    height: 40px;
+    border: 1px solid #c9ced6;
+    border-radius: 8px;
+    background-color: #d1d5db;
+    padding: 0 45px 0 12px;
+    box-sizing: border-box;
+    color: #374151;
+    font-weight: 600;
+    outline: none;
+}
+
+.input_con_icono_modal img {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* BOTONES MODAL */
+.modal_botones {
+    display: flex;
+    justify-content: space-between;
+    gap: 25px;
+    margin-top: 35px;
+}
+
+.btn_cancelar_modal,
+.btn_guardar_modal {
+    width: 50%;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn_cancelar_modal {
+    background-color: #8bcf93;
+}
+
+.btn_cancelar_modal:hover {
+    background-color: #6bbf7c;
+}
+
+.btn_guardar_modal {
+    background-color: #45ad4d;
+}
+
+.btn_guardar_modal:hover {
+    background-color: #3b9642;
 }
