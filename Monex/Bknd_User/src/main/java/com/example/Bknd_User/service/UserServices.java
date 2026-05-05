@@ -40,11 +40,16 @@ public class UserServices {
     }
     
     public User registrar(String username, String email, String password) {
-        if (userRepository.existsByEmail(email)) {
+        // Validar ambos primero
+        boolean emailExists = userRepository.existsByEmail(email);
+        boolean usernameExists = userRepository.existsByUsername(username);
+        
+        // Construir mensaje con ambos errores si aplica
+        if (emailExists && usernameExists) {
+            throw new IllegalArgumentException("El email ya está registrado. El nombre de usuario ya está registrado");
+        } else if (emailExists) {
             throw new IllegalArgumentException("El email ya está registrado");
-        }
-
-        if (userRepository.existsByUsername(username)) {
+        } else if (usernameExists) {
             throw new IllegalArgumentException("El nombre de usuario ya está registrado");
         }
         
