@@ -202,6 +202,7 @@ export function Categorias() {
 
             {modalAgregar && (
                 <AddCategoryModal
+                
                     nombre={nombreNuevo}
                     setNombre={setNombreNuevo}
                     descripcion={descripcionNueva}
