@@ -56,7 +56,7 @@ export function Categorias() {
                 return;
             }
 
-            // Por ahora el backend solo recibe name y no descripcion
+            // Por ahora el backend solo recibe name y no descripcio.
             await editarCategoria(
                 categoriaSeleccionada.id,
                 nombreEditado,
