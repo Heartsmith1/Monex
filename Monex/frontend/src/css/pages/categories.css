@@ -48,8 +48,8 @@
     height: 44px;
     padding: 0 12px 0 50px;
     border-radius: 10px;
-    border: 1px solid #c9ced6;
-    background-color: #d1d5db;
+    border: 1px solid #d1d5db;
+    background-color: #e5e7eb;
     outline: none;
     color: #374151;
     font-weight: 600;
@@ -103,10 +103,10 @@
 
 .tabla_Categorias th {
     background-color: #d9e2dc;
-    text-align: center;
     padding: 18px 10px;
     font-weight: bold;
     color: #374151;
+    text-align: center;
 }
 
 .tabla_Categorias td {
@@ -117,9 +117,20 @@
     text-align: center;
 }
 
+/* ANCHOS DE COLUMNAS */
+.tabla_Categorias th:nth-child(1),
+.tabla_Categorias td:nth-child(1) {
+    width: 30%;
+}
+
+.tabla_Categorias th:nth-child(2),
+.tabla_Categorias td:nth-child(2) {
+    width: 45%;
+}
+
 .tabla_Categorias th:nth-child(3),
 .tabla_Categorias td:nth-child(3) {
-    width: 45%;
+    width: 25%;
 }
 
 .tabla_Categorias td:last-child {
@@ -132,15 +143,16 @@
 
 /* BOTONES TABLA */
 .btn_editar {
-    background-color: #8bcf93;
+    background-color: #4caf50;
     color: #1f2937;
     border: none;
     border-radius: 8px;
     padding: 6px 14px;
-    margin-right: 8px;
+    margin-right: 10px;
     cursor: pointer;
     font-weight: bold;
     font-size: 14px;
+    opacity: 90%;
 }
 
 .btn_editar:hover {
@@ -148,7 +160,7 @@
 }
 
 .btn_eliminar {
-    background-color: #ef8f86;
+    background-color: #e74c3c;
     color: #1f2937;
     border: none;
     border-radius: 8px;
@@ -156,6 +168,7 @@
     cursor: pointer;
     font-weight: bold;
     font-size: 14px;
+    opacity: 90%;
 }
 
 .btn_eliminar:hover {

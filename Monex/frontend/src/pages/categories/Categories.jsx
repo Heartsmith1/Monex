@@ -182,7 +182,6 @@ export function Categorias() {
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
                                         <th>Nombre de categoría</th>
                                         <th>Descripción de categoría</th>
                                         <th>Acciones</th>
@@ -192,7 +191,6 @@ export function Categorias() {
                                 <tbody>
                                     {categoriasFiltradas.map((categoria) => (
                                         <tr key={categoria.id}>
-                                            <td>{categoria.id}</td>
                                             <td>{categoria.name || categoria.nombre || "Sin nombre"}</td>
                                             <td>
                                                 {categoria.description ||
