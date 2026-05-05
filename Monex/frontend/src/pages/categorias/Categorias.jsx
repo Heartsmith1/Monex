@@ -1,14 +1,22 @@
 import { useEffect, useState } from "react";
 import { SideBar } from "../../components/SideBar/SideBar";
 import { Navbar } from "../../components/Navbar/Navbar";
+import { ModalEditarCategoria } from "../../components/ModalEditarCategoria/ModalEditarCategoria";
 import lupa from "../../assets/icon/material-symbols_search.png";
-import { obtenerCategorias } from "../../services/categoriasService";
+import {
+    obtenerCategorias,
+    editarCategoria,
+} from "../../services/categoriasService";
 import "../../css/pages/categorias.css";
 
 export function Categorias() {
     const [categorias, setCategorias] = useState([]);
     const [busqueda, setBusqueda] = useState("");
     const [loading, setLoading] = useState(true);
+
+    const [modalEditar, setModalEditar] = useState(false);
+    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+    const [nombreEditado, setNombreEditado] = useState("");
 
     const cargarCategorias = async () => {
         try {
@@ -25,6 +33,35 @@ export function Categorias() {
     useEffect(() => {
         cargarCategorias();
     }, []);
+
+    const abrirModalEditar = (categoria) => {
+        setCategoriaSeleccionada(categoria);
+        setNombreEditado(categoria.name || categoria.nombre || "");
+        setModalEditar(true);
+    };
+
+    const cerrarModalEditar = () => {
+        setModalEditar(false);
+        setCategoriaSeleccionada(null);
+        setNombreEditado("");
+    };
+
+    const guardarCambios = async () => {
+        try {
+            if (!nombreEditado.trim()) {
+                alert("El nombre de la categoría no puede estar vacío");
+                return;
+            }
+
+            await editarCategoria(categoriaSeleccionada.id, nombreEditado);
+
+            cerrarModalEditar();
+            cargarCategorias();
+        } catch (error) {
+            console.error("Error al editar categoría:", error);
+            alert("Error al editar categoría");
+        }
+    };
 
     const categoriasFiltradas = categorias.filter((categoria) =>
         (categoria.name || categoria.nombre || "")
@@ -84,10 +121,22 @@ export function Categorias() {
                                         <tr key={categoria.id}>
                                             <td>{categoria.id}</td>
                                             <td>{categoria.name || categoria.nombre || "Sin nombre"}</td>
-                                            <td>{categoria.description || categoria.descripcion || "Sin descripción"}</td>
                                             <td>
-                                                <button className="btn_editar">Editar</button>
-                                                <button className="btn_eliminar">Eliminar</button>
+                                                {categoria.description ||
+                                                    categoria.descripcion ||
+                                                    "Sin descripción"}
+                                            </td>
+                                            <td>
+                                                <button
+                                                    className="btn_editar"
+                                                    onClick={() => abrirModalEditar(categoria)}
+                                                >
+                                                    Editar
+                                                </button>
+
+                                                <button className="btn_eliminar">
+                                                    Eliminar
+                                                </button>
                                             </td>
                                         </tr>
                                     ))}
@@ -97,6 +146,15 @@ export function Categorias() {
                     </div>
                 </div>
             </div>
+
+            {modalEditar && (
+                <ModalEditarCategoria
+                    nombreEditado={nombreEditado}
+                    setNombreEditado={setNombreEditado}
+                    cerrarModalEditar={cerrarModalEditar}
+                    guardarCambios={guardarCambios}
+                />
+            )}
         </div>
     );
 }
