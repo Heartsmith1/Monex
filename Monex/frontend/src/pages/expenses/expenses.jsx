@@ -1,21 +1,38 @@
 import { useEffect, useState } from "react";
 import { SideBar } from "../../components/SideBar/SideBar";
 import { Navbar } from "../../components/Navbar/Navbar";
-
+import AddExpenseModal from "../../components/Modal/AddExpenseModal";
+import { obtenerGastos } from "../../services/expensesService";
 
 export function Expenses() {
+    const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+    const [gastos, setGastos] = useState([]);
 
+    const cargarGastos = async () => {
+        try {
+            const data = await obtenerGastos();
+            setGastos(data);
+        } catch (error) {
+            console.error("Error al cargar gastos:", error);
+        }
+    };
 
-
-
+    useEffect(() => {
+        cargarGastos();
+    }, []);
 
     return (
-
         <div className="contenedor_expenses">
             <SideBar />
 
             <div className="contenido_expenses">
-                <Navbar />
+                <Navbar onOpenExpenseModal={() => setIsExpenseModalOpen(true)} />
+
+                <AddExpenseModal
+                    isOpen={isExpenseModalOpen}
+                    onClose={() => setIsExpenseModalOpen(false)}
+                    onExpenseCreated={cargarGastos}
+                />
 
                 <div className="layout_expenses">
                     <form action="POST">
@@ -55,23 +72,24 @@ export function Expenses() {
                         </thead>
 
                         <tbody className="body_tabla_gastos">
-                            <tr>
-                                <td>Desayuno</td>
-                                <td>25/04/2026</td>
-                                <td>Crédito</td>
-                                <td>$15.000</td>
-                                <td>1</td>
-                                <td>
-                                    <button className="boton_editar_expenses">Editar</button>
-                                    <button className="boton_eliminar_expenses">Eliminar</button>
-                                </td>
-                            </tr>
+                            {gastos.map((gasto) => (
+                                <tr key={gasto.id}>
+                                    <td>{gasto.name || gasto.nombre}</td>
+                                    <td>{gasto.date || gasto.fechaIngreso}</td>
+                                    <td>{gasto.paymentMethod || gasto.metodoPago}</td>
+                                    <td>{gasto.amount || gasto.monto}</td>
+                                    <td>{gasto.quantity || gasto.cantidad}</td>
+                                    <td>
+                                        <button className="boton_editar_expenses">Editar</button>
+                                        <button className="boton_eliminar_expenses">Eliminar</button>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
 
             </div>
         </div>
-
-    )
+    );
 }

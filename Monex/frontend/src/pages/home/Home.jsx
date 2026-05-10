@@ -1,15 +1,23 @@
+import { useState } from "react";
 import { SideBar } from "../../components/SideBar/SideBar";
 import { Navbar } from "../../components/Navbar/Navbar";
+import AddExpenseModal from "../../components/Modal/AddExpenseModal";
 
 export function Home() {
-
+    const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
 
     return (
         <div className="contenedor_Home">
             <SideBar />
 
             <div className="contenido_Home">
-                <Navbar />
+                <Navbar onOpenExpenseModal={() => setIsExpenseModalOpen(true)} />
+
+                <AddExpenseModal
+                    isOpen={isExpenseModalOpen}
+                    onClose={() => setIsExpenseModalOpen(false)}
+                />
+
                 <h1>Bienvenido Usuario</h1>
 
                 <div className="layout_home">
@@ -24,12 +32,10 @@ export function Home() {
                         </div>
                     </div>
 
-
                     <div className="col_derecha">
                         <div className="box_grafico_torta_home">
                             <h2>Gastos por categoria</h2>
                         </div>
-
 
                         <div className="contenedor_pago_tarjeta_home">
                             <h2>Pago Tarjeta</h2>
@@ -37,7 +43,6 @@ export function Home() {
                     </div>
 
                 </div>
-
             </div>
         </div>
     );
