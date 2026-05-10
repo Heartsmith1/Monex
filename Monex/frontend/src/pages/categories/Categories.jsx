@@ -4,6 +4,7 @@ import { Navbar } from "../../components/Navbar/Navbar";
 import { EditcategoriesModal } from "../../components/Modal/EditcategoriesModal";
 import { AddCategoryModal } from "../../components/Modal/AddCategoryModal";
 import { DeleteCategoryModal } from "../../components/Modal/DeleteCategoryModal";
+import AddExpenseModal from "../../components/Modal/AddExpenseModal";
 import lupa from "../../assets/icon/material-symbols_search.png";
 import {
     obtenerCategorias,
@@ -30,6 +31,8 @@ export function Categorias() {
 
     const [modalEliminar, setModalEliminar] = useState(false);
     const [categoriaEliminar, setCategoriaEliminar] = useState(null);
+
+    const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
 
     const cargarCategorias = async () => {
         try {
@@ -144,7 +147,12 @@ export function Categorias() {
             <SideBar />
 
             <div className="contenido_Home">
-                <Navbar />
+                <Navbar onOpenExpenseModal={() => setIsExpenseModalOpen(true)} />
+
+                <AddExpenseModal
+                    isOpen={isExpenseModalOpen}
+                    onClose={() => setIsExpenseModalOpen(false)}
+                />
 
                 <div className="contenido_Categorias">
                     <h1>Categoría</h1>
