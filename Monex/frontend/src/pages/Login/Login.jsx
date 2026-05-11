@@ -56,6 +56,7 @@ const validarContraseña = (valor) => {
     if (!esPasswordValida || !esEmailValido) return;
 
     try {
+      
         const res = await fetch("http://localhost:8081/api/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
