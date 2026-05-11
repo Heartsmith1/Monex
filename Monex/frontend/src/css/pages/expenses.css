@@ -1,156 +1,204 @@
-.contenedor_expenses {
-    display: flex;
-    height: 100vh;
+/* CONTENIDO GENERAL */
+.contenido_Gastos {
+    padding: 135px 40px 30px 40px;
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
 }
 
-.contenido_expenses {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+.contenido_Gastos h1 {
+    font-size: 30px;
+    margin-bottom: 6px;
+    color: #374151;
 }
 
-/* BUSCADOR */
-.layout_expenses {
-    margin-top: 140px;
-    margin-left: 20px;
-    width: 1340px;
-    height: 100px;
-    background-color: #F3F4F6;
+.contenido_Gastos > p {
+    color: #374151;
+    font-weight: 600;
+    margin-bottom: 28px;
+}
+
+/* BARRA SUPERIOR */
+.barra_Gastos {
+    width: 100%;
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
     border-radius: 10px;
+    padding: 28px 20px;
     display: flex;
     align-items: center;
+    gap: 35px;
+    margin-bottom: 40px;
+    box-sizing: border-box;
 }
 
-.layout_expenses form {
-    display: flex;
-    gap: 20px;
-    margin-left: 150px;
-    padding: 0 20px;
+.input_con_icono_gastos {
+    position: relative;
+    width: 32%;
+    min-width: 280px;
 }
 
-/* INPUT NOMBRE */
-.buscar_gasto_nombre {
-    border: 1px solid #D1D5DB;
+.icono_buscar_gastos {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    opacity: 0.7;
+}
+
+.input_Buscar_Gastos {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px 0 50px;
     border-radius: 10px;
-    width: 280px;
-    height: 42px;
-    background-color: #E5E7EB;
-    padding: 0 15px;
-    font-size: 14px;
-    color: #374151;
-}
-
-.buscar_gasto_nombre::placeholder {
-    color: #9CA3AF;
-}
-
-.buscar_gasto_nombre:focus {
-    border: 1px solid #22C55E;
-    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    background-color: #e5e7eb;
     outline: none;
-}
-
-.buscar_gasto_nombre:hover {
-    background-color: #D1D5DB;
-}
-
-/* INPUT FECHA */
-.buscar_gasto_fecha {
-    border: 1px solid #D1D5DB;
-    border-radius: 10px;
-    width: 260px;
-    height: 42px;
-    background-color: #E5E7EB;
-    padding: 0 15px;
-    font-size: 14px;
     color: #374151;
+    font-weight: 600;
+    font-size: 15px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.18);
+    box-sizing: border-box;
 }
 
-.buscar_gasto_fecha::placeholder {
-    color: #9CA3AF;
-}
-
-.buscar_gasto_fecha:focus {
-    border: 1px solid #22C55E;
-    background-color: #ffffff;
+.input_Fecha_Gastos,
+.select_Gastos {
+    width: 28%;
+    min-width: 240px;
+    height: 44px;
+    padding: 0 16px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    background-color: #e5e7eb;
     outline: none;
-}
-
-.buscar_gasto_fecha:hover {
-    background-color: #D1D5DB;
-}
-
-/* SELECT / CATEGORIA */
-.select_gasto {
-    border: 1px solid #D1D5DB;
-    border-radius: 10px;
-    width: 220px;
-    height: 42px;
-    background-color: #E5E7EB;
-    padding: 0 15px;
-    font-size: 14px;
     color: #374151;
+    font-weight: 600;
+    font-size: 15px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.18);
+    box-sizing: border-box;
+}
+
+.select_Gastos {
     cursor: pointer;
 }
 
-.select_gasto::placeholder {
-    color: #9CA3AF;
+.input_Buscar_Gastos::placeholder,
+.input_Fecha_Gastos::placeholder {
+    color: #9ca3af;
 }
 
-.select_gasto:focus {
-    border: 1px solid #22C55E;
-    background-color: #ffffff;
-    outline: none;
-}
-
-.select_gasto:hover {
-    background-color: #D1D5DB;
+.input_Buscar_Gastos:hover,
+.input_Fecha_Gastos:hover,
+.select_Gastos:hover {
+    background-color: #d1d5db;
 }
 
 /* TABLA */
 .tabla_expenses {
-    margin-top: 30px;
+    width: 100%;
+    background-color: #eef0f2;
+    border-radius: 10px;
+    padding: 12px;
+    box-sizing: border-box;
 }
 
-table {
-    width: 1340px;
-    margin-left: 20px;
+.mensaje_Sin_Gastos {
+    text-align: center;
+    color: #6b7280;
+    padding: 20px;
+}
+
+.tabla_expenses table {
+    width: 100%;
     border-collapse: collapse;
-    background-color: #fff;
+    background-color: white;
     border-radius: 10px;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 .nav_tabla_gastos {
-    background-color: #DCE7DF;
+    background-color: #d9e2dc;
 }
 
 .nav_tabla_gastos th {
-    padding: 15px;
-    text-align: left;
+    padding: 18px 10px;
+    font-weight: bold;
     color: #374151;
-    font-size: 14px;
+    text-align: center;
 }
 
 .body_tabla_gastos td {
-    padding: 15px;
-    border-bottom: 1px solid #E5E7EB;
+    padding: 16px 10px;
+    border-bottom: 1px solid #e5e7eb;
     color: #374151;
+    font-weight: 500;
+    text-align: center;
 }
 
-tbody tr:hover {
-    background-color: #F9FAFB;
+/* ANCHOS DE COLUMNAS */
+.tabla_expenses th:nth-child(1),
+.tabla_expenses td:nth-child(1) {
+    width: 13%;
 }
 
-/* BOTONES */
+.tabla_expenses th:nth-child(2),
+.tabla_expenses td:nth-child(2) {
+    width: 13%;
+}
 
+.tabla_expenses th:nth-child(3),
+.tabla_expenses td:nth-child(3) {
+    width: 13%;
+}
+
+.tabla_expenses th:nth-child(4),
+.tabla_expenses td:nth-child(4) {
+    width: 13%;
+}
+
+.tabla_expenses th:nth-child(5),
+.tabla_expenses td:nth-child(5) {
+    width: 11%;
+}
+
+.tabla_expenses th:nth-child(6),
+.tabla_expenses td:nth-child(6) {
+    width: 11%;
+}
+
+.tabla_expenses th:nth-child(7),
+.tabla_expenses td:nth-child(7) {
+    width: 10%;
+}
+
+.tabla_expenses th:nth-child(8),
+.tabla_expenses td:nth-child(8) {
+    width: 16%;
+}
+
+.tabla_expenses td:last-child {
+    white-space: nowrap;
+}
+
+.tabla_expenses tr:last-child td {
+    border-bottom: none;
+}
+
+.body_tabla_gastos tr:hover {
+    background-color: #f9fafb;
+}
+
+/* BOTONES TABLA */
 .boton_editar_expenses {
     background-color: #4caf50;
     color: #1f2937;
     border: none;
     border-radius: 8px;
     padding: 6px 14px;
-    margin-right: 8px;
+    margin-right: 10px;
     cursor: pointer;
     font-weight: bold;
     font-size: 14px;
