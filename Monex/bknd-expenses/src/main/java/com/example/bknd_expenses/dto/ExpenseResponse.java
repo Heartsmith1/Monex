@@ -13,11 +13,12 @@ import java.time.LocalDate;
 public class ExpenseResponse {
 
     private Long id;
-    private String description;
+    private String name;
     private Long categoryId;
+    private String categoryName;
     private LocalDate date;
-    private LocalDate startDate;
     private BigDecimal amount;
+    private BigDecimal commission;
     private PaymentMethod paymentMethod;
     private Integer installments;
     private Long userId;
