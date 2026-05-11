@@ -6,7 +6,7 @@ import { obtenerCategorias } from "../../services/categoriesService";
 function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
 
     const [nombre, setNombre] = useState("");
-    const [categoria, setCategoria] = useState("");
+    const [categoria, setCategoria] = useState(""); //n
     const [monto, setMonto] = useState("");
     const [comision, setComision] = useState("0");
     const [fechaIngreso, setFechaIngreso] = useState("");
@@ -246,7 +246,7 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
                     <div className="expense-modal-buttons">
                         <button
                             type="button"
-                            className="expense-btn-cancel"
+                            className="expense-btn-cancel" 
                             onClick={onClose}
                         >
                             Cancelar
