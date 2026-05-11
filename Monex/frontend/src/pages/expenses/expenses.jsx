@@ -53,6 +53,46 @@ export function Expenses() {
         });
     };
 
+    const parseIsoDate = (isoDate) => {
+        if (!isoDate) return null;
+
+        if (isoDate instanceof Date) {
+            return Number.isNaN(isoDate.getTime()) ? null : isoDate;
+        }
+
+        if (typeof isoDate !== "string") return null;
+
+        const datePart = isoDate.slice(0, 10);
+        const [year, month, day] = datePart.split("-").map(Number);
+
+        if (!year || !month || !day) return null;
+
+        const parsed = new Date(year, month - 1, day);
+        return Number.isNaN(parsed.getTime()) ? null : parsed;
+    };
+
+    const getPendingInstallments = (expense) => {
+        const totalInstallments = Math.max(1, Number(expense?.installments) || 1);
+
+        if (expense?.paymentMethod !== "CREDITO") {
+            return totalInstallments;
+        }
+
+        const expenseDate = parseIsoDate(expense?.date);
+        if (!expenseDate) return totalInstallments;
+
+        const startMonth = new Date(expenseDate.getFullYear(), expenseDate.getMonth(), 1);
+        const now = new Date();
+        const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+        const elapsedMonths =
+            (currentMonthStart.getFullYear() - startMonth.getFullYear()) * 12 +
+            (currentMonthStart.getMonth() - startMonth.getMonth());
+
+        const paidInstallments = elapsedMonths <= 0 ? 0 : Math.min(totalInstallments, elapsedMonths);
+        return Math.max(0, totalInstallments - paidInstallments);
+    };
+
     const handleEdit = (id) => {
         console.log("Editar gasto con ID:", id);
     };
@@ -156,7 +196,11 @@ export function Expenses() {
 
                                             <td>{formatAmount(expense.commission)}</td>
 
-                                            <td>{expense.installments || 1}</td>
+                                            <td>
+                                                {expense.paymentMethod === "CREDITO"
+                                                    ? getPendingInstallments(expense)
+                                                    : (expense.installments || 1)}
+                                            </td>
 
                                             <td>
                                                 <button

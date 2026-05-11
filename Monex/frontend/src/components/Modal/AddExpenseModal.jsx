@@ -50,12 +50,16 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
                 (cat) => Number(cat.id) === Number(categoria)
             );
 
+            const montoParsed = Number(monto);
+            const comisionPorcentaje = Number(comision || 0);
+            const comisionCalculada = comisionPorcentaje > 0 ? (montoParsed * comisionPorcentaje) / 100 : 0;
+
             const nuevoGasto = {
                 name: nombre,
                 categoryId: Number(categoria),
                 categoryName: categoriaSeleccionada?.name || categoriaSeleccionada?.nombre || "",
-                amount: Number(monto),
-                commission: Number(comision || 0),
+                amount: montoParsed,
+                commission: comisionCalculada,
                 date: fechaIngreso,
                 paymentMethod: metodoPago,
                 installments: Number(cantidadCuotas)
@@ -139,7 +143,7 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
 
                             <input
                                 type="text"
-                                placeholder="Ej: 500.50"
+                                placeholder="Ej: 0.5%"
                                 value={comision}
                                 onChange={(e) => {
                                     let value = e.target.value;
