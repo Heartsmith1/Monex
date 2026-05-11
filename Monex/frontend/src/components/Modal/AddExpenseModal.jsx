@@ -6,11 +6,7 @@ import { obtenerCategorias } from "../../services/categoriesService";
 function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
 
     const [nombre, setNombre] = useState("");
-<<<<<<< HEAD
     const [categoria, setCategoria] = useState(""); //sincronizacion
-=======
-    const [categoria, setCategoria] = useState(""); //sincro
->>>>>>> 6ba8161e21666c17656aa19c21f4c2242fb6ff41
     const [monto, setMonto] = useState("");
     const [comision, setComision] = useState("0");
     const [fechaIngreso, setFechaIngreso] = useState("");
