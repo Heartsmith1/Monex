@@ -276,7 +276,7 @@ export function Expenses() {
 
                             <input
                                 type="text"
-                                placeholder="Buscar gasto por nombre, ID..."
+                                placeholder="Buscar gasto por nombre"
                                 className="input_Buscar_Gastos"
                                 value={busqueda}
                                 onChange={(e) =>
