@@ -45,12 +45,20 @@ export function Expenses() {
     };
 
     const formatAmount = (amount) => {
-        if (amount === null || amount === undefined) return "$0";
+        if (amount === null || amount === undefined || amount === "") return "$0";
 
         return Number(amount).toLocaleString("es-CL", {
             style: "currency",
             currency: "CLP"
         });
+    };
+
+    const formatCommission = (commission) => {
+        if (commission === null || commission === undefined || commission === "") {
+            return "0.00%";
+        }
+
+        return `${Number(commission).toFixed(2)}%`;
     };
 
     const handleEdit = (id) => {
@@ -154,7 +162,7 @@ export function Expenses() {
 
                                             <td>{formatAmount(expense.amount)}</td>
 
-                                            <td>{formatAmount(expense.commission)}</td>
+                                            <td>{formatCommission(expense.commission)}</td>
 
                                             <td>{expense.installments || 1}</td>
 
