@@ -1,198 +1,158 @@
 import { useEffect, useState } from "react";
 import { SideBar } from "../../components/SideBar/SideBar";
 import { Navbar } from "../../components/Navbar/Navbar";
+import { EditcategoriesModal } from "../../components/Modal/EditcategoriesModal";
+import { AddCategoryModal } from "../../components/Modal/AddCategoryModal";
+import { DeleteCategoryModal } from "../../components/Modal/DeleteCategoryModal";
 import AddExpenseModal from "../../components/Modal/AddExpenseModal";
-import EditExpenseModal from "../../components/Modal/EditExpenseModal";
-import { DeleteExpenseModal } from "../../components/Modal/DeleteExpenseModal";
 import lupa from "../../assets/icon/material-symbols_search.png";
-
 import {
-    obtenerGastos,
-    actualizarGasto
-} from "../../services/expensesService";
+    obtenerCategorias,
+    editarCategoria,
+    crearCategoria,
+    eliminarCategoria,
+} from "../../services/categoriesService";
+import "../../css/pages/categories.css";
 
-import { obtenerCategorias } from "../../services/categoriesService";
-import "../../css/pages/expenses.css";
-
-export function Expenses() {
-    const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
-    const [isEditExpenseModalOpen, setIsEditExpenseModalOpen] = useState(false);
-    const [isDeleteExpenseModalOpen, setIsDeleteExpenseModalOpen] = useState(false);
-
-    const [expenses, setExpenses] = useState([]);
+export function Categorias() {
     const [categorias, setCategorias] = useState([]);
-
     const [busqueda, setBusqueda] = useState("");
-    const [categoriaFiltro, setCategoriaFiltro] = useState("");
-
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
-    const [gastoEditandoId, setGastoEditandoId] = useState(null);
-    const [gastoEliminar, setGastoEliminar] = useState(null);
+    const [paginaActual, setPaginaActual] = useState(1);
+    const categoriasPorPagina = 5;
+
+    const [modalEditar, setModalEditar] = useState(false);
+    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
 
     const [nombreEditado, setNombreEditado] = useState("");
-    const [categoriaEditada, setCategoriaEditada] = useState("");
-    const [montoEditado, setMontoEditado] = useState("");
-    const [comisionEditada, setComisionEditada] = useState("0");
-    const [fechaEditada, setFechaEditada] = useState("");
-    const [metodoPagoEditado, setMetodoPagoEditado] = useState("EFECTIVO");
-    const [cuotasEditadas, setCuotasEditadas] = useState("1");
+    const [descripcionEditada, setDescripcionEditada] = useState("");
 
-    const fetchExpenses = async () => {
+    const [modalAgregar, setModalAgregar] = useState(false);
+    const [nombreNuevo, setNombreNuevo] = useState("");
+    const [descripcionNueva, setDescripcionNueva] = useState("");
+
+    const [modalEliminar, setModalEliminar] = useState(false);
+    const [categoriaEliminar, setCategoriaEliminar] = useState(null);
+
+    const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+
+    const cargarCategorias = async () => {
         try {
             setLoading(true);
-            const data = await obtenerGastos();
-            setExpenses(Array.isArray(data) ? data : []);
-            setError(null);
-        } catch (err) {
-            console.error("Error:", err);
-            setError(err.message);
+            const data = await obtenerCategorias();
+            setCategorias(data);
+        } catch (error) {
+            console.error("Error al cargar categorías:", error);
         } finally {
             setLoading(false);
         }
     };
 
-    const fetchCategorias = async () => {
-        try {
-            const data = await obtenerCategorias();
-            setCategorias(Array.isArray(data) ? data : []);
-        } catch (err) {
-            console.error("Error al obtener categorías:", err);
-        }
-    };
-
     useEffect(() => {
-        fetchExpenses();
-        fetchCategorias();
+        cargarCategorias();
     }, []);
 
-    const formatPaymentMethod = (method) => {
-        const methods = {
-            EFECTIVO: "Efectivo",
-            DEBITO: "Débito",
-            CREDITO: "Crédito"
-        };
+    useEffect(() => {
+        setPaginaActual(1);
+    }, [busqueda]);
 
-        return methods[method] || "Sin método";
+    const abrirModalEditar = (categoria) => {
+        setCategoriaSeleccionada(categoria);
+        setNombreEditado(categoria.name || categoria.nombre || "");
+        setDescripcionEditada(categoria.description || categoria.descripcion || "");
+        setModalEditar(true);
     };
 
-    const formatAmount = (amount) => {
-        if (amount === null || amount === undefined || amount === "") return "$0";
-
-        return Number(amount).toLocaleString("es-CL", {
-            style: "currency",
-            currency: "CLP"
-        });
+    const cerrarModalEditar = () => {
+        setModalEditar(false);
+        setCategoriaSeleccionada(null);
+        setNombreEditado("");
+        setDescripcionEditada("");
     };
 
-    const formatCommission = (commission) => {
-        if (commission === null || commission === undefined || commission === "") {
-            return "0.00%";
-        }
-
-        return `${Number(commission).toFixed(2)}%`;
-    };
-
-    const shouldShowCreditFields = (paymentMethod) => {
-        return paymentMethod === "CREDITO";
-    };
-
-    const handleEdit = (expense) => {
-        setGastoEditandoId(expense.id);
-        setNombreEditado(expense.name || "");
-        setCategoriaEditada(String(expense.categoryId || ""));
-        setMontoEditado(String(expense.amount || ""));
-        setComisionEditada(String(expense.commission || "0"));
-        setFechaEditada(expense.date || "");
-        setMetodoPagoEditado(expense.paymentMethod || "EFECTIVO");
-        setCuotasEditadas(String(expense.installments || "1"));
-        setIsEditExpenseModalOpen(true);
-    };
-
-    const cerrarModalEditarGasto = () => {
-        setIsEditExpenseModalOpen(false);
-        setGastoEditandoId(null);
-    };
-
-    const guardarCambiosGasto = async () => {
+    const guardarCambios = async () => {
         try {
-            const categoriaSeleccionada = categorias.find(
-                (cat) => Number(cat.id) === Number(categoriaEditada)
-            );
-
-            const gastoActualizado = {
-                name: nombreEditado,
-                categoryId: Number(categoriaEditada),
-                categoryName:
-                    categoriaSeleccionada?.name ||
-                    categoriaSeleccionada?.nombre ||
-                    "",
-                amount: Number(montoEditado),
-                commission: metodoPagoEditado === "CREDITO" ? Number(comisionEditada || 0) : 0,
-                date: fechaEditada,
-                paymentMethod: metodoPagoEditado,
-                installments: metodoPagoEditado === "CREDITO" ? Number(cuotasEditadas || 1) : 1
-            };
-
-            await actualizarGasto(gastoEditandoId, gastoActualizado);
-
-            cerrarModalEditarGasto();
-            fetchExpenses();
-        } catch (err) {
-            console.error("Error al actualizar gasto:", err);
-            alert("Error al actualizar gasto");
-        }
-    };
-
-    const handleDelete = (expense) => {
-        setGastoEliminar(expense);
-        setIsDeleteExpenseModalOpen(true);
-    };
-
-    const cerrarModalEliminarGasto = () => {
-        setIsDeleteExpenseModalOpen(false);
-        setGastoEliminar(null);
-    };
-
-    const eliminarGastoConfirmado = async (id) => {
-        try {
-            const token = localStorage.getItem("token");
-
-            const res = await fetch(`http://localhost:8083/api/expenses/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
-            if (!res.ok) {
-                throw new Error("Error al eliminar el gasto");
+            if (!nombreEditado.trim()) {
+                alert("El nombre de la categoría no puede estar vacío");
+                return;
             }
 
-            setExpenses(expenses.filter((expense) => expense.id !== id));
-            cerrarModalEliminarGasto();
-        } catch (err) {
-            console.error(err);
-            alert("Error al eliminar el gasto");
+            await editarCategoria(
+                categoriaSeleccionada.id,
+                nombreEditado,
+                descripcionEditada
+            );
+
+            cerrarModalEditar();
+            cargarCategorias();
+        } catch (error) {
+            console.error("Error al editar categoría:", error);
+            alert("Error al editar categoría");
         }
     };
 
-    const expensesFiltrados = expenses.filter((expense) => {
-        const nombre = expense.name || "";
-        const id = String(expense.id || "");
-        const categoriaId = String(expense.categoryId || "");
+    const abrirModalAgregar = () => {
+        setNombreNuevo("");
+        setDescripcionNueva("");
+        setModalAgregar(true);
+    };
 
-        const coincideBusqueda =
-            nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-            id.includes(busqueda);
+    const cerrarModalAgregar = () => {
+        setModalAgregar(false);
+        setNombreNuevo("");
+        setDescripcionNueva("");
+    };
 
-        const coincideCategoria =
-            categoriaFiltro === "" || categoriaId === categoriaFiltro;
+    const guardarCategoria = async () => {
+        try {
+            if (!nombreNuevo.trim()) {
+                alert("El nombre de la categoría no puede estar vacío");
+                return;
+            }
 
-        return coincideBusqueda && coincideCategoria;
-    });
+            await crearCategoria(nombreNuevo, descripcionNueva);
+
+            cerrarModalAgregar();
+            cargarCategorias();
+        } catch (error) {
+            console.error("Error al crear categoría:", error);
+            alert("Error al crear categoría");
+        }
+    };
+
+    const abrirModalEliminar = (categoria) => {
+        setCategoriaEliminar(categoria);
+        setModalEliminar(true);
+    };
+
+    const cerrarModalEliminar = () => {
+        setModalEliminar(false);
+        setCategoriaEliminar(null);
+    };
+
+    const eliminarConfirmado = async (id) => {
+        try {
+            await eliminarCategoria(id);
+
+            cerrarModalEliminar();
+            cargarCategorias();
+        } catch (error) {
+            console.error("Error al eliminar categoría:", error);
+            alert("Error al eliminar categoría");
+        }
+    };
+
+    const categoriasFiltradas = categorias.filter((categoria) =>
+        (categoria.name || categoria.nombre || "")
+            .toLowerCase()
+            .includes(busqueda.toLowerCase())
+    );
+
+    const totalPaginas = Math.ceil(categoriasFiltradas.length / categoriasPorPagina);
+    const indiceInicial = (paginaActual - 1) * categoriasPorPagina;
+    const indiceFinal = indiceInicial + categoriasPorPagina;
+    const categoriasPaginadas = categoriasFiltradas.slice(indiceInicial, indiceFinal);
 
     return (
         <div className="contenedor_Home">
@@ -204,110 +164,71 @@ export function Expenses() {
                 <AddExpenseModal
                     isOpen={isExpenseModalOpen}
                     onClose={() => setIsExpenseModalOpen(false)}
-                    onExpenseCreated={fetchExpenses}
                 />
 
-                <div className="contenido_Gastos">
-                    <h1>Gastos</h1>
-                    <p>Consulta y gestiona todos tus gastos registrados</p>
+                <div className="contenido_Categorias">
+                    <h1>Categoría</h1>
+                    <p>Organiza y gestiona las categorías de tus gastos</p>
 
-                    <div className="barra_Gastos">
-                        <div className="input_con_icono_gastos">
-                            <img src={lupa} alt="buscar" className="icono_buscar_gastos" />
+                    <div className="barra_Categorias">
+                        <div className="input_con_icono">
+                            <img src={lupa} alt="buscar" className="icono_buscar" />
 
                             <input
                                 type="text"
-                                placeholder="Buscar gasto por nombre, ID..."
-                                className="input_Buscar_Gastos"
+                                placeholder="Buscar categoría..."
+                                className="input_Buscar"
                                 value={busqueda}
                                 onChange={(e) => setBusqueda(e.target.value)}
                             />
                         </div>
 
-                        <input
-                            className="input_Fecha_Gastos"
-                            type="text"
-                            placeholder="Fecha: 01/03/2026 - 30/04/2026"
-                        />
-
-                        <select
-                            className="select_Gastos"
-                            value={categoriaFiltro}
-                            onChange={(e) => setCategoriaFiltro(e.target.value)}
+                        <button
+                            className="btn_Agregar_Categoria"
+                            onClick={abrirModalAgregar}
                         >
-                            <option value="">Todas las categorías</option>
-
-                            {categorias.map((cat) => (
-                                <option key={cat.id} value={cat.id}>
-                                    {cat.name || cat.nombre}
-                                </option>
-                            ))}
-                        </select>
+                            + Agregar Categoría
+                        </button>
                     </div>
 
-                    <div className="tabla_expenses">
-                        {loading && <p className="mensaje_Sin_Gastos">Cargando gastos...</p>}
-                        {error && <p className="mensaje_Sin_Gastos">{error}</p>}
-
-                        {!loading && !error && expensesFiltrados.length === 0 ? (
-                            <p className="mensaje_Sin_Gastos">No hay gastos registrados</p>
+                    <div className="tabla_Categorias">
+                        {loading ? (
+                            <p className="mensaje_Sin_Categorias">Cargando categorías...</p>
+                        ) : categorias.length === 0 ? (
+                            <p className="mensaje_Sin_Categorias">No hay categorías registradas</p>
+                        ) : categoriasFiltradas.length === 0 ? (
+                            <p className="mensaje_Sin_Categorias">No se encontraron resultados</p>
                         ) : (
-                            !loading &&
-                            !error && (
+                            <>
                                 <table>
-                                    <thead className="nav_tabla_gastos">
+                                    <thead>
                                         <tr>
-                                            <th>Nombre</th>
-                                            <th>Categoría</th>
-                                            <th>Fecha del gasto</th>
-                                            <th>Método de pago</th>
-                                            <th>Monto</th>
-                                            <th>Comisión</th>
-                                            <th>Cuotas</th>
+                                            <th>Nombre de categoría</th>
+                                            <th>Descripción de categoría</th>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
 
-                                    <tbody className="body_tabla_gastos">
-                                        {expensesFiltrados.map((expense) => (
-                                            <tr key={expense.id}>
-                                                <td>{expense.name || "Sin nombre"}</td>
-
+                                    <tbody>
+                                        {categoriasPaginadas.map((categoria) => (
+                                            <tr key={categoria.id}>
+                                                <td>{categoria.name || categoria.nombre || "Sin nombre"}</td>
                                                 <td>
-                                                    {expense.categoryName ||
-                                                        expense.category?.name ||
-                                                        `Categoría ${expense.categoryId}`}
+                                                    {categoria.description ||
+                                                        categoria.descripcion ||
+                                                        "Sin descripción"}
                                                 </td>
-
-                                                <td>{expense.date || "Sin fecha"}</td>
-
-                                                <td>{formatPaymentMethod(expense.paymentMethod)}</td>
-
-                                                <td>{formatAmount(expense.amount)}</td>
-
-                                                <td>
-                                                    {shouldShowCreditFields(expense.paymentMethod)
-                                                        ? formatCommission(expense.commission)
-                                                        : "No aplica"}
-                                                </td>
-
-                                                <td>
-                                                    {shouldShowCreditFields(expense.paymentMethod)
-                                                        ? expense.installments
-                                                        : "No aplica"}
-                                                </td>
-
                                                 <td>
                                                     <button
-                                                        className="boton_editar_expenses"
-                                                        onClick={() => handleEdit(expense)}
+                                                        className="btn_editar"
+                                                        onClick={() => abrirModalEditar(categoria)}
                                                     >
                                                         Editar
                                                     </button>
 
                                                     <button
-                                                        className="boton_eliminar_expenses"
-                                                        onClick={() => handleDelete(expense)}
+                                                        className="btn_eliminar"
+                                                        onClick={() => abrirModalEliminar(categoria)}
                                                     >
                                                         Eliminar
                                                     </button>
@@ -316,38 +237,77 @@ export function Expenses() {
                                         ))}
                                     </tbody>
                                 </table>
-                            )
+
+                                <div className="paginacion_Categorias">
+                                    <p>
+                                        Mostrando {indiceInicial + 1} a{" "}
+                                        {Math.min(indiceFinal, categoriasFiltradas.length)} de{" "}
+                                        {categoriasFiltradas.length} categorías
+                                    </p>
+
+                                    <div className="botones_paginacion_Categorias">
+                                        <button
+                                            disabled={paginaActual === 1}
+                                            onClick={() => setPaginaActual(paginaActual - 1)}
+                                        >
+                                            ← Anterior
+                                        </button>
+
+                                        {Array.from({ length: totalPaginas }, (_, index) => (
+                                            <button
+                                                key={index + 1}
+                                                className={
+                                                    paginaActual === index + 1
+                                                        ? "pagina_activa_Categorias"
+                                                        : ""
+                                                }
+                                                onClick={() => setPaginaActual(index + 1)}
+                                            >
+                                                {index + 1}
+                                            </button>
+                                        ))}
+
+                                        <button
+                                            disabled={paginaActual === totalPaginas}
+                                            onClick={() => setPaginaActual(paginaActual + 1)}
+                                        >
+                                            Siguiente →
+                                        </button>
+                                    </div>
+                                </div>
+                            </>
                         )}
                     </div>
                 </div>
             </div>
 
-            <EditExpenseModal
-                isOpen={isEditExpenseModalOpen}
-                categorias={categorias}
-                nombreEditado={nombreEditado}
-                setNombreEditado={setNombreEditado}
-                categoriaEditada={categoriaEditada}
-                setCategoriaEditada={setCategoriaEditada}
-                montoEditado={montoEditado}
-                setMontoEditado={setMontoEditado}
-                comisionEditada={comisionEditada}
-                setComisionEditada={setComisionEditada}
-                fechaEditada={fechaEditada}
-                setFechaEditada={setFechaEditada}
-                metodoPagoEditado={metodoPagoEditado}
-                setMetodoPagoEditado={setMetodoPagoEditado}
-                cuotasEditadas={cuotasEditadas}
-                setCuotasEditadas={setCuotasEditadas}
-                cerrarModalEditarGasto={cerrarModalEditarGasto}
-                guardarCambiosGasto={guardarCambiosGasto}
-            />
+            {modalEditar && (
+                <EditcategoriesModal
+                    nombreEditado={nombreEditado}
+                    setNombreEditado={setNombreEditado}
+                    descripcionEditada={descripcionEditada}
+                    setDescripcionEditada={setDescripcionEditada}
+                    cerrarModalEditar={cerrarModalEditar}
+                    guardarCambios={guardarCambios}
+                />
+            )}
 
-            {isDeleteExpenseModalOpen && (
-                <DeleteExpenseModal
-                    gasto={gastoEliminar}
-                    cerrarModal={cerrarModalEliminarGasto}
-                    eliminarGastoConfirmado={eliminarGastoConfirmado}
+            {modalAgregar && (
+                <AddCategoryModal
+                    nombre={nombreNuevo}
+                    setNombre={setNombreNuevo}
+                    descripcion={descripcionNueva}
+                    setDescripcion={setDescripcionNueva}
+                    cerrarModal={cerrarModalAgregar}
+                    guardarCategoria={guardarCategoria}
+                />
+            )}
+
+            {modalEliminar && (
+                <DeleteCategoryModal
+                    categoria={categoriaEliminar}
+                    cerrarModal={cerrarModalEliminar}
+                    eliminarCategoriaConfirmada={eliminarConfirmado}
                 />
             )}
         </div>

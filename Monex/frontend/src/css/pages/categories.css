@@ -62,6 +62,10 @@
     color: #9ca3af;
 }
 
+.input_Buscar:hover {
+    background-color: #d1d5db;
+}
+
 .btn_Agregar_Categoria {
     background-color: #45ad4d;
     color: white;
@@ -109,13 +113,15 @@
     font-weight: bold;
     color: #374151;
     text-align: center;
+    font-size: 15px;
 }
 
 .tabla_Categorias td {
-    padding: 16px 10px;
+    padding: 18px 10px;
     border-bottom: 1px solid #e5e7eb;
     color: #374151;
     font-weight: 500;
+    font-size: 15px;
     text-align: center;
 }
 
@@ -175,4 +181,53 @@
 
 .btn_eliminar:hover {
     background-color: #e06f6f;
+}
+
+/* PAGINACIÓN */
+.paginacion_Categorias {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 18px 12px 18px;
+    background-color: #eef0f2;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.paginacion_Categorias p {
+    margin: 0;
+}
+
+.botones_paginacion_Categorias {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.botones_paginacion_Categorias button {
+    height: 40px;
+    min-width: 46px;
+    padding: 0 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    background-color: #ffffff;
+    color: #374151;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.botones_paginacion_Categorias button:hover:not(:disabled) {
+    background-color: #f3f4f6;
+}
+
+.botones_paginacion_Categorias button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.botones_paginacion_Categorias .pagina_activa_Categorias {
+    background-color: #45ad4d;
+    color: white;
+    border-color: #45ad4d;
 }
