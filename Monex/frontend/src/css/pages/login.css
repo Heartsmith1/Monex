@@ -10,7 +10,7 @@
 .fondo_imagen {
   flex: 1;
   background-image: url("/src/assets/img/fondo_login.png");
-  background-size: cover;
+  background-size: cover; 
   background-position: center;
   background-repeat: no-repeat;
 }
