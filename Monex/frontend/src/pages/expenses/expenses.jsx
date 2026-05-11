@@ -17,6 +17,7 @@ export function Expenses() {
             const data = await obtenerGastos();
 
             console.log("Datos obtenidos:", data);
+
             setExpenses(Array.isArray(data) ? data : []);
             setError(null);
         } catch (err) {
@@ -30,6 +31,27 @@ export function Expenses() {
     useEffect(() => {
         fetchExpenses();
     }, []);
+
+    const formatPaymentMethod = (method) => {
+        if (!method) return "Sin método";
+
+        const methods = {
+            EFECTIVO: "Efectivo",
+            DEBITO: "Débito",
+            CREDITO: "Crédito"
+        };
+
+        return methods[method] || method;
+    };
+
+    const formatAmount = (amount) => {
+        if (amount === null || amount === undefined) return "$0";
+
+        return Number(amount).toLocaleString("es-CL", {
+            style: "currency",
+            currency: "CLP"
+        });
+    };
 
     const handleEdit = (id) => {
         console.log("Editar gasto con ID:", id);
@@ -48,9 +70,11 @@ export function Expenses() {
                     }
                 });
 
-                if (!res.ok) throw new Error("Error al eliminar el gasto");
+                if (!res.ok) {
+                    throw new Error("Error al eliminar el gasto");
+                }
 
-                setExpenses(expenses.filter(expense => expense.id !== id));
+                setExpenses(expenses.filter((expense) => expense.id !== id));
             } catch (err) {
                 console.error(err);
                 alert("Error al eliminar el gasto");
@@ -72,7 +96,7 @@ export function Expenses() {
                 />
 
                 <div className="layout_expenses">
-                    <form action="POST">
+                    <form>
                         <input
                             className="buscar_gasto_nombre"
                             type="text"
@@ -97,47 +121,69 @@ export function Expenses() {
                     {loading && <p>Cargando gastos...</p>}
                     {error && <p>{error}</p>}
 
-                    <table>
-                        <thead className="nav_tabla_gastos">
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Fecha de ingreso</th>
-                                <th>Método de pago</th>
-                                <th>Monto</th>
-                                <th>Cantidad</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-
-                        <tbody className="body_tabla_gastos">
-                            {expenses.map((expense) => (
-                                <tr key={expense.id}>
-                                    <td>{expense.name || expense.nombre || expense.description}</td>
-                                    <td>{expense.date || expense.fechaIngreso}</td>
-                                    <td>{expense.paymentMethod || expense.metodoPago || expense.payment_method}</td>
-                                    <td>{expense.amount || expense.monto}</td>
-                                    <td>{expense.quantity || expense.cantidad || expense.installments}</td>
-                                    <td>
-                                        <button
-                                            className="boton_editar_expenses"
-                                            onClick={() => handleEdit(expense.id)}
-                                        >
-                                            Editar
-                                        </button>
-
-                                        <button
-                                            className="boton_eliminar_expenses"
-                                            onClick={() => handleDelete(expense.id)}
-                                        >
-                                            Eliminar
-                                        </button>
-                                    </td>
+                    {!loading && !error && (
+                        <table>
+                            <thead className="nav_tabla_gastos">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Categoría</th>
+                                    <th>Fecha del gasto</th>
+                                    <th>Método de pago</th>
+                                    <th>Monto</th>
+                                    <th>Comisión</th>
+                                    <th>Cuotas</th>
+                                    <th>Acciones</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
 
+                            <tbody className="body_tabla_gastos">
+                                {expenses.length > 0 ? (
+                                    expenses.map((expense) => (
+                                        <tr key={expense.id}>
+                                            <td>{expense.name || "Sin nombre"}</td>
+
+                                            <td>
+                                                {expense.categoryName ||
+                                                    expense.category?.name ||
+                                                    `Categoría ${expense.categoryId}`}
+                                            </td>
+
+                                            <td>{expense.date || "Sin fecha"}</td>
+
+                                            <td>{formatPaymentMethod(expense.paymentMethod)}</td>
+
+                                            <td>{formatAmount(expense.amount)}</td>
+
+                                            <td>{formatAmount(expense.commission)}</td>
+
+                                            <td>{expense.installments || 1}</td>
+
+                                            <td>
+                                                <button
+                                                    className="boton_editar_expenses"
+                                                    onClick={() => handleEdit(expense.id)}
+                                                >
+                                                    Editar
+                                                </button>
+
+                                                <button
+                                                    className="boton_eliminar_expenses"
+                                                    onClick={() => handleDelete(expense.id)}
+                                                >
+                                                    Eliminar
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="8">No hay gastos registrados</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    )}
+                </div>
             </div>
         </div>
     );

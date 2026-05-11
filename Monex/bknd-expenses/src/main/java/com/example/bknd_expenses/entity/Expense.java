@@ -18,33 +18,42 @@ public class Expense {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Nombre del gasto
     @Column(nullable = false, length = 150)
-    private String description;
+    private String name;
 
-    // Idealmente viene desde el microservicio de categorías
+    // ID de la categoría seleccionada
     @Column(nullable = false)
     private Long categoryId;
 
+    // Nombre de la categoría seleccionada
+    @Column(nullable = false, length = 100)
+    private String categoryName;
+
+    // Fecha del gasto
     @Column(nullable = false)
     private LocalDate date;
 
+    // Monto del gasto
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
+    // Comisión asociada al gasto
+    @Column(nullable = false, precision = 10, scale = 2)
+    @Builder.Default
+    private BigDecimal commission = BigDecimal.ZERO;
+
+    // Método de pago
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private PaymentMethod paymentMethod;
 
-    // Por defecto 1 cuota. Efectivo y débito deberían usar 1.
+    // Cantidad de cuotas
     @Column(nullable = false)
     @Builder.Default
     private Integer installments = 1;
 
-    // Fecha desde la cual comienza el cálculo de cuotas
-    @Column(nullable = false)
-    private LocalDate startDate;
-
-    // ID del usuario autenticado obtenido desde el JWT
+    // ID del usuario autenticado
     @Column(nullable = false)
     private Long userId;
 }

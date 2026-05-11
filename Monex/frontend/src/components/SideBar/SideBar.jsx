@@ -75,7 +75,7 @@ export function SideBar(){
                     <img src={analisis} alt="Analisis" />
                 </button>
 
-                <button type="button" className="boton_est_mensual" onClick={() => navigate("/EstMensual")}>
+                <button type="button" className="boton_est_mensual" onClick={() => navigate("/est_monthly")}>
                     Est. Mensual
                     <img src={estMensual} alt="Est. Mensual" />
                 </button>

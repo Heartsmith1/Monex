@@ -15,6 +15,7 @@ import { Home } from './pages/home/Home';
 import { SideBar } from './components/SideBar/SideBar';
 import { Register } from './pages/Registro/Register';
 import { Expenses } from './pages/expenses/expenses';
+import { EstMensual } from './pages/est_monthly/est_monthly';
 import { Analisis } from './pages/analisis/analisis';
 
 function App() {
@@ -29,8 +30,8 @@ function App() {
           <Route path="/Register" element={<Register/>}/>
           <Route path="/categorias" element={<Categorias/>}/>
           <Route path="/Gastos" element={<Expenses/>}/>
+          <Route path="/est_monthly" element={<EstMensual/>}/>
           <Route path="/Analisis" element={<Analisis/>}/>
-          
         </Routes>
       </Router>
     </>
