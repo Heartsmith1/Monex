@@ -11,14 +11,14 @@
     border-radius: 10px;
     width: 700px;
     height: 300px;
-    color: #F3F4F6;
+    background-color: #F3F4F6;
     color: #374151;
 }
 
 
 .estimacion_pago{
     margin-top: 10px;
-    background: #D1D5DB;
+    background: #F3F4F6;
     padding: 40px;
     flex: 1;
     height: 220px;
@@ -28,7 +28,7 @@
 }
 
 .total_gastos{
-    background: #D1D5DB;
+    background: #F3F4F6;
     padding: 40px;
     flex: 1;
     height: 100px;
@@ -63,7 +63,7 @@
 
 .gastos_categoria{
     margin-top: 10px;
-    background: #D1D5DB;
+    background: #F3F4F6;
     padding: 40px;
     width: 500px;
     flex: 1;
@@ -95,6 +95,7 @@
     width: 100%;
     height: 220px;
     margin-top: 20px;
+    background-color: #ffffff;
 }
 
 .grafico_svg{
