@@ -19,6 +19,9 @@ export function Categorias() {
     const [busqueda, setBusqueda] = useState("");
     const [loading, setLoading] = useState(true);
 
+    const [paginaActual, setPaginaActual] = useState(1);
+    const categoriasPorPagina = 5;
+
     const [modalEditar, setModalEditar] = useState(false);
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
 
@@ -49,6 +52,10 @@ export function Categorias() {
     useEffect(() => {
         cargarCategorias();
     }, []);
+
+    useEffect(() => {
+        setPaginaActual(1);
+    }, [busqueda]);
 
     const abrirModalEditar = (categoria) => {
         setCategoriaSeleccionada(categoria);
@@ -142,6 +149,11 @@ export function Categorias() {
             .includes(busqueda.toLowerCase())
     );
 
+    const totalPaginas = Math.ceil(categoriasFiltradas.length / categoriasPorPagina);
+    const indiceInicial = (paginaActual - 1) * categoriasPorPagina;
+    const indiceFinal = indiceInicial + categoriasPorPagina;
+    const categoriasPaginadas = categoriasFiltradas.slice(indiceInicial, indiceFinal);
+
     return (
         <div className="contenedor_Home">
             <SideBar />
@@ -187,43 +199,83 @@ export function Categorias() {
                         ) : categoriasFiltradas.length === 0 ? (
                             <p className="mensaje_Sin_Categorias">No se encontraron resultados</p>
                         ) : (
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Nombre de categoría</th>
-                                        <th>Descripción de categoría</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    {categoriasFiltradas.map((categoria) => (
-                                        <tr key={categoria.id}>
-                                            <td>{categoria.name || categoria.nombre || "Sin nombre"}</td>
-                                            <td>
-                                                {categoria.description ||
-                                                    categoria.descripcion ||
-                                                    "Sin descripción"}
-                                            </td>
-                                            <td>
-                                                <button
-                                                    className="btn_editar"
-                                                    onClick={() => abrirModalEditar(categoria)}
-                                                >
-                                                    Editar
-                                                </button>
-
-                                                <button
-                                                    className="btn_eliminar"
-                                                    onClick={() => abrirModalEliminar(categoria)}
-                                                >
-                                                    Eliminar
-                                                </button>
-                                            </td>
+                            <>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre de categoría</th>
+                                            <th>Descripción de categoría</th>
+                                            <th>Acciones</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+
+                                    <tbody>
+                                        {categoriasPaginadas.map((categoria) => (
+                                            <tr key={categoria.id}>
+                                                <td>{categoria.name || categoria.nombre || "Sin nombre"}</td>
+                                                <td>
+                                                    {categoria.description ||
+                                                        categoria.descripcion ||
+                                                        "Sin descripción"}
+                                                </td>
+                                                <td>
+                                                    <button
+                                                        className="btn_editar"
+                                                        onClick={() => abrirModalEditar(categoria)}
+                                                    >
+                                                        Editar
+                                                    </button>
+
+                                                    <button
+                                                        className="btn_eliminar"
+                                                        onClick={() => abrirModalEliminar(categoria)}
+                                                    >
+                                                        Eliminar
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+
+                                <div className="paginacion_Categorias">
+                                    <p>
+                                        Mostrando {indiceInicial + 1} a{" "}
+                                        {Math.min(indiceFinal, categoriasFiltradas.length)} de{" "}
+                                        {categoriasFiltradas.length} categorías
+                                    </p>
+
+                                    <div className="botones_paginacion_Categorias">
+                                        <button
+                                            disabled={paginaActual === 1}
+                                            onClick={() => setPaginaActual(paginaActual - 1)}
+                                        >
+                                            ← Anterior
+                                        </button>
+
+                                        {Array.from({ length: totalPaginas }, (_, index) => (
+                                            <button
+                                                key={index + 1}
+                                                className={
+                                                    paginaActual === index + 1
+                                                        ? "pagina_activa_Categorias"
+                                                        : ""
+                                                }
+                                                onClick={() => setPaginaActual(index + 1)}
+                                            >
+                                                {index + 1}
+                                            </button>
+                                        ))}
+
+                                        <button
+                                            disabled={paginaActual === totalPaginas}
+                                            onClick={() => setPaginaActual(paginaActual + 1)}
+                                        >
+                                            Siguiente →
+                                        </button>
+                                    </div>
+                                </div>
+                            </>
                         )}
                     </div>
                 </div>

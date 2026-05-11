@@ -1,234 +1,315 @@
 import { useEffect, useState } from "react";
 import { SideBar } from "../../components/SideBar/SideBar";
 import { Navbar } from "../../components/Navbar/Navbar";
+import { EditcategoriesModal } from "../../components/Modal/EditcategoriesModal";
+import { AddCategoryModal } from "../../components/Modal/AddCategoryModal";
+import { DeleteCategoryModal } from "../../components/Modal/DeleteCategoryModal";
 import AddExpenseModal from "../../components/Modal/AddExpenseModal";
-import { obtenerGastos } from "../../services/expensesService";
+import lupa from "../../assets/icon/material-symbols_search.png";
+import {
+    obtenerCategorias,
+    editarCategoria,
+    crearCategoria,
+    eliminarCategoria,
+} from "../../services/categoriesService";
+import "../../css/pages/categories.css";
 
-export function Expenses() {
-    const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
-    const [expenses, setExpenses] = useState([]);
+export function Categorias() {
+    const [categorias, setCategorias] = useState([]);
+    const [busqueda, setBusqueda] = useState("");
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
-    const fetchExpenses = async () => {
+    const [paginaActual, setPaginaActual] = useState(1);
+    const categoriasPorPagina = 5;
+
+    const [modalEditar, setModalEditar] = useState(false);
+    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+
+    const [nombreEditado, setNombreEditado] = useState("");
+    const [descripcionEditada, setDescripcionEditada] = useState("");
+
+    const [modalAgregar, setModalAgregar] = useState(false);
+    const [nombreNuevo, setNombreNuevo] = useState("");
+    const [descripcionNueva, setDescripcionNueva] = useState("");
+
+    const [modalEliminar, setModalEliminar] = useState(false);
+    const [categoriaEliminar, setCategoriaEliminar] = useState(null);
+
+    const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+
+    const cargarCategorias = async () => {
         try {
             setLoading(true);
-
-            const data = await obtenerGastos();
-
-            console.log("Datos obtenidos:", data);
-
-            setExpenses(Array.isArray(data) ? data : []);
-            setError(null);
-        } catch (err) {
-            console.error("Error:", err);
-            setError(err.message);
+            const data = await obtenerCategorias();
+            setCategorias(data);
+        } catch (error) {
+            console.error("Error al cargar categorías:", error);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchExpenses();
+        cargarCategorias();
     }, []);
 
-    const formatPaymentMethod = (method) => {
-        if (!method) return "Sin método";
+    useEffect(() => {
+        setPaginaActual(1);
+    }, [busqueda]);
 
-        const methods = {
-            EFECTIVO: "Efectivo",
-            DEBITO: "Débito",
-            CREDITO: "Crédito"
-        };
-
-        return methods[method] || method;
+    const abrirModalEditar = (categoria) => {
+        setCategoriaSeleccionada(categoria);
+        setNombreEditado(categoria.name || categoria.nombre || "");
+        setDescripcionEditada(categoria.description || categoria.descripcion || "");
+        setModalEditar(true);
     };
 
-    const formatAmount = (amount) => {
-        if (amount === null || amount === undefined) return "$0";
-
-        return Number(amount).toLocaleString("es-CL", {
-            style: "currency",
-            currency: "CLP"
-        });
+    const cerrarModalEditar = () => {
+        setModalEditar(false);
+        setCategoriaSeleccionada(null);
+        setNombreEditado("");
+        setDescripcionEditada("");
     };
 
-    const parseIsoDate = (isoDate) => {
-        if (!isoDate) return null;
-
-        if (isoDate instanceof Date) {
-            return Number.isNaN(isoDate.getTime()) ? null : isoDate;
-        }
-
-        if (typeof isoDate !== "string") return null;
-
-        const datePart = isoDate.slice(0, 10);
-        const [year, month, day] = datePart.split("-").map(Number);
-
-        if (!year || !month || !day) return null;
-
-        const parsed = new Date(year, month - 1, day);
-        return Number.isNaN(parsed.getTime()) ? null : parsed;
-    };
-
-    const getPendingInstallments = (expense) => {
-        const totalInstallments = Math.max(1, Number(expense?.installments) || 1);
-
-        if (expense?.paymentMethod !== "CREDITO") {
-            return totalInstallments;
-        }
-
-        const expenseDate = parseIsoDate(expense?.date);
-        if (!expenseDate) return totalInstallments;
-
-        const startMonth = new Date(expenseDate.getFullYear(), expenseDate.getMonth(), 1);
-        const now = new Date();
-        const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-
-        const elapsedMonths =
-            (currentMonthStart.getFullYear() - startMonth.getFullYear()) * 12 +
-            (currentMonthStart.getMonth() - startMonth.getMonth());
-
-        const paidInstallments = elapsedMonths <= 0 ? 0 : Math.min(totalInstallments, elapsedMonths);
-        return Math.max(0, totalInstallments - paidInstallments);
-    };
-
-    const handleEdit = (id) => {
-        console.log("Editar gasto con ID:", id);
-    };
-
-    const handleDelete = async (id) => {
-        if (window.confirm("¿Estás seguro de que deseas eliminar este gasto?")) {
-            try {
-                const token = localStorage.getItem("token");
-
-                const res = await fetch(`http://localhost:8083/api/expenses/${id}`, {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
-                    }
-                });
-
-                if (!res.ok) {
-                    throw new Error("Error al eliminar el gasto");
-                }
-
-                setExpenses(expenses.filter((expense) => expense.id !== id));
-            } catch (err) {
-                console.error(err);
-                alert("Error al eliminar el gasto");
+    const guardarCambios = async () => {
+        try {
+            if (!nombreEditado.trim()) {
+                alert("El nombre de la categoría no puede estar vacío");
+                return;
             }
+
+            await editarCategoria(
+                categoriaSeleccionada.id,
+                nombreEditado,
+                descripcionEditada
+            );
+
+            cerrarModalEditar();
+            cargarCategorias();
+        } catch (error) {
+            console.error("Error al editar categoría:", error);
+            alert("Error al editar categoría");
         }
     };
+
+    const abrirModalAgregar = () => {
+        setNombreNuevo("");
+        setDescripcionNueva("");
+        setModalAgregar(true);
+    };
+
+    const cerrarModalAgregar = () => {
+        setModalAgregar(false);
+        setNombreNuevo("");
+        setDescripcionNueva("");
+    };
+
+    const guardarCategoria = async () => {
+        try {
+            if (!nombreNuevo.trim()) {
+                alert("El nombre de la categoría no puede estar vacío");
+                return;
+            }
+
+            await crearCategoria(nombreNuevo, descripcionNueva);
+
+            cerrarModalAgregar();
+            cargarCategorias();
+        } catch (error) {
+            console.error("Error al crear categoría:", error);
+            alert("Error al crear categoría");
+        }
+    };
+
+    const abrirModalEliminar = (categoria) => {
+        setCategoriaEliminar(categoria);
+        setModalEliminar(true);
+    };
+
+    const cerrarModalEliminar = () => {
+        setModalEliminar(false);
+        setCategoriaEliminar(null);
+    };
+
+    const eliminarConfirmado = async (id) => {
+        try {
+            await eliminarCategoria(id);
+
+            cerrarModalEliminar();
+            cargarCategorias();
+        } catch (error) {
+            console.error("Error al eliminar categoría:", error);
+            alert("Error al eliminar categoría");
+        }
+    };
+
+    const categoriasFiltradas = categorias.filter((categoria) =>
+        (categoria.name || categoria.nombre || "")
+            .toLowerCase()
+            .includes(busqueda.toLowerCase())
+    );
+
+    const totalPaginas = Math.ceil(categoriasFiltradas.length / categoriasPorPagina);
+    const indiceInicial = (paginaActual - 1) * categoriasPorPagina;
+    const indiceFinal = indiceInicial + categoriasPorPagina;
+    const categoriasPaginadas = categoriasFiltradas.slice(indiceInicial, indiceFinal);
 
     return (
-        <div className="contenedor_expenses">
+        <div className="contenedor_Home">
             <SideBar />
 
-            <div className="contenido_expenses">
+            <div className="contenido_Home">
                 <Navbar onOpenExpenseModal={() => setIsExpenseModalOpen(true)} />
 
                 <AddExpenseModal
                     isOpen={isExpenseModalOpen}
                     onClose={() => setIsExpenseModalOpen(false)}
-                    onExpenseCreated={fetchExpenses}
                 />
 
-                <div className="layout_expenses">
-                    <form>
-                        <input
-                            className="buscar_gasto_nombre"
-                            type="text"
-                            placeholder="Buscar gasto por nombre"
-                        />
+                <div className="contenido_Categorias">
+                    <h1>Categoría</h1>
+                    <p>Organiza y gestiona las categorías de tus gastos</p>
 
-                        <input
-                            className="buscar_gasto_fecha"
-                            type="text"
-                            placeholder="Fecha: 01/03/2026 - 30/04/2026"
-                        />
+                    <div className="barra_Categorias">
+                        <div className="input_con_icono">
+                            <img src={lupa} alt="buscar" className="icono_buscar" />
 
-                        <input
-                            className="select_gasto"
-                            type="text"
-                            placeholder="Todas las categorías"
-                        />
-                    </form>
-                </div>
+                            <input
+                                type="text"
+                                placeholder="Buscar categoría..."
+                                className="input_Buscar"
+                                value={busqueda}
+                                onChange={(e) => setBusqueda(e.target.value)}
+                            />
+                        </div>
 
-                <div className="tabla_expenses">
-                    {loading && <p>Cargando gastos...</p>}
-                    {error && <p>{error}</p>}
+                        <button
+                            className="btn_Agregar_Categoria"
+                            onClick={abrirModalAgregar}
+                        >
+                            + Agregar Categoría
+                        </button>
+                    </div>
 
-                    {!loading && !error && (
-                        <table>
-                            <thead className="nav_tabla_gastos">
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Categoría</th>
-                                    <th>Fecha del gasto</th>
-                                    <th>Método de pago</th>
-                                    <th>Monto</th>
-                                    <th>Comisión</th>
-                                    <th>Cuotas</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-
-                            <tbody className="body_tabla_gastos">
-                                {expenses.length > 0 ? (
-                                    expenses.map((expense) => (
-                                        <tr key={expense.id}>
-                                            <td>{expense.name || "Sin nombre"}</td>
-
-                                            <td>
-                                                {expense.categoryName ||
-                                                    expense.category?.name ||
-                                                    `Categoría ${expense.categoryId}`}
-                                            </td>
-
-                                            <td>{expense.date || "Sin fecha"}</td>
-
-                                            <td>{formatPaymentMethod(expense.paymentMethod)}</td>
-
-                                            <td>{formatAmount(expense.amount)}</td>
-
-                                            <td>{formatAmount(expense.commission)}</td>
-
-                                            <td>
-                                                {expense.paymentMethod === "CREDITO"
-                                                    ? getPendingInstallments(expense)
-                                                    : (expense.installments || 1)}
-                                            </td>
-
-                                            <td>
-                                                <button
-                                                    className="boton_editar_expenses"
-                                                    onClick={() => handleEdit(expense.id)}
-                                                >
-                                                    Editar
-                                                </button>
-
-                                                <button
-                                                    className="boton_eliminar_expenses"
-                                                    onClick={() => handleDelete(expense.id)}
-                                                >
-                                                    Eliminar
-                                                </button>
-                                            </td>
+                    <div className="tabla_Categorias">
+                        {loading ? (
+                            <p className="mensaje_Sin_Categorias">Cargando categorías...</p>
+                        ) : categorias.length === 0 ? (
+                            <p className="mensaje_Sin_Categorias">No hay categorías registradas</p>
+                        ) : categoriasFiltradas.length === 0 ? (
+                            <p className="mensaje_Sin_Categorias">No se encontraron resultados</p>
+                        ) : (
+                            <>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre de categoría</th>
+                                            <th>Descripción de categoría</th>
+                                            <th>Acciones</th>
                                         </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="8">No hay gastos registrados</td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    )}
+                                    </thead>
+
+                                    <tbody>
+                                        {categoriasPaginadas.map((categoria) => (
+                                            <tr key={categoria.id}>
+                                                <td>{categoria.name || categoria.nombre || "Sin nombre"}</td>
+                                                <td>
+                                                    {categoria.description ||
+                                                        categoria.descripcion ||
+                                                        "Sin descripción"}
+                                                </td>
+                                                <td>
+                                                    <button
+                                                        className="btn_editar"
+                                                        onClick={() => abrirModalEditar(categoria)}
+                                                    >
+                                                        Editar
+                                                    </button>
+
+                                                    <button
+                                                        className="btn_eliminar"
+                                                        onClick={() => abrirModalEliminar(categoria)}
+                                                    >
+                                                        Eliminar
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+
+                                <div className="paginacion_Categorias">
+                                    <p>
+                                        Mostrando {indiceInicial + 1} a{" "}
+                                        {Math.min(indiceFinal, categoriasFiltradas.length)} de{" "}
+                                        {categoriasFiltradas.length} categorías
+                                    </p>
+
+                                    <div className="botones_paginacion_Categorias">
+                                        <button
+                                            disabled={paginaActual === 1}
+                                            onClick={() => setPaginaActual(paginaActual - 1)}
+                                        >
+                                            ← Anterior
+                                        </button>
+
+                                        {Array.from({ length: totalPaginas }, (_, index) => (
+                                            <button
+                                                key={index + 1}
+                                                className={
+                                                    paginaActual === index + 1
+                                                        ? "pagina_activa_Categorias"
+                                                        : ""
+                                                }
+                                                onClick={() => setPaginaActual(index + 1)}
+                                            >
+                                                {index + 1}
+                                            </button>
+                                        ))}
+
+                                        <button
+                                            disabled={paginaActual === totalPaginas}
+                                            onClick={() => setPaginaActual(paginaActual + 1)}
+                                        >
+                                            Siguiente →
+                                        </button>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
+
+            {modalEditar && (
+                <EditcategoriesModal
+                    nombreEditado={nombreEditado}
+                    setNombreEditado={setNombreEditado}
+                    descripcionEditada={descripcionEditada}
+                    setDescripcionEditada={setDescripcionEditada}
+                    cerrarModalEditar={cerrarModalEditar}
+                    guardarCambios={guardarCambios}
+                />
+            )}
+
+            {modalAgregar && (
+                <AddCategoryModal
+                    nombre={nombreNuevo}
+                    setNombre={setNombreNuevo}
+                    descripcion={descripcionNueva}
+                    setDescripcion={setDescripcionNueva}
+                    cerrarModal={cerrarModalAgregar}
+                    guardarCategoria={guardarCategoria}
+                />
+            )}
+
+            {modalEliminar && (
+                <DeleteCategoryModal
+                    categoria={categoriaEliminar}
+                    cerrarModal={cerrarModalEliminar}
+                    eliminarCategoriaConfirmada={eliminarConfirmado}
+                />
+            )}
         </div>
     );
 }
