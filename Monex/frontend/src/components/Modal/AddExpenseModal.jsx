@@ -1,42 +1,67 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../../css/components/AddExpenseModal.css";
 import { crearGasto } from "../../services/expensesService";
+import { obtenerCategorias } from "../../services/categoriesService";
 
 function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
 
     const [nombre, setNombre] = useState("");
-    const [cantidad, setCantidad] = useState("");
-    const [descripcion, setDescripcion] = useState("");
     const [categoria, setCategoria] = useState("");
     const [monto, setMonto] = useState("");
+    const [comision, setComision] = useState("");
     const [fechaIngreso, setFechaIngreso] = useState("");
-    const [metodoPago, setMetodoPago] = useState("");
+    const [metodoPago, setMetodoPago] = useState("EFECTIVO");
+    const [cantidadCuotas, setCantidadCuotas] = useState("1");
+
+    const [categorias, setCategorias] = useState([]);
+
+    useEffect(() => {
+        const cargarCategorias = async () => {
+            try {
+                const data = await obtenerCategorias();
+                setCategorias(data);
+            } catch (error) {
+                console.error("Error al cargar categorías:", error);
+            }
+        };
+
+        if (isOpen) {
+            cargarCategorias();
+        }
+    }, [isOpen]);
 
     if (!isOpen) return null;
 
     const limpiarFormulario = () => {
         setNombre("");
-        setCantidad("");
-        setDescripcion("");
         setCategoria("");
         setMonto("");
+        setComision("");
         setFechaIngreso("");
-        setMetodoPago("");
+        setMetodoPago("EFECTIVO");
+        setCantidadCuotas("1");
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
+            const categoriaSeleccionada = categorias.find(
+                (cat) => Number(cat.id) === Number(categoria)
+            );
+
             const nuevoGasto = {
                 name: nombre,
-                quantity: cantidad,
-                description: descripcion,
-                categoryId: categoria,
-                amount: monto,
+                categoryId: Number(categoria),
+                categoryName: categoriaSeleccionada?.name || categoriaSeleccionada?.nombre || "",
+                amount: Number(monto),
+                commission: Number(comision || 0),
                 date: fechaIngreso,
-                paymentMethod: metodoPago
+                paymentMethod: metodoPago,
+                installments: Number(cantidadCuotas)
             };
+
+            console.log("Gasto enviado:", nuevoGasto);
 
             await crearGasto(nuevoGasto);
 
@@ -47,6 +72,7 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
             }
 
             onClose();
+
         } catch (error) {
             console.error("Error al guardar gasto:", error);
             alert("Error al guardar gasto");
@@ -55,69 +81,52 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
 
     return (
         <div className="expense-modal-overlay">
+
             <div className="expense-modal-container">
 
-                <button className="expense-modal-close" onClick={onClose}>
+                <button
+                    type="button"
+                    className="expense-modal-close"
+                    onClick={onClose}
+                >
                     X
                 </button>
 
-                <h2 className="expense-modal-title">Registrar gasto</h2>
+                <h2 className="expense-modal-title">
+                    Registrar gasto
+                </h2>
 
-                <form className="expense-modal-form" onSubmit={handleSubmit}>
+                <form
+                    className="expense-modal-form"
+                    onSubmit={handleSubmit}
+                >
 
                     <div className="expense-modal-row">
 
                         <div className="expense-modal-group">
                             <label>Nombre</label>
+
                             <input
                                 type="text"
-                                placeholder="Ej: Almuerzo"
+                                placeholder="Ej: Desayuno"
                                 value={nombre}
                                 onChange={(e) => setNombre(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="expense-modal-group">
-                            <label>Cantidad</label>
-                            <input
-                                type="text"
-                                placeholder="Ej: 3"
-                                value={cantidad}
-                                onChange={(e) => setCantidad(e.target.value)}
-                            />
-                        </div>
-
-                    </div>
-
-                    <div className="expense-modal-group">
-                        <label>Descripción</label>
-                        <input
-                            type="text"
-                            placeholder="Ej: Descripción del gasto"
-                            value={descripcion}
-                            onChange={(e) => setDescripcion(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="expense-modal-row">
-
-                        <div className="expense-modal-group">
-                            <label>Categoría</label>
-                            <input
-                                type="text"
-                                placeholder="Ej: Alimentación"
-                                value={categoria}
-                                onChange={(e) => setCategoria(e.target.value)}
+                                required
                             />
                         </div>
 
                         <div className="expense-modal-group">
                             <label>Monto</label>
+
                             <input
                                 type="text"
-                                placeholder="Ej: $20,000"
+                                placeholder="Ej: 20000"
                                 value={monto}
-                                onChange={(e) => setMonto(e.target.value)}
+                                onChange={(e) => {
+                                    const value = e.target.value.replace(/\D/g, "");
+                                    setMonto(value);
+                                }}
+                                required
                             />
                         </div>
 
@@ -126,22 +135,104 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
                     <div className="expense-modal-row">
 
                         <div className="expense-modal-group">
-                            <label>Fecha ingreso</label>
+                            <label>Comisión</label>
+
                             <input
                                 type="text"
-                                placeholder="Ej: 04/03/2026"
-                                value={fechaIngreso}
-                                onChange={(e) => setFechaIngreso(e.target.value)}
+                                placeholder="Ej: 500.50"
+                                value={comision}
+                                onChange={(e) => {
+                                    let value = e.target.value;
+
+                                    value = value.replace(/[^0-9.]/g, "");
+
+                                    const parts = value.split(".");
+
+                                    if (parts.length > 2) {
+                                        value = parts[0] + "." + parts.slice(1).join("");
+                                    }
+
+                                    setComision(value);
+                                }}
                             />
                         </div>
 
                         <div className="expense-modal-group">
+                            <label>Categoría</label>
+
+                            <select
+                                value={categoria}
+                                onChange={(e) => setCategoria(e.target.value)}
+                                required
+                            >
+                                <option value="">
+                                    Seleccione una categoría
+                                </option>
+
+                                {categorias.map((cat) => (
+                                    <option
+                                        key={cat.id}
+                                        value={cat.id}
+                                    >
+                                        {cat.name || cat.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div className="expense-modal-row">
+
+                        <div className="expense-modal-group">
                             <label>Método de pago</label>
-                            <input
-                                type="text"
-                                placeholder="Ej: Efectivo"
+
+                            <select
                                 value={metodoPago}
                                 onChange={(e) => setMetodoPago(e.target.value)}
+                                required
+                            >
+                                <option value="EFECTIVO">
+                                    Efectivo
+                                </option>
+
+                                <option value="DEBITO">
+                                    Débito
+                                </option>
+
+                                <option value="CREDITO">
+                                    Crédito
+                                </option>
+                            </select>
+                        </div>
+
+                        <div className="expense-modal-group">
+                            <label>Fecha del gasto</label>
+
+                            <input
+                                type="date"
+                                value={fechaIngreso}
+                                onChange={(e) => setFechaIngreso(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                    </div>
+
+                    <div className="expense-modal-row">
+
+                        <div className="expense-modal-group">
+                            <label>Cantidad de cuotas</label>
+
+                            <input
+                                type="text"
+                                placeholder="Ej: 1"
+                                value={cantidadCuotas}
+                                onChange={(e) => {
+                                    const value = e.target.value.replace(/\D/g, "");
+                                    setCantidadCuotas(value);
+                                }}
+                                required
                             />
                         </div>
 

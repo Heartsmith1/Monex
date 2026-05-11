@@ -12,26 +12,31 @@ import java.time.LocalDate;
 @Builder
 public class ExpenseRequest {
 
-    @NotBlank(message = "La descripción es obligatoria")
-    @Size(max = 150, message = "La descripción no puede superar los 150 caracteres")
-    private String description;
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(max = 150, message = "El nombre no puede superar los 150 caracteres")
+    private String name;
 
     @NotNull(message = "La categoría es obligatoria")
     private Long categoryId;
 
+    @NotBlank(message = "El nombre de la categoría es obligatorio")
+    private String categoryName;
+
     @NotNull(message = "La fecha es obligatoria")
     private LocalDate date;
-
-    // Opcional: si no viene, se usa date en el service
-    private LocalDate startDate;
 
     @NotNull(message = "El monto es obligatorio")
     @DecimalMin(value = "0.01", message = "El monto debe ser mayor a 0")
     private BigDecimal amount;
 
-    @NotBlank(message = "El medio de pago es obligatorio")
+    @DecimalMin(value = "0.00", message = "La comisión no puede ser negativa")
+    @Builder.Default
+    private BigDecimal commission = BigDecimal.ZERO;
+
+    @NotBlank(message = "El método de pago es obligatorio")
     private String paymentMethod;
 
-    // Opcional → el service decide si es 1 o más
-    private Integer installments;
+    @Min(value = 1, message = "Las cuotas deben ser mínimo 1")
+    @Builder.Default
+    private Integer installments = 1;
 }

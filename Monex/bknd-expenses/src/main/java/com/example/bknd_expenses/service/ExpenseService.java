@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -28,11 +29,12 @@ public class ExpenseService {
         Integer installments = normalizeInstallments(paymentMethod, request.getInstallments());
 
         Expense expense = Expense.builder()
-                .description(request.getDescription().trim())
+                .name(request.getName().trim())
                 .categoryId(request.getCategoryId())
+                .categoryName(request.getCategoryName().trim())
                 .date(request.getDate())
-                .startDate(request.getStartDate() != null ? request.getStartDate() : request.getDate())
                 .amount(request.getAmount())
+                .commission(normalizeCommission(request.getCommission()))
                 .paymentMethod(paymentMethod)
                 .installments(installments)
                 .userId(userId)
@@ -49,8 +51,7 @@ public class ExpenseService {
     }
 
     public ExpenseResponse getExpenseById(Long id, Long userId) {
-        Expense expense = getExpenseOwnedByUser(id, userId);
-        return mapToResponse(expense);
+        return mapToResponse(getExpenseOwnedByUser(id, userId));
     }
 
     public List<ExpenseResponse> getExpensesByPaymentMethod(Long userId, String paymentMethod) {
@@ -70,13 +71,7 @@ public class ExpenseService {
     }
 
     public List<ExpenseResponse> getExpensesByDateRange(Long userId, LocalDate startDate, LocalDate endDate) {
-        if (startDate == null || endDate == null) {
-            throw new IllegalArgumentException("La fecha de inicio y término son obligatorias");
-        }
-
-        if (startDate.isAfter(endDate)) {
-            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha de término");
-        }
+        validateDateRange(startDate, endDate);
 
         return expenseRepository.findByUserIdAndDateBetween(userId, startDate, endDate)
                 .stream()
@@ -99,8 +94,8 @@ public class ExpenseService {
             throw new IllegalArgumentException("Debe enviar fecha de inicio y fecha de término");
         }
 
-        if (hasDates && startDate.isAfter(endDate)) {
-            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha de término");
+        if (hasDates) {
+            validateDateRange(startDate, endDate);
         }
 
         PaymentMethod method = hasPaymentMethod ? normalizePaymentMethod(paymentMethod) : null;
@@ -142,11 +137,12 @@ public class ExpenseService {
         PaymentMethod paymentMethod = normalizePaymentMethod(request.getPaymentMethod());
         Integer installments = normalizeInstallments(paymentMethod, request.getInstallments());
 
-        expense.setDescription(request.getDescription().trim());
+        expense.setName(request.getName().trim());
         expense.setCategoryId(request.getCategoryId());
+        expense.setCategoryName(request.getCategoryName().trim());
         expense.setDate(request.getDate());
-        expense.setStartDate(request.getStartDate() != null ? request.getStartDate() : request.getDate());
         expense.setAmount(request.getAmount());
+        expense.setCommission(normalizeCommission(request.getCommission()));
         expense.setPaymentMethod(paymentMethod);
         expense.setInstallments(installments);
 
@@ -193,12 +189,16 @@ public class ExpenseService {
     }
 
     private void validateRequest(ExpenseRequest request) {
-        if (request.getDescription() == null || request.getDescription().isBlank()) {
-            throw new IllegalArgumentException("La descripción es obligatoria");
+        if (request.getName() == null || request.getName().isBlank()) {
+            throw new IllegalArgumentException("El nombre es obligatorio");
         }
 
         if (request.getCategoryId() == null) {
             throw new IllegalArgumentException("La categoría es obligatoria");
+        }
+
+        if (request.getCategoryName() == null || request.getCategoryName().isBlank()) {
+            throw new IllegalArgumentException("El nombre de la categoría es obligatorio");
         }
 
         if (request.getDate() == null) {
@@ -209,22 +209,38 @@ public class ExpenseService {
             throw new IllegalArgumentException("El monto debe ser mayor a 0");
         }
 
+        if (request.getCommission() != null && request.getCommission().compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("La comisión no puede ser negativa");
+        }
+
         if (request.getPaymentMethod() == null || request.getPaymentMethod().isBlank()) {
-            throw new IllegalArgumentException("El medio de pago es obligatorio");
+            throw new IllegalArgumentException("El método de pago es obligatorio");
+        }
+    }
+
+    private void validateDateRange(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null || endDate == null) {
+            throw new IllegalArgumentException("La fecha de inicio y término son obligatorias");
+        }
+
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha de término");
         }
     }
 
     private PaymentMethod normalizePaymentMethod(String paymentMethod) {
-        if (paymentMethod == null) {
-            throw new IllegalArgumentException("El medio de pago es obligatorio");
+        if (paymentMethod == null || paymentMethod.isBlank()) {
+            throw new IllegalArgumentException("El método de pago es obligatorio");
         }
 
-        String normalized = paymentMethod.trim().toUpperCase();
+        String normalized = Normalizer.normalize(paymentMethod.trim(), Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .toUpperCase();
 
         try {
             return PaymentMethod.valueOf(normalized);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Medio de pago inválido. Use: EFECTIVO, DEBITO o CREDITO");
+            throw new IllegalArgumentException("Método de pago inválido. Use: EFECTIVO, DEBITO o CREDITO");
         }
     }
 
@@ -240,8 +256,12 @@ public class ExpenseService {
         return installments;
     }
 
+    private BigDecimal normalizeCommission(BigDecimal commission) {
+        return commission != null ? commission : BigDecimal.ZERO;
+    }
+
     private boolean isInstallmentActiveInMonth(Expense expense, YearMonth targetMonth) {
-        LocalDate startDate = expense.getStartDate() != null ? expense.getStartDate() : expense.getDate();
+        LocalDate startDate = expense.getDate();
 
         if (startDate == null || expense.getInstallments() == null) {
             return false;
@@ -254,11 +274,15 @@ public class ExpenseService {
     }
 
     private BigDecimal calculateMonthlyInstallmentAmount(Expense expense) {
+        BigDecimal totalAmount = expense.getAmount().add(
+                expense.getCommission() != null ? expense.getCommission() : BigDecimal.ZERO
+        );
+
         if (expense.getInstallments() == null || expense.getInstallments() <= 1) {
-            return expense.getAmount();
+            return totalAmount;
         }
 
-        return expense.getAmount().divide(
+        return totalAmount.divide(
                 BigDecimal.valueOf(expense.getInstallments()),
                 2,
                 RoundingMode.HALF_UP
@@ -268,11 +292,12 @@ public class ExpenseService {
     private ExpenseResponse mapToResponse(Expense expense) {
         return ExpenseResponse.builder()
                 .id(expense.getId())
-                .description(expense.getDescription())
+                .name(expense.getName())
                 .categoryId(expense.getCategoryId())
+                .categoryName(expense.getCategoryName())
                 .date(expense.getDate())
-                .startDate(expense.getStartDate())
                 .amount(expense.getAmount())
+                .commission(expense.getCommission())
                 .paymentMethod(expense.getPaymentMethod())
                 .installments(expense.getInstallments())
                 .userId(expense.getUserId())

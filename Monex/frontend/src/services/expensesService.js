@@ -13,7 +13,12 @@ export const crearGasto = async (gasto) => {
     });
 
     if (!response.ok) {
-        throw new Error("Error al crear gasto");
+        const errorText = await response.text();
+
+        console.error("Error backend:", errorText);
+        console.error("Status:", response.status);
+
+        throw new Error(errorText || "Error al crear gasto");
     }
 
     return await response.json();
@@ -30,7 +35,12 @@ export const obtenerGastos = async () => {
     });
 
     if (!response.ok) {
-        throw new Error("Error al obtener gastos");
+        const errorText = await response.text();
+
+        console.error("Error backend:", errorText);
+        console.error("Status:", response.status);
+
+        throw new Error(errorText || "Error al obtener gastos");
     }
 
     return await response.json();
