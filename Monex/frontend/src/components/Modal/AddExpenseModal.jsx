@@ -6,9 +6,9 @@ import { obtenerCategorias } from "../../services/categoriesService";
 function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
 
     const [nombre, setNombre] = useState("");
-    const [categoria, setCategoria] = useState("");
+    const [categoria, setCategoria] = useState(""); //n
     const [monto, setMonto] = useState("");
-    const [comision, setComision] = useState("");
+    const [comision, setComision] = useState("0");
     const [fechaIngreso, setFechaIngreso] = useState("");
     const [metodoPago, setMetodoPago] = useState("EFECTIVO");
     const [cantidadCuotas, setCantidadCuotas] = useState("1");
@@ -36,7 +36,7 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
         setNombre("");
         setCategoria("");
         setMonto("");
-        setComision("");
+        setComision("0");
         setFechaIngreso("");
         setMetodoPago("EFECTIVO");
         setCantidadCuotas("1");
@@ -58,11 +58,14 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
                 name: nombre,
                 categoryId: Number(categoria),
                 categoryName: categoriaSeleccionada?.name || categoriaSeleccionada?.nombre || "",
-                amount: montoParsed,
-                commission: comisionCalculada,
+                amount: Number(monto),
+                commission: Number(comision || 0),
                 date: fechaIngreso,
                 paymentMethod: metodoPago,
-                installments: Number(cantidadCuotas)
+                installments:
+                    metodoPago === "CREDITO"
+                        ? Number(cantidadCuotas || 1)
+                        : 1
             };
 
             console.log("Gasto enviado:", nuevoGasto);
@@ -85,7 +88,6 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
 
     return (
         <div className="expense-modal-overlay">
-
             <div className="expense-modal-container">
 
                 <button
@@ -104,9 +106,7 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
                     className="expense-modal-form"
                     onSubmit={handleSubmit}
                 >
-
                     <div className="expense-modal-row">
-
                         <div className="expense-modal-group">
                             <label>Nombre</label>
 
@@ -133,7 +133,6 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
                                 required
                             />
                         </div>
-
                     </div>
 
                     <div className="expense-modal-row">
@@ -143,7 +142,7 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
 
                             <input
                                 type="text"
-                                placeholder="Ej: 0.5%"
+                                placeholder="Ej: 500.50"
                                 value={comision}
                                 onChange={(e) => {
                                     let value = e.target.value;
@@ -184,32 +183,6 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
                             </select>
                         </div>
 
-                    </div>
-
-                    <div className="expense-modal-row">
-
-                        <div className="expense-modal-group">
-                            <label>Método de pago</label>
-
-                            <select
-                                value={metodoPago}
-                                onChange={(e) => setMetodoPago(e.target.value)}
-                                required
-                            >
-                                <option value="EFECTIVO">
-                                    Efectivo
-                                </option>
-
-                                <option value="DEBITO">
-                                    Débito
-                                </option>
-
-                                <option value="CREDITO">
-                                    Crédito
-                                </option>
-                            </select>
-                        </div>
-
                         <div className="expense-modal-group">
                             <label>Fecha del gasto</label>
 
@@ -220,18 +193,69 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
                                 required
                             />
                         </div>
-
                     </div>
 
                     <div className="expense-modal-row">
+                        <div className="expense-modal-group">
+                            <label>Comisión (%)</label>
+
+                            <input
+                                type="text"
+                                placeholder="Ej: 8.50"
+                                value={comision}
+                                disabled={metodoPago !== "CREDITO"}
+                                onChange={(e) => {
+                                    let value = e.target.value;
+
+                                    value = value.replace(/[^0-9.]/g, "");
+
+                                    const parts = value.split(".");
+
+                                    if (parts.length > 2) {
+                                        value =
+                                            parts[0] +
+                                            "." +
+                                            parts.slice(1).join("");
+                                    }
+
+                                    setComision(value);
+                                }}
+                            />
+                        </div>
 
                         <div className="expense-modal-group">
+                            <label>Método de pago</label>
+
+                            <select
+                                value={metodoPago}
+                                onChange={(e) => {
+                                    const metodo = e.target.value;
+
+                                    setMetodoPago(metodo);
+
+                                    if (metodo !== "CREDITO") {
+                                        setComision("0");
+                                        setCantidadCuotas("1");
+                                    }
+                                }}
+                                required
+                            >
+                                <option value="EFECTIVO">Efectivo</option>
+                                <option value="DEBITO">Débito</option>
+                                <option value="CREDITO">Crédito</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="expense-modal-row expense-row-quotas">
+                        <div className="expense-modal-group expense-group-quotas">
                             <label>Cantidad de cuotas</label>
 
                             <input
                                 type="text"
                                 placeholder="Ej: 1"
                                 value={cantidadCuotas}
+                                disabled={metodoPago !== "CREDITO"}
                                 onChange={(e) => {
                                     const value = e.target.value.replace(/\D/g, "");
                                     setCantidadCuotas(value);
@@ -239,14 +263,12 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
                                 required
                             />
                         </div>
-
                     </div>
 
                     <div className="expense-modal-buttons">
-
                         <button
                             type="button"
-                            className="expense-btn-cancel"
+                            className="expense-btn-cancel" 
                             onClick={onClose}
                         >
                             Cancelar
@@ -258,9 +280,7 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
                         >
                             Guardar
                         </button>
-
                     </div>
-
                 </form>
             </div>
         </div>

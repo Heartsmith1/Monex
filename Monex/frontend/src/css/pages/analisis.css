@@ -24,6 +24,7 @@
     height: 220px;
     border-radius: 10px;
     color: #374151;
+
 }
 
 .total_gastos{
@@ -33,11 +34,31 @@
     height: 100px;
     border-radius: 10px;
     color: #374151;
+
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
     text-align: center;
+    gap: 5px;
+}
+
+.total_gastos h2{
+    margin: 0;
+    font-size: 20px;
+}
+
+.total_gastos h1{
+    color: #4CAF50;
+    margin: 0;
+    font-size: 42px;
+    line-height: 1;
+}
+
+.total_gastos p{
+    margin: 0;
+    font-size: 16px;
 }
 
 .gastos_categoria{
@@ -58,15 +79,60 @@
 
 .col_izquierda{
     flex: 2;
-    margin-left: 20px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    margin-left: 20px;
+    gap: 10px;
+    margin-left: 10px;
 }
 
 .col_derecha{
     flex: 1;
-    margin-right: 20px;
+    margin-right: 10px;
 }
 
+.grafico_linea_container{
+    position: relative;
+    width: 100%;
+    height: 220px;
+    margin-top: 20px;
+}
+
+.grafico_svg{
+    width: 100%;
+    height: 100%;
+}
+
+.linea_eje{
+    stroke: #9CA3AF;
+    stroke-width: 2;
+}
+
+.linea_grafico{
+    stroke: #65A30D;
+    stroke-width: 4;
+}
+
+.punto_grafico{
+    fill: #65A30D;
+}
+
+.texto_grafico{
+    fill: #374151;
+    font-size: 12px;
+}
+
+.valores_grafico{
+    position: absolute;
+    left: 0;
+    top: 10px;
+    height: 170px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 10;
+}
+
+.valores_grafico p{
+    font-size: 12px;
+    color: #374151;
+}
