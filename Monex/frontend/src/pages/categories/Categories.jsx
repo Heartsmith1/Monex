@@ -213,11 +213,13 @@ export function Categorias() {
                                         {categoriasPaginadas.map((categoria) => (
                                             <tr key={categoria.id}>
                                                 <td>{categoria.name || categoria.nombre || "Sin nombre"}</td>
+
                                                 <td>
                                                     {categoria.description ||
                                                         categoria.descripcion ||
                                                         "Sin descripción"}
                                                 </td>
+
                                                 <td>
                                                     <button
                                                         className="btn_editar"
