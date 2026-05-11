@@ -6,7 +6,11 @@ import { obtenerCategorias } from "../../services/categoriesService";
 function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
 
     const [nombre, setNombre] = useState("");
+<<<<<<< HEAD
     const [categoria, setCategoria] = useState(""); //sincronizacion
+=======
+    const [categoria, setCategoria] = useState(""); //sincro
+>>>>>>> 6ba8161e21666c17656aa19c21f4c2242fb6ff41
     const [monto, setMonto] = useState("");
     const [comision, setComision] = useState("0");
     const [fechaIngreso, setFechaIngreso] = useState("");
@@ -50,18 +54,16 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
                 (cat) => Number(cat.id) === Number(categoria)
             );
 
+            const montoParsed = Number(monto);
+            const comisionPorcentaje = Number(comision || 0);
+            const comisionCalculada = comisionPorcentaje > 0 ? (montoParsed * comisionPorcentaje) / 100 : 0;
+
             const nuevoGasto = {
                 name: nombre,
                 categoryId: Number(categoria),
-                categoryName:
-                    categoriaSeleccionada?.name ||
-                    categoriaSeleccionada?.nombre ||
-                    "",
+                categoryName: categoriaSeleccionada?.name || categoriaSeleccionada?.nombre || "",
                 amount: Number(monto),
-                commission:
-                    metodoPago === "CREDITO"
-                        ? Number(comision || 0)
-                        : 0,
+                commission: Number(comision || 0),
                 date: fechaIngreso,
                 paymentMethod: metodoPago,
                 installments:
@@ -138,6 +140,30 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
                     </div>
 
                     <div className="expense-modal-row">
+
+                        <div className="expense-modal-group">
+                            <label>Comisión</label>
+
+                            <input
+                                type="text"
+                                placeholder="Ej: 500.50"
+                                value={comision}
+                                onChange={(e) => {
+                                    let value = e.target.value;
+
+                                    value = value.replace(/[^0-9.]/g, "");
+
+                                    const parts = value.split(".");
+
+                                    if (parts.length > 2) {
+                                        value = parts[0] + "." + parts.slice(1).join("");
+                                    }
+
+                                    setComision(value);
+                                }}
+                            />
+                        </div>
+
                         <div className="expense-modal-group">
                             <label>Categoría</label>
 
