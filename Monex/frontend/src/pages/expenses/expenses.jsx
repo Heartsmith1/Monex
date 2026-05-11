@@ -455,3 +455,5 @@ export function Expenses() {
         </div>
     );
 }
+
+export const Expenses = Categorias;
