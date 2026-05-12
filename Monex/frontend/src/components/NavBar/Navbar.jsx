@@ -39,4 +39,3 @@ export function Navbar({ onOpenExpenseModal, onOpenConfigModal }) {
         </>
     );
 }
-  
