@@ -5,7 +5,7 @@ import AddExpenseModal from "../../components/Modal/AddExpenseModal";
 import CreditCardConfigModal from "../../components/Modal/CreditCardConfigModal";
 import { obtenerGastos } from "../../services/expensesService";
 import iconAnalisis from "../../assets/icon/icon_analisis.png";
-import tarjetaIcon from "../../assets/icon/icono_tarjeta_credito.png";
+import tarjetaIcon from "../../assets/icon/tarjetaCredito.png";
 
 const categoryPalette = [
     "#5BBF59",
