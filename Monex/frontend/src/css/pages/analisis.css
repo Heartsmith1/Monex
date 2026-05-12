@@ -103,6 +103,12 @@
     height: 100%;
 }
 
+.grid_line{
+    stroke: black;
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+}
+
 .linea_eje{
     stroke: #9CA3AF;
     stroke-width: 2;
