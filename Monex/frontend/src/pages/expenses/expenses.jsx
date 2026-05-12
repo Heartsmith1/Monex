@@ -4,6 +4,7 @@ import { Navbar } from "../../components/Navbar/Navbar";
 import AddExpenseModal from "../../components/Modal/AddExpenseModal";
 import EditExpenseModal from "../../components/Modal/EditExpenseModal";
 import { DeleteExpenseModal } from "../../components/Modal/DeleteExpenseModal";
+import CreditCardConfigModal from "../../components/Modal/CreditCardConfigModal";
 import lupa from "../../assets/icon/material-symbols_search.png";
 
 import {
@@ -18,6 +19,7 @@ export function Expenses() {
     const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
     const [isEditExpenseModalOpen, setIsEditExpenseModalOpen] = useState(false);
     const [isDeleteExpenseModalOpen, setIsDeleteExpenseModalOpen] = useState(false);
+    const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
 
     const [expenses, setExpenses] = useState([]);
     const [categorias, setCategorias] = useState([]);
@@ -245,10 +247,9 @@ export function Expenses() {
             <SideBar />
 
             <div className="contenido_Home">
-                <Navbar
-                    onOpenExpenseModal={() =>
-                        setIsExpenseModalOpen(true)
-                    }
+                <Navbar 
+                    onOpenExpenseModal={() => setIsExpenseModalOpen(true)}
+                    onOpenConfigModal={() => setIsConfigModalOpen(true)}
                 />
 
                 <AddExpenseModal
@@ -257,6 +258,14 @@ export function Expenses() {
                         setIsExpenseModalOpen(false)
                     }
                     onExpenseCreated={fetchExpenses}
+                />
+
+                <CreditCardConfigModal
+                    isOpen={isConfigModalOpen}
+                    onClose={() =>
+                        setIsConfigModalOpen(false)
+                    }
+                    onConfigSaved={fetchExpenses}
                 />
 
                 <div className="contenido_Gastos">

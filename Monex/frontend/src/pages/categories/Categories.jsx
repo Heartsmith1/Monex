@@ -5,6 +5,7 @@ import { EditcategoriesModal } from "../../components/Modal/EditcategoriesModal"
 import { AddCategoryModal } from "../../components/Modal/AddCategoryModal";
 import { DeleteCategoryModal } from "../../components/Modal/DeleteCategoryModal";
 import AddExpenseModal from "../../components/Modal/AddExpenseModal";
+import CreditCardConfigModal from "../../components/Modal/CreditCardConfigModal";
 import lupa from "../../assets/icon/material-symbols_search.png";
 import {
     obtenerCategorias,
@@ -36,6 +37,7 @@ export function Categorias() {
     const [categoriaEliminar, setCategoriaEliminar] = useState(null);
 
     const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+    const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
 
     const cargarCategorias = async () => {
         try {
@@ -159,11 +161,19 @@ export function Categorias() {
             <SideBar />
 
             <div className="contenido_Home">
-                <Navbar onOpenExpenseModal={() => setIsExpenseModalOpen(true)} />
+                <Navbar 
+                    onOpenExpenseModal={() => setIsExpenseModalOpen(true)}
+                    onOpenConfigModal={() => setIsConfigModalOpen(true)}
+                />
 
                 <AddExpenseModal
                     isOpen={isExpenseModalOpen}
                     onClose={() => setIsExpenseModalOpen(false)}
+                />
+
+                <CreditCardConfigModal
+                    isOpen={isConfigModalOpen}
+                    onClose={() => setIsConfigModalOpen(false)}
                 />
 
                 <div className="contenido_Categorias">

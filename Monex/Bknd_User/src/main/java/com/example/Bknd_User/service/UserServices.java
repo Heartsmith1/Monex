@@ -5,14 +5,21 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.Bknd_User.entity.User;
+import com.example.Bknd_User.entity.CreditCardConfig;
 import com.example.Bknd_User.dto.UserUpdateRequest;
+import com.example.Bknd_User.dto.CreditCardConfigRequest;
+import com.example.Bknd_User.dto.CreditCardConfigResponse;
 import com.example.Bknd_User.repository.UserRepository;
+import com.example.Bknd_User.repository.CreditCardConfigRepository;
 
 @Service
 public class UserServices {
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private CreditCardConfigRepository creditCardConfigRepository;
     
     @Autowired
     private JwtService jwtService;
@@ -121,5 +128,40 @@ public class UserServices {
         userRepository.save(user);
 
         return true;
+    }
+    
+    public CreditCardConfigResponse guardarConfiguracionTarjeta(User user, CreditCardConfigRequest request) {
+        CreditCardConfig config = creditCardConfigRepository.findByUserId(user.getId())
+                .orElse(new CreditCardConfig());
+        
+        config.setUser(user);
+        config.setFechaFacturacion(request.getFechaFacturacion());
+        config.setSueldoMes(request.getSueldoMes());
+        config.setCupoTarjeta(request.getCupoTarjeta());
+        
+        CreditCardConfig saved = creditCardConfigRepository.save(config);
+        
+        return CreditCardConfigResponse.builder()
+                .id(saved.getId())
+                .fechaFacturacion(saved.getFechaFacturacion())
+                .sueldoMes(saved.getSueldoMes())
+                .cupoTarjeta(saved.getCupoTarjeta())
+                .mensaje("Configuración de tarjeta guardada exitosamente")
+                .build();
+    }
+    
+    public CreditCardConfigResponse obtenerConfiguracionTarjeta(User user) {
+        CreditCardConfig config = creditCardConfigRepository.findByUserId(user.getId()).orElse(null);
+        
+        if (config == null) {
+            return null;
+        }
+        
+        return CreditCardConfigResponse.builder()
+                .id(config.getId())
+                .fechaFacturacion(config.getFechaFacturacion())
+                .sueldoMes(config.getSueldoMes())
+                .cupoTarjeta(config.getCupoTarjeta())
+                .build();
     }
 }
