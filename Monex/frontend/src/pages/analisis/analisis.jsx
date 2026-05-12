@@ -1,3 +1,4 @@
+// Importaciones de React, componentes, servicios y assets
 import { useEffect, useState } from "react";
 import { SideBar } from "../../components/SideBar/SideBar";
 import { Navbar } from "../../components/Navbar/Navbar";
@@ -7,6 +8,7 @@ import { obtenerGastos } from "../../services/expensesService";
 import iconAnalisis from "../../assets/icon/icon_analisis.png";
 import tarjetaIcon from "../../assets/icon/icono_tarjeta_credito.png";
 
+// Paleta de colores para el gráfico circular (categorías)
 const categoryPalette = [
     "#5BBF59",
     "#2F80ED",
@@ -15,6 +17,7 @@ const categoryPalette = [
     "#9B51E0",
 ];
 
+// Funciones auxiliares para dar formato de moneda y capitalizar textos
 const formatCurrency = (value) =>
     `$${Number(value || 0).toLocaleString("es-CL", {
         maximumFractionDigits: 0,
@@ -23,6 +26,7 @@ const formatCurrency = (value) =>
 const capitalize = (text) =>
     text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
 
+// Parsea y normaliza las fechas recibidas para evitar errores con diferentes formatos
 const parseExpenseDate = (dateValue) => {
     if (!dateValue) return null;
 
@@ -46,11 +50,13 @@ const parseExpenseDate = (dateValue) => {
     return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
 };
 
+// Extrae el arreglo de gastos sin importar la estructura exacta de la respuesta
 const normalizeExpenses = (data) =>
     Array.isArray(data)
         ? data
         : data?.data ?? data?.expenses ?? [];
 
+// Verifica si un gasto fue hecho con tarjeta de crédito
 const isCreditExpense = (expense) => {
     const paymentMethod = String(
         expense?.paymentMethod || expense?.paymentType || ""
@@ -59,11 +65,13 @@ const isCreditExpense = (expense) => {
     return paymentMethod.includes("CREDITO");
 };
 
+// Calcula la diferencia de meses entre dos fechas
 const monthDiff = (from, to) =>
     (to.getFullYear() - from.getFullYear()) * 12 +
     (to.getMonth() - from.getMonth());
 
 export function Analisis() {
+    // Estados del componente: Modales, listado de gastos, indicadores de carga y el estado "hover" del gráfico
     const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
     const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
     const [gastos, setGastos] = useState([]);
@@ -71,6 +79,7 @@ export function Analisis() {
     const [error, setError] = useState(null);
     const [hoveredPoint, setHoveredPoint] = useState(null);
 
+    // Efecto para cargar los gastos al inicio y configurar un refresco automático cada 60 segundos
     useEffect(() => {
         const fetchGastos = async () => {
             try {
@@ -98,6 +107,7 @@ export function Analisis() {
         return () => clearInterval(intervalo);
     }, []);
 
+    // Definición de las fechas de inicio y fin para el mes actual y el mes anterior
     const fechaActual = new Date();
     const inicioMesActual = new Date(
         fechaActual.getFullYear(),
@@ -120,6 +130,7 @@ export function Analisis() {
         0
     );
 
+    // Filtrado de gastos para obtener solo los que pertenecen al mes actual
     const gastosMesActual = gastos.filter((gasto) => {
         const fechaGasto = parseExpenseDate(gasto?.date);
 
@@ -130,6 +141,7 @@ export function Analisis() {
         );
     });
 
+    // Filtrado de gastos para obtener solo los que pertenecen al mes anterior
     const gastosMesAnterior = gastos.filter((gasto) => {
         const fechaGasto = parseExpenseDate(gasto?.date);
 
@@ -140,6 +152,7 @@ export function Analisis() {
         );
     });
 
+    // Separación de gastos excluyendo los de crédito (solo queremos analizar efectivo y débito)
     const gastosMesActualSinCredito = gastosMesActual.filter(
         (gasto) => !isCreditExpense(gasto)
     );
@@ -164,6 +177,7 @@ export function Analisis() {
         return paymentMethod === "EFECTIVO" || paymentMethod === "DEBITO";
     });
 
+    // Cálculo del dinero total gastado en el mes actual y anterior
     const totalMesActual = gastosMesActualVisible.reduce((total, gasto) => {
         const amount = Number(gasto?.amount ?? 0);
         return total + (Number.isNaN(amount) ? 0 : amount);
@@ -174,10 +188,12 @@ export function Analisis() {
         return total + (Number.isNaN(amount) ? 0 : amount);
     }, 0);
 
+    // Cálculo de la variación porcentual entre ambos meses (Ej. Subió un 15% o bajó un 10%)
     const variacionPorcentual = totalMesAnterior > 0
         ? ((totalMesActual - totalMesAnterior) / totalMesAnterior) * 100
         : null;
 
+    // Suma de los gastos agrupados día por día para el gráfico lineal
     const dailyTotals = gastosMesActualVisible.reduce((accumulator, gasto) => {
         const fechaGasto = parseExpenseDate(gasto?.date);
 
@@ -205,6 +221,7 @@ export function Analisis() {
             ),
         }));
 
+    // Configuración y variables para dibujar el gráfico SVG (tamaños, posiciones y coordenadas)
     const montoMaximo = Math.max(
         1,
         ...gastosDiarios.map((gasto) => gasto.amount)
@@ -238,6 +255,7 @@ export function Analisis() {
         return best;
     }, null);
 
+    // Suma de los gastos agrupados por categoría para crear el gráfico circular (Pie chart)
     const categoryTotals = gastosMesActualVisible.reduce((accumulator, gasto) => {
         const nombreCategoria =
             gasto?.categoryName ||
@@ -262,6 +280,7 @@ export function Analisis() {
         .map(([name, amount]) => ({ name, amount }))
         .sort((a, b) => b.amount - a.amount);
 
+    // Se separan las 4 categorías con más gastos y el resto se agrupa en "Otros"
     const categoriasPie = categoriasOrdenadas.slice(0, 4);
     const restantes = categoriasOrdenadas
         .slice(4)
@@ -276,6 +295,7 @@ export function Analisis() {
         0
     );
 
+    // Se genera la cadena del gradiente cónico para pintar el gráfico circular con CSS
     const pieGradient = totalCategorias > 0
         ? categoriasPie
             .map((item, index) => {
@@ -297,6 +317,7 @@ export function Analisis() {
         ? (categoriaMayor.amount / totalCategorias) * 100
         : 0;
 
+    // Formateadores de fechas (meses y días) para mostrar textos amigables en la vista
     const monthFormatter = new Intl.DateTimeFormat("es-CL", {
         month: "long",
     });
@@ -314,6 +335,7 @@ export function Analisis() {
         finMesActual.getDate()
     ).padStart(2, "0")}/${String(finMesActual.getMonth() + 1).padStart(2, "0")}/${finMesActual.getFullYear()}`;
 
+    // Generación dinámica de los mensajes del banner principal en base a los cálculos anteriores
     const bannerTitle = variacionPorcentual !== null
         ? `¡Tus gastos ${variacionPorcentual >= 0 ? "aumentaron" : "disminuyeron"} ${Math.abs(Math.round(variacionPorcentual))}% respecto al mes anterior${categoriaMayor ? `, principalmente en la categoría ${categoriaMayor.name}!` : "!"}`
         : "¡Tus gastos del mes se ven listos para analizar!";
@@ -336,6 +358,7 @@ export function Analisis() {
         1
     );
 
+    // Cálculo del estimado a pagar de las compras con tarjeta de crédito considerando las cuotas activas
     const totalCreditoMesActual = gastos.reduce((total, gasto) => {
         if (!isCreditExpense(gasto)) return total;
 
@@ -374,6 +397,7 @@ export function Analisis() {
     const gastoTotalRegistrado = gastos.length;
 
     return (
+        // Contenedor principal y barra lateral
         <div className="contenedor_analisis">
             <SideBar />
 
@@ -383,6 +407,7 @@ export function Analisis() {
                     onOpenConfigModal={() => setIsConfigModalOpen(true)}
                 />
 
+                {/* Modales ocultos para registro y configuración */}
                 <AddExpenseModal
                     isOpen={isExpenseModalOpen}
                     onClose={() => setIsExpenseModalOpen(false)}
@@ -398,6 +423,7 @@ export function Analisis() {
                         <h1>Análisis</h1>
                     </div>
 
+                    {/* Banner principal con el resumen dinámico del análisis */}
                     <div className="analisis_banner">
                         <div className="analisis_banner_icon">
                             <img src={iconAnalisis} alt="Icono de análisis" />
@@ -416,6 +442,7 @@ export function Analisis() {
 
                     <div className="layout_analisis">
                         <div className="col_izquierda">
+                            {/* Bloque del gráfico de líneas para mostrar los gastos por días */}
                             <div className="card_analisis card_linea">
                                 <div className="card_titulo_block">
                                     <h2>Gastos diarios del mes</h2>
@@ -567,6 +594,7 @@ export function Analisis() {
                                 </p>
                             </div>
 
+                            {/* Bloque con la estimación de pagos de tarjeta de crédito */}
                             <div className="card_analisis card_estimacion">
                                 <div className="card_titulo_block">
                                     <h2>Pago estimado en crédito</h2>
@@ -591,6 +619,7 @@ export function Analisis() {
                         </div>
 
                         <div className="col_derecha">
+                            {/* Bloque con el total gastado en el mes y la variación respecto al mes anterior */}
                             <div className="card_analisis card_total">
                                 <div className="card_titulo_block card_titulo_block_row">
                                     <h2>Total gastos registrados</h2>
@@ -621,6 +650,7 @@ export function Analisis() {
                                 )}
                             </div>
 
+                            {/* Bloque del gráfico circular mostrando la distribución por categorías */}
                             <div className="card_analisis card_categoria">
                                 <div className="card_titulo_block">
                                     <h2>Gastos por Categoría</h2>
