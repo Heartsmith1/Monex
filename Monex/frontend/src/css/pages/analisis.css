@@ -93,7 +93,7 @@
 .col_derecha {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 14px; 
     min-width: 0;
 }
 
