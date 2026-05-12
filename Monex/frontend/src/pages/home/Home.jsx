@@ -2,20 +2,30 @@ import { useState } from "react";
 import { SideBar } from "../../components/SideBar/SideBar";
 import { Navbar } from "../../components/Navbar/Navbar";
 import AddExpenseModal from "../../components/Modal/AddExpenseModal";
+import CreditCardConfigModal from "../../components/Modal/CreditCardConfigModal";
 
 export function Home() {
     const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+    const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
 
     return (
         <div className="contenedor_Home">
             <SideBar />
 
             <div className="contenido_Home">
-                <Navbar onOpenExpenseModal={() => setIsExpenseModalOpen(true)} />
+                <Navbar 
+                    onOpenExpenseModal={() => setIsExpenseModalOpen(true)}
+                    onOpenConfigModal={() => setIsConfigModalOpen(true)}
+                />
 
                 <AddExpenseModal
                     isOpen={isExpenseModalOpen}
                     onClose={() => setIsExpenseModalOpen(false)}
+                />
+
+                <CreditCardConfigModal
+                    isOpen={isConfigModalOpen}
+                    onClose={() => setIsConfigModalOpen(false)}
                 />
 
                 <h1>Bienvenido Usuario</h1>

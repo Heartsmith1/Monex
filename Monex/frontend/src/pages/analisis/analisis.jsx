@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { SideBar } from "../../components/SideBar/SideBar";
 import { Navbar } from "../../components/Navbar/Navbar";
 import AddExpenseModal from "../../components/Modal/AddExpenseModal";
+import CreditCardConfigModal from "../../components/Modal/CreditCardConfigModal";
 import { obtenerGastos } from "../../services/expensesService";
 
 export function Analisis() {
 
     const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+    const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
     const [totalGastos, setTotalGastos] = useState(0);
     const [gastosGrafico, setGastosGrafico] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -53,10 +55,17 @@ export function Analisis() {
             <SideBar />
             <div className="contenido_anilisis">
 
-                <Navbar onOpenExpenseModal={() => setIsExpenseModalOpen(true)} />
+                <Navbar 
+                    onOpenExpenseModal={() => setIsExpenseModalOpen(true)}
+                    onOpenConfigModal={() => setIsConfigModalOpen(true)}
+                />
                 <AddExpenseModal
                     isOpen={isExpenseModalOpen}
                     onClose={() => setIsExpenseModalOpen(false)}
+                />
+                <CreditCardConfigModal
+                    isOpen={isConfigModalOpen}
+                    onClose={() => setIsConfigModalOpen(false)}
                 />
                 <h1>Bienvenido Usuario</h1>
 

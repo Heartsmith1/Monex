@@ -166,14 +166,43 @@
   max-width: 400px;
 }
 
+.cupo_comparacion {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.cupo_label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  margin: 0 0 8px 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.cupo_valor {
+  font-size: 20px;
+  font-weight: bold;
+  color: #374151;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
 .est_progress_bar {
   width: 100%;
-  height: 8px;
-  background-color: #e0e0e0;
-  border-radius: 4px;
+  height: 10px;
+  background-color: #e6e6e6;
+  border-radius: 6px;
   margin-bottom: 14px;
   overflow: hidden;
-  background: linear-gradient(90deg, #27ae60 70%, #e0e0e0 70%);
+  position: relative;
+}
+
+.est_progress_fill {
+  height: 100%;
+  background: linear-gradient(90deg, #27ae60 0%, #27ae60 100%);
+  width: 0%;
+  transition: width 400ms ease;
 }
 
 .est_meses {
@@ -287,7 +316,7 @@
   display: grid;
   grid-template-columns: 72px 1fr;
   gap: 10px;
-  height: 220px;
+  height: 280px;
 }
 
 .chart_axis {
@@ -333,8 +362,17 @@
   background: linear-gradient(180deg, #f4a460 0%, #ff8c42 100%);
   border-radius: 4px 4px 0 0;
   margin-bottom: 8px;
-  min-height: 20px;
+  min-height: 2px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.chart_bar_value {
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  color: #374151;
+  margin-bottom: 4px;
+  white-space: nowrap;
 }
 
 .chart_label {

@@ -4,16 +4,17 @@ import { Navbar } from "../../components/Navbar/Navbar";
 import alertaMensualIcon from "../../assets/icon/Alerta_mensual.png";
 import "../../css/pages/est_monthly.css";
 import AddExpenseModal from "../../components/Modal/AddExpenseModal";
-import {
-  obtenerEstimacionMensual,
-  obtenerGastos,
-} from "../../services/expensesService";
+import CreditCardConfigModal from "../../components/Modal/CreditCardConfigModal";
+import {obtenerEstimacionMensual,obtenerGastos,} from "../../services/expensesService";
+import { obtenerConfiguracionTarjeta } from "../../services/usuarioService";
 
 export function EstMensual() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [isExpenseModalOpen, setIsExpenseModalOpen] =
-    useState(false);
+  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+  const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
+  const [cupoTarjeta, setCupoTarjeta] = useState(0);
+  const [fechaFacturacion, setFechaFacturacion] = useState(null);
 
   const [estimaciones, setEstimaciones] = useState({
     totalEstimado: 0,
@@ -155,37 +156,34 @@ export function EstMensual() {
       return totalInstallments;
     }
 
-    const startMonth = new Date(
-      expenseDate.getFullYear(),
-      expenseDate.getMonth(),
-      1
-    );
+    // Use billing day if configured, otherwise default to 1
+    const billingDay =
+      Number(fechaFacturacion) > 0
+        ? Number(fechaFacturacion)
+        : 1;
 
+    const computeCycleStart = (date, day) => {
+      const candidate = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        day
+      );
+      if (date.getDate() >= day) {
+        return candidate;
+      }
+      return new Date(date.getFullYear(), date.getMonth() - 1, day);
+    };
+
+    const startCycle = computeCycleStart(expenseDate, billingDay);
     const now = new Date();
+    const currentCycle = computeCycleStart(now, billingDay);
 
-    const currentMonthStart = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      1
-    );
-
-    const elapsedMonths = monthDiff(
-      startMonth,
-      currentMonthStart
-    );
+    const elapsedMonths = monthDiff(startCycle, currentCycle);
 
     const paidInstallments =
-      elapsedMonths <= 0
-        ? 0
-        : Math.min(
-            totalInstallments,
-            elapsedMonths
-          );
+      elapsedMonths <= 0 ? 0 : Math.min(totalInstallments, elapsedMonths);
 
-    return Math.max(
-      0,
-      totalInstallments - paidInstallments
-    );
+    return Math.max(0, totalInstallments - paidInstallments);
   };
 
   const buildEstimateFromExpenses = (
@@ -305,26 +303,17 @@ export function EstMensual() {
     });
 
     const pagosEstimados = Array.from(
-      { length: 3 },
-      (_, offset) => {
-        const date = new Date(
-          currentMonthStart.getFullYear(),
-          currentMonthStart.getMonth() +
-            offset,
-          1
-        );
-
-        const key = getMonthKey(date);
-
-        const monto =
-          monthMap.get(key)?.monto ?? 0;
-
-        return {
-          mes: normalizeMonthLabel(date),
-          monto: Math.round(monto),
-        };
-      }
-    );
+      monthMap.values()
+    )
+      .sort(
+        (a, b) =>
+          new Date(a.monthDate) -
+          new Date(b.monthDate)
+      )
+      .map((item) => ({
+        mes: item.mes,
+        monto: Math.round(item.monto),
+      }));
 
     const detallesPagos = creditExpenses
       .map((expense) => {
@@ -407,16 +396,25 @@ export function EstMensual() {
       setLoading(true);
       setError("");
 
-      const [estimate, expenses] =
+      const [estimate, expenses, config] =
         await Promise.all([
           obtenerEstimacionMensual(),
           obtenerGastos(),
+          obtenerConfiguracionTarjeta(),
         ]);
+
+      if (config && config.cupoTarjeta) {
+        setCupoTarjeta(config.cupoTarjeta);
+      }
+      if (config && config.fechaFacturacion) {
+        setFechaFacturacion(Number(config.fechaFacturacion));
+      }
 
       setEstimaciones(
         buildEstimateFromExpenses(
           expenses,
-          estimate
+          estimate,
+          config?.fechaFacturacion
         )
       );
     } catch (err) {
@@ -446,6 +444,9 @@ export function EstMensual() {
         onOpenExpenseModal={() =>
           setIsExpenseModalOpen(true)
         }
+        onOpenConfigModal={() =>
+          setIsConfigModalOpen(true)
+        }
       />
 
       <AddExpenseModal
@@ -456,6 +457,14 @@ export function EstMensual() {
         onExpenseCreated={loadEstimateData}
       />
 
+      <CreditCardConfigModal
+        isOpen={isConfigModalOpen}
+        onClose={() =>
+          setIsConfigModalOpen(false)
+        }
+        onConfigSaved={loadEstimateData}
+      />
+
       <div className="contenedor_est_mensual">
         <div className="est_header">
           <h1>Estimación Mensual</h1>
@@ -463,7 +472,7 @@ export function EstMensual() {
           <p className="est_descripcion">
             Aqui puedes ver una estimación de los
             pagos mensuales de tu tarjeta de crédito
-            basado en tus gastos registrados
+            basado en tus gastos registrados con este método de pago.
           </p>
         </div>
 
@@ -488,6 +497,13 @@ export function EstMensual() {
                     ),
                   0
                 );
+
+              const spent = estimaciones.totalEstimado || 0;
+              const cupo = cupoTarjeta || 0;
+              const gastoPercent =
+                cupo > 0
+                  ? Math.min(100, Math.round((spent / cupo) * 100))
+                  : 0;
 
               return (
                 <>
@@ -516,7 +532,26 @@ export function EstMensual() {
                           </p>
                         </div>
 
-                        <div className="est_progress_bar"></div>
+                          {cupoTarjeta > 0 && (
+                            <div className="cupo_comparacion">
+                              <p className="cupo_label">
+                                Cupo disponible:
+                              </p>
+                              <p className="cupo_valor">
+                                $
+                                {estimaciones.totalEstimado.toLocaleString()}
+                                /$
+                                {cupoTarjeta.toLocaleString()}
+                              </p>
+                            </div>
+                          )}
+
+                        <div className="est_progress_bar" aria-hidden>
+                          <div
+                            className="est_progress_fill"
+                            style={{ width: `${gastoPercent}%` }}
+                          ></div>
+                        </div>
 
                         <div className="est_meses">
                           {estimaciones.meses.map(
@@ -623,22 +658,27 @@ export function EstMensual() {
 
                       <div className="est_chart">
                         <div className="chart_axis">
-                          {[...new Set([...estimaciones.pagosEstimados.map(p => p.monto), 0])]
-                            .sort((a, b) => b - a)
-                            .map(
-                            (
-                              monto,
-                              index
-                            ) => (
-                              <span
-                                key={index}
-                                className="chart_axis_label"
-                              >
-                                $
-                                {monto.toLocaleString()}
-                              </span>
-                            )
-                          )}
+                          {(() => {
+                            const valores = estimaciones.pagosEstimados
+                              .map((p) => p.monto)
+                              .sort((a, b) => b - a)
+                              .slice(0, 4);
+                            
+                            return valores.map(
+                              (
+                                monto,
+                                index
+                              ) => (
+                                <span
+                                  key={index}
+                                  className="chart_axis_label"
+                                >
+                                  $
+                                  {monto.toLocaleString()}
+                                </span>
+                              )
+                            );
+                          })()}
                         </div>
 
                         <div className="chart_plot">
@@ -651,6 +691,11 @@ export function EstMensual() {
                                 key={index}
                                 className="chart_bar_container"
                               >
+                                <span className="chart_bar_value">
+                                  $
+                                  {pago.monto.toLocaleString()}
+                                </span>
+
                                 <div
                                   className="chart_bar"
                                   style={{
@@ -730,9 +775,9 @@ export function EstMensual() {
                       <span className="alerta_texto">
                         La deuda y el pago
                         mensual son
-                        estimaciones basadas
+                        aproximados basados
                         en los gastos
-                        ingresados, ya que el
+                        ingresados y puede no ser exacto, ya que el
                         sistema no se conecta
                         con entidades
                         bancarias.
