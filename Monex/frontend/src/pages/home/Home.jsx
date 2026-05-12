@@ -47,7 +47,7 @@ export function Home() {
                             <h2>Gastos por categoria</h2>
                         </div>
 
-                        <div className="contenedor_pago_tarjeta_home">
+                        <div className="contenedor_pago_tarjeta_home"> 
                             <h2>Pago Tarjeta</h2>
                         </div>
                     </div>
@@ -55,5 +55,6 @@ export function Home() {
                 </div>
             </div>
         </div>
+        
     );
 }
