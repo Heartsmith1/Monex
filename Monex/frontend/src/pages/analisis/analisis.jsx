@@ -2,135 +2,385 @@ import { useEffect, useState } from "react";
 import { SideBar } from "../../components/SideBar/SideBar";
 import { Navbar } from "../../components/Navbar/Navbar";
 import AddExpenseModal from "../../components/Modal/AddExpenseModal";
+import CreditCardConfigModal from "../../components/Modal/CreditCardConfigModal";
 import { obtenerGastos } from "../../services/expensesService";
+import iconAnalisis from "../../assets/icon/icon_analisis.png";
+import tarjetaIcon from "../../assets/icon/icono_tarjeta_credito.png";
+
+const categoryPalette = [
+    "#5BBF59",
+    "#2F80ED",
+    "#F2C94C",
+    "#F2994A",
+    "#9B51E0",
+];
+
+const formatCurrency = (value) =>
+    `$${Number(value || 0).toLocaleString("es-CL", {
+        maximumFractionDigits: 0,
+    })}`;
+
+const capitalize = (text) =>
+    text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
+
+const parseExpenseDate = (dateValue) => {
+    if (!dateValue) return null;
+
+    if (dateValue instanceof Date) {
+        return Number.isNaN(dateValue.getTime()) ? null : dateValue;
+    }
+
+    if (typeof dateValue !== "string") {
+        return null;
+    }
+
+    const datePart = dateValue.slice(0, 10);
+    const [year, month, day] = datePart.split("-").map(Number);
+
+    if (!year || !month || !day) {
+        return null;
+    }
+
+    const parsedDate = new Date(year, month - 1, day);
+
+    return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
+};
+
+const normalizeExpenses = (data) =>
+    Array.isArray(data)
+        ? data
+        : data?.data ?? data?.expenses ?? [];
+
+const isCreditExpense = (expense) => {
+    const paymentMethod = String(
+        expense?.paymentMethod || expense?.paymentType || ""
+    ).toUpperCase();
+
+    return paymentMethod.includes("CREDITO");
+};
+
+const monthDiff = (from, to) =>
+    (to.getFullYear() - from.getFullYear()) * 12 +
+    (to.getMonth() - from.getMonth());
 
 export function Analisis() {
-
     const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
-    const [totalGastos, setTotalGastos] = useState(0);
-    const [gastosGrafico, setGastosGrafico] = useState([]);
+    const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
+    const [gastos, setGastos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [hoveredPoint, setHoveredPoint] = useState(null);
 
     useEffect(() => {
-
         const fetchGastos = async () => {
-
             try {
+                const gastosResponse = await Promise.resolve(obtenerGastos());
 
-                const data = await obtenerGastos();
+                const expenses = normalizeExpenses(gastosResponse);
 
-                const expenses = Array.isArray(data)
-                    ? data
-                    : data?.data ?? data?.expenses ?? [];
-
-                // FECHA ACTUAL
-                const fechaActual = new Date();
-
-                const mesActual = fechaActual.getMonth() + 1;
-
-                const añoActual = fechaActual.getFullYear();
-
-                // FILTRAR SOLO GASTOS DEL MES ACTUAL
-                const gastosMesActual = expenses.filter((gasto) => {
-
-                    if (!gasto.date) return false;
-
-                    // EVITA ERRORES DE ZONA HORARIA
-                    const [año, mes] = gasto.date.split("-");
-
-                    return (
-                        Number(mes) === mesActual &&
-                        Number(año) === añoActual
-                    );
-                });
-
-                // TOTAL SOLO DEL MES
-                const suma = gastosMesActual.reduce((total, gasto) => {
-
-                    const amount = Number(gasto?.amount ?? 0);
-
-                    return total + (isNaN(amount) ? 0 : amount);
-
-                }, 0);
-
-                setTotalGastos(suma);
-
-                // GRAFICO SOLO DEL MES
-                setGastosGrafico(gastosMesActual);
+                setGastos(expenses);
 
                 setError(null);
-
             } catch (fetchError) {
-
                 console.error("Error fetching gastos:", fetchError);
-
                 setError(fetchError.message || "Error al cargar gastos");
-
             } finally {
-
                 setLoading(false);
-
             }
         };
 
-        // CARGA INICIAL
         fetchGastos();
 
-        // ACTUALIZA AUTOMATICAMENTE CADA 1 MINUTO
         const intervalo = setInterval(() => {
             fetchGastos();
         }, 60000);
 
         return () => clearInterval(intervalo);
-
     }, []);
 
-    // MONTO MAXIMO
+    const fechaActual = new Date();
+    const inicioMesActual = new Date(
+        fechaActual.getFullYear(),
+        fechaActual.getMonth(),
+        1
+    );
+    const finMesActual = new Date(
+        fechaActual.getFullYear(),
+        fechaActual.getMonth() + 1,
+        0
+    );
+    const inicioMesAnterior = new Date(
+        fechaActual.getFullYear(),
+        fechaActual.getMonth() - 1,
+        1
+    );
+    const finMesAnterior = new Date(
+        fechaActual.getFullYear(),
+        fechaActual.getMonth(),
+        0
+    );
+
+    const gastosMesActual = gastos.filter((gasto) => {
+        const fechaGasto = parseExpenseDate(gasto?.date);
+
+        return (
+            fechaGasto &&
+            fechaGasto >= inicioMesActual &&
+            fechaGasto <= finMesActual
+        );
+    });
+
+    const gastosMesAnterior = gastos.filter((gasto) => {
+        const fechaGasto = parseExpenseDate(gasto?.date);
+
+        return (
+            fechaGasto &&
+            fechaGasto >= inicioMesAnterior &&
+            fechaGasto <= finMesAnterior
+        );
+    });
+
+    const gastosMesActualSinCredito = gastosMesActual.filter(
+        (gasto) => !isCreditExpense(gasto)
+    );
+
+    const gastosMesAnteriorSinCredito = gastosMesAnterior.filter(
+        (gasto) => !isCreditExpense(gasto)
+    );
+
+    const gastosMesActualVisible = gastosMesActualSinCredito.filter((gasto) => {
+        const paymentMethod = String(
+            gasto?.paymentMethod || gasto?.paymentType || ""
+        ).toUpperCase();
+
+        return paymentMethod === "EFECTIVO" || paymentMethod === "DEBITO";
+    });
+
+    const gastosMesAnteriorVisible = gastosMesAnteriorSinCredito.filter((gasto) => {
+        const paymentMethod = String(
+            gasto?.paymentMethod || gasto?.paymentType || ""
+        ).toUpperCase();
+
+        return paymentMethod === "EFECTIVO" || paymentMethod === "DEBITO";
+    });
+
+    const totalMesActual = gastosMesActualVisible.reduce((total, gasto) => {
+        const amount = Number(gasto?.amount ?? 0);
+        return total + (Number.isNaN(amount) ? 0 : amount);
+    }, 0);
+
+    const totalMesAnterior = gastosMesAnteriorVisible.reduce((total, gasto) => {
+        const amount = Number(gasto?.amount ?? 0);
+        return total + (Number.isNaN(amount) ? 0 : amount);
+    }, 0);
+
+    const variacionPorcentual = totalMesAnterior > 0
+        ? ((totalMesActual - totalMesAnterior) / totalMesAnterior) * 100
+        : null;
+
+    const dailyTotals = gastosMesActualVisible.reduce((accumulator, gasto) => {
+        const fechaGasto = parseExpenseDate(gasto?.date);
+
+        if (!fechaGasto) return accumulator;
+
+        const dayKey = fechaGasto.getDate();
+        const amount = Number(gasto?.amount ?? 0);
+        const safeAmount = Number.isNaN(amount) ? 0 : amount;
+
+        accumulator.set(dayKey, (accumulator.get(dayKey) || 0) + safeAmount);
+
+        return accumulator;
+    }, new Map());
+
+    const gastosDiarios = Array.from(dailyTotals.entries())
+        .filter(([, amount]) => amount > 0)
+        .sort((a, b) => a[0] - b[0])
+        .map(([day, amount]) => ({
+            day,
+            amount,
+            date: new Date(
+                fechaActual.getFullYear(),
+                fechaActual.getMonth(),
+                day
+            ),
+        }));
+
     const montoMaximo = Math.max(
-        ...gastosGrafico.map(gasto => Number(gasto.amount)),
+        1,
+        ...gastosDiarios.map((gasto) => gasto.amount)
+    );
+
+    const chartWidth = 580;
+    const chartHeight = 160;
+    const chartStartX = 70;
+    const chartEndX = 650;
+    const chartStartY = 180;
+    const chartTopY = 20;
+
+    const separacionX = gastosDiarios.length > 1
+        ? chartWidth / (gastosDiarios.length - 1)
+        : 0;
+
+    const puntosGrafico = gastosDiarios
+        .map((gasto, index) => {
+            const x = chartStartX + (index * separacionX);
+            const y = chartStartY - ((gasto.amount / montoMaximo) * chartHeight);
+
+            return `${x},${y}`;
+        })
+        .join(" ");
+
+    const majorDay = gastosDiarios.reduce((best, current) => {
+        if (!best || current.amount > best.amount) {
+            return current;
+        }
+
+        return best;
+    }, null);
+
+    const categoryTotals = gastosMesActualVisible.reduce((accumulator, gasto) => {
+        const nombreCategoria =
+            gasto?.categoryName ||
+            gasto?.category?.name ||
+            gasto?.category?.nombre ||
+            gasto?.nombreCategoria ||
+            gasto?.categoryId ||
+            "Sin categoría";
+
+        const amount = Number(gasto?.amount ?? 0);
+        const safeAmount = Number.isNaN(amount) ? 0 : amount;
+
+        accumulator.set(
+            nombreCategoria,
+            (accumulator.get(nombreCategoria) || 0) + safeAmount
+        );
+
+        return accumulator;
+    }, new Map());
+
+    const categoriasOrdenadas = Array.from(categoryTotals.entries())
+        .map(([name, amount]) => ({ name, amount }))
+        .sort((a, b) => b.amount - a.amount);
+
+    const categoriasPie = categoriasOrdenadas.slice(0, 4);
+    const restantes = categoriasOrdenadas
+        .slice(4)
+        .reduce((total, item) => total + item.amount, 0);
+
+    if (restantes > 0) {
+        categoriasPie.push({ name: "Otros", amount: restantes });
+    }
+
+    const totalCategorias = categoriasPie.reduce(
+        (total, item) => total + item.amount,
+        0
+    );
+
+    const pieGradient = totalCategorias > 0
+        ? categoriasPie
+            .map((item, index) => {
+                const inicio = categoriasPie
+                    .slice(0, index)
+                    .reduce((sum, previous) => sum + previous.amount, 0);
+                const fin = inicio + item.amount;
+
+                const startPercent = (inicio / totalCategorias) * 100;
+                const endPercent = (fin / totalCategorias) * 100;
+
+                return `${categoryPalette[index % categoryPalette.length]} ${startPercent}% ${endPercent}%`;
+            })
+            .join(", ")
+        : "#e5e7eb 0% 100%";
+
+    const categoriaMayor = categoriasOrdenadas[0] || null;
+    const porcentajeCategoriaMayor = totalCategorias > 0 && categoriaMayor
+        ? (categoriaMayor.amount / totalCategorias) * 100
+        : 0;
+
+    const monthFormatter = new Intl.DateTimeFormat("es-CL", {
+        month: "long",
+    });
+    const weekdayFormatter = new Intl.DateTimeFormat("es-CL", {
+        weekday: "long",
+    });
+    const dayMonthFormatter = new Intl.DateTimeFormat("es-CL", {
+        day: "numeric",
+        month: "long",
+    });
+
+    const chartMonthLabel = `${String(inicioMesActual.getDate()).padStart(2, "0")}/${String(
+        inicioMesActual.getMonth() + 1
+    ).padStart(2, "0")}/${inicioMesActual.getFullYear()} - ${String(
+        finMesActual.getDate()
+    ).padStart(2, "0")}/${String(finMesActual.getMonth() + 1).padStart(2, "0")}/${finMesActual.getFullYear()}`;
+
+    const bannerTitle = variacionPorcentual !== null
+        ? `¡Tus gastos ${variacionPorcentual >= 0 ? "aumentaron" : "disminuyeron"} ${Math.abs(Math.round(variacionPorcentual))}% respecto al mes anterior${categoriaMayor ? `, principalmente en la categoría ${categoriaMayor.name}!` : "!"}`
+        : "¡Tus gastos del mes se ven listos para analizar!";
+
+    const bannerSubtitle = categoriaMayor
+        ? "Se recomienda reducir el gasto en esta categoría para optimizar el presupuesto."
+        : "Agrega gastos para que el análisis detecte la categoría con mayor impacto.";
+
+    const gastoMayorDiaTexto = majorDay
+        ? `El ${capitalize(weekdayFormatter.format(majorDay.date))} ${dayMonthFormatter.format(majorDay.date)} fue el día con más gastos del mes (${formatCurrency(majorDay.amount)}).`
+        : "Todavía no hay suficientes datos para identificar el día con mayor gasto.";
+
+    const totalDebitoEfectivo = totalMesActual;
+
+    const gastosCredito = gastosMesActual.filter(isCreditExpense);
+
+    const currentMonthStart = new Date(
+        fechaActual.getFullYear(),
+        fechaActual.getMonth(),
         1
     );
 
-    // ESPACIADO DINAMICO
-    const espacioDisponible = 580;
+    const totalCreditoMesActual = gastos.reduce((total, gasto) => {
+        if (!isCreditExpense(gasto)) return total;
 
-    const separacionX = gastosGrafico.length > 1
-        ? espacioDisponible / (gastosGrafico.length - 1)
-        : 0;
+        const expenseDate = parseExpenseDate(gasto?.date);
+        if (!expenseDate) return total;
 
-    // PUNTOS DEL GRAFICO
-    const puntos = gastosGrafico.map((gasto, index) => {
+        const amount = Number(gasto?.amount ?? 0);
+        const commission = Number(gasto?.commission ?? 0);
+        const installments = Math.max(1, Number(gasto?.installments ?? 1));
 
-        const monto = Number(gasto.amount);
+        const startMonth = new Date(
+            expenseDate.getFullYear(),
+            expenseDate.getMonth(),
+            1
+        );
 
-        const x = 70 + (index * separacionX);
+        const elapsedMonths = monthDiff(startMonth, currentMonthStart);
 
-        const y = 180 - ((monto / montoMaximo) * 160);
+        if (elapsedMonths < 0 || elapsedMonths >= installments) {
+            return total;
+        }
 
-        return `${x},${y}`;
+        const monthlyPayment = (amount + commission) / installments;
 
-    }).join(" ");
+        return total + (Number.isNaN(monthlyPayment) ? 0 : monthlyPayment);
+    }, 0);
 
-    const gridRows = [20, 60, 100, 140, 180];
+    const resumenDescripcion = "Esta vista solo considera gastos de débito y efectivo; los gastos en crédito quedan excluidos del análisis.";
 
-    const cantidadColumnas = 7;
+    const resumenCreditoDescripcion = "Este apartado calcula el pago estimado de las compras con crédito activas del mes, considerando cuotas y comisión.";
 
-    const gridColumns = Array.from(
-        { length: cantidadColumnas },
-        (_, index) => 150 + (index * 80)
-    );
+    const totalCategoriaTexto = categoriaMayor
+        ? `${categoriaMayor.name} (${Math.round(porcentajeCategoriaMayor)}%)`
+        : "Sin categoría destacada";
+
+    const gastoTotalRegistrado = gastos.length;
 
     return (
         <div className="contenedor_analisis">
-
             <SideBar />
 
             <div className="contenido_anilisis">
-
-                <Navbar
-                    onOpenExpenseModal={() => setIsExpenseModalOpen(true)}
+                <Navbar 
+                    onOpenExpenseModal={() => setIsExpenseModalOpen(true)} 
+                    onOpenConfigModal={() => setIsConfigModalOpen(true)}
                 />
 
                 <AddExpenseModal
@@ -138,226 +388,287 @@ export function Analisis() {
                     onClose={() => setIsExpenseModalOpen(false)}
                 />
 
-                <h1>Bienvenido Usuario</h1>
+                <CreditCardConfigModal
+                    isOpen={isConfigModalOpen}
+                    onClose={() => setIsConfigModalOpen(false)}
+                />
 
-                <div className="layout_analisis">
+                <div className="analisis_page">
+                    <div className="analisis_header">
+                        <h1>Análisis</h1>
+                    </div>
 
-                    <div className="col_izquierda">
+                    <div className="analisis_banner">
+                        <div className="analisis_banner_icon">
+                            <img src={iconAnalisis} alt="Icono de análisis" />
+                        </div>
 
-                        <div className="gastos_diarios">
+                        <div className="analisis_banner_texto">
+                            <p className="analisis_banner_titulo">
+                                {bannerTitle}
+                            </p>
 
-                            <h1>Gastos del mes</h1>
+                            <p className="analisis_banner_subtitulo">
+                                {bannerSubtitle}
+                            </p>
+                        </div>
+                    </div>
 
-                            <div className="grafico_linea_container">
+                    <div className="layout_analisis">
+                        <div className="col_izquierda">
+                            <div className="card_analisis card_linea">
+                                <div className="card_titulo_block">
+                                    <h2>Gastos diarios del mes</h2>
+                                    <span>{chartMonthLabel}</span>
+                                </div>
 
-                                <svg
-                                    className="grafico_svg"
-                                    viewBox="0 0 700 220"
-                                >
+                                {gastosDiarios.length > 0 ? (
+                                    <div className="grafico_linea_container">
+                                        <svg
+                                            className="grafico_svg"
+                                            viewBox="0 0 700 220"
+                                            role="img"
+                                            aria-label="Gráfico de gastos diarios del mes"
+                                        >
+                                            {[0, 0.25, 0.5, 0.75, 1].map((valor, index) => {
+                                                const y = chartStartY - (valor * chartHeight);
 
-                                    {/* VALORES EJE Y */}
-                                    {[0, 0.25, 0.5, 0.75, 1].map((valor, index) => {
+                                                return (
+                                                    <text
+                                                        key={`value-${index}`}
+                                                        x="10"
+                                                        y={y + 5}
+                                                        className="texto_grafico texto_eje_y"
+                                                    >
+                                                        {formatCurrency(montoMaximo * valor)}
+                                                    </text>
+                                                );
+                                            })}
 
-                                        const y = 180 - (valor * 160);
+                                            {[24, 64, 104, 144, 180].map((y) => (
+                                                <line
+                                                    key={`grid-h-${y}`}
+                                                    x1={chartStartX}
+                                                    y1={y}
+                                                    x2={chartEndX}
+                                                    y2={y}
+                                                    className="grid_line"
+                                                />
+                                            ))}
 
-                                        return (
-                                            <text
-                                                key={index}
-                                                x="10"
-                                                y={y + 5}
-                                                className="texto_grafico"
-                                            >
-                                                $
-                                                {Math.round(montoMaximo * valor)
-                                                    .toLocaleString("es-CL")}
-                                            </text>
-                                        );
-                                    })}
+                                            {Array.from({ length: 7 }, (_, index) => chartStartX + (index * (chartWidth / 6))).map((x) => (
+                                                <line
+                                                    key={`grid-v-${x}`}
+                                                    x1={x}
+                                                    y1={chartTopY}
+                                                    x2={x}
+                                                    y2={chartStartY}
+                                                    className="grid_line grid_line_vertical"
+                                                />
+                                            ))}
 
-                                    {/* LINEAS HORIZONTALES */}
-                                    {gridRows.map((y) => (
-                                        <line
-                                            key={`grid-h-${y}`}
-                                            x1="70"
-                                            y1={y}
-                                            x2="650"
-                                            y2={y}
-                                            className="grid_line"
-                                        />
-                                    ))}
+                                            <line
+                                                x1={chartStartX}
+                                                y1={chartTopY}
+                                                x2={chartStartX}
+                                                y2={chartStartY}
+                                                className="linea_eje"
+                                            />
 
-                                    {/* LINEAS VERTICALES */}
-                                    {gridColumns.map((x) => (
-                                        <line
-                                            key={`grid-v-${x}`}
-                                            x1={x}
-                                            y1="20"
-                                            x2={x}
-                                            y2="180"
-                                            className="grid_line"
-                                        />
-                                    ))}
+                                            <line
+                                                x1={chartStartX}
+                                                y1={chartStartY}
+                                                x2={chartEndX}
+                                                y2={chartStartY}
+                                                className="linea_eje"
+                                            />
 
-                                    {/* EJE Y */}
-                                    <line
-                                        x1="70"
-                                        y1="20"
-                                        x2="70"
-                                        y2="180"
-                                        className="linea_eje"
-                                    />
+                                            {puntosGrafico && (
+                                                <polyline
+                                                    fill="none"
+                                                    points={puntosGrafico}
+                                                    className="linea_grafico"
+                                                />
+                                            )}
 
-                                    {/* EJE X */}
-                                    <line
-                                        x1="70"
-                                        y1="180"
-                                        x2="650"
-                                        y2="180"
-                                        className="linea_eje"
-                                    />
+                                            {gastosDiarios.map((gasto, index) => {
+                                                const x = chartStartX + (index * separacionX);
+                                                const y = chartStartY - ((gasto.amount / montoMaximo) * chartHeight);
 
-                                    {/* LINEA */}
-                                    <polyline
-                                        fill="none"
-                                        points={puntos}
-                                        className="linea_grafico"
-                                    />
+                                                return (
+                                                    <g key={`${gasto.day}-${index}`}>
+                                                        {hoveredPoint === index && (
+                                                            <g>
+                                                                <rect
+                                                                    x={x - 64}
+                                                                    y={y - 76}
+                                                                    width="128"
+                                                                    height="48"
+                                                                    rx="10"
+                                                                    fill="#1F2937"
+                                                                />
 
-                                    {/* PUNTOS */}
-                                    {gastosGrafico.map((gasto, index) => {
+                                                                <text
+                                                                    x={x}
+                                                                    y={y - 56}
+                                                                    textAnchor="middle"
+                                                                    fill="#ffffff"
+                                                                    fontSize="11"
+                                                                >
+                                                                    {formatCurrency(gasto.amount)}
+                                                                </text>
 
-                                        const monto = Number(gasto.amount);
+                                                                <text
+                                                                    x={x}
+                                                                    y={y - 40}
+                                                                    textAnchor="middle"
+                                                                    fill="#D1D5DB"
+                                                                    fontSize="10"
+                                                                >
+                                                                    {monthFormatter.format(gasto.date)}
+                                                                </text>
+                                                            </g>
+                                                        )}
 
-                                        const x = 70 + (index * separacionX);
-
-                                        const y = 180 - (
-                                            (monto / montoMaximo) * 160
-                                        );
-
-                                        return (
-                                            <g key={index}>
-
-                                                {/* TOOLTIP */}
-                                                {hoveredPoint === index && (
-                                                    <g>
-
-                                                        <rect
-                                                            x={x - 55}
-                                                            y={y - 75}
-                                                            width="110"
-                                                            height="45"
-                                                            rx="8"
-                                                            fill="#1F2937"
+                                                        <circle
+                                                            cx={x}
+                                                            cy={y}
+                                                            r="6"
+                                                            className="punto_grafico"
+                                                            onMouseEnter={() => setHoveredPoint(index)}
+                                                            onMouseLeave={() => setHoveredPoint(null)}
                                                         />
 
                                                         <text
                                                             x={x}
-                                                            y={y - 55}
+                                                            y="205"
                                                             textAnchor="middle"
-                                                            fill="#ffffff"
-                                                            fontSize="11"
+                                                            className="texto_grafico texto_grafico_dia"
                                                         >
-                                                            $
-                                                            {monto.toLocaleString("es-CL")}
+                                                            {gasto.day}
                                                         </text>
-
-                                                        <text
-                                                            x={x}
-                                                            y={y - 40}
-                                                            textAnchor="middle"
-                                                            fill="#D1D5DB"
-                                                            fontSize="10"
-                                                        >
-                                                            {gasto.date || "Sin fecha"}
-                                                        </text>
-
                                                     </g>
-                                                )}
+                                                );
+                                            })}
+                                        </svg>
+                                    </div>
+                                ) : (
+                                    <div className="analisis_empty_state">
+                                        No hay gastos suficientes para mostrar el gráfico del mes.
+                                    </div>
+                                )}
 
-                                                <circle
-                                                    cx={x}
-                                                    cy={y}
-                                                    r="6"
-                                                    className="punto_grafico"
-                                                    onMouseEnter={() => {
-                                                        setHoveredPoint(index);
-                                                    }}
-                                                    onMouseLeave={() => {
-                                                        setHoveredPoint(null);
-                                                    }}
-                                                />
-
-                                                <text
-                                                    x={x}
-                                                    y="205"
-                                                    textAnchor="middle"
-                                                    className="texto_grafico"
-                                                >
-                                                    {index + 1}
-                                                </text>
-
-                                            </g>
-                                        );
-                                    })}
-
-                                </svg>
-
-                            </div>
-
-                        </div>
-
-                        <div className="estimacion_pago">
-                            <h1>johto</h1>
-                        </div>
-
-                    </div>
-
-                    <div className="col_derecha">
-
-                        <div className="total_gastos">
-
-                            <h2>Total gastos del mes</h2>
-
-                            {loading ? (
-
-                                <h1>Cargando...</h1>
-
-                            ) : error ? (
-
-                                <p style={{ color: "#b91c1c" }}>
-                                    Error: {error}
+                                <p className="analisis_resumen_linea">
+                                    {resumenDescripcion}
                                 </p>
 
-                            ) : (
+                                <p className="analisis_resumen_diario">
+                                    {gastoMayorDiaTexto}
+                                </p>
+                            </div>
 
-                                <>
-                                    <h1>
-                                        $
-                                        {totalGastos.toLocaleString("es-CL")}
-                                    </h1>
+                            <div className="card_analisis card_estimacion">
+                                <div className="card_titulo_block">
+                                    <h2>Pago estimado en crédito</h2>
+                                </div>
 
-                                    <p>
-                                        {gastosGrafico.length}{" "}
-                                        {gastosGrafico.length === 1
-                                            ? "gasto"
-                                            : "gastos durante el mes"}
-                                    </p>
-                                </>
+                                <div className="estimacion_contenido">
+                                    <div className="estimacion_texto">
+                                        <p className="monto_estimacion">
+                                            {formatCurrency(totalCreditoMesActual)}
+                                        </p>
 
-                            )}
+                                        <p className="descripcion_estimacion">
+                                            {resumenCreditoDescripcion}
+                                        </p>
+                                    </div>
 
+                                    <div className="estimacion_icono">
+                                        <img src={tarjetaIcon} alt="Tarjeta de crédito" />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div className="gastos_categoria">
-                            <h1>alola</h1>
-                        </div>
+                        <div className="col_derecha">
+                            <div className="card_analisis card_total">
+                                <div className="card_titulo_block card_titulo_block_row">
+                                    <h2>Total gastos registrados</h2>
 
+                                    {variacionPorcentual !== null && (
+                                        <span
+                                            className={`badge_variacion ${variacionPorcentual >= 0 ? "badge_alza" : "badge_baja"}`}
+                                        >
+                                            {`${variacionPorcentual >= 0 ? "+" : ""}${Math.abs(Math.round(variacionPorcentual))}%`}
+                                        </span>
+                                    )}
+                                </div>
+
+                                {loading ? (
+                                    <h3 className="card_total_loading">Cargando...</h3>
+                                ) : error ? (
+                                    <p className="card_total_error">Error: {error}</p>
+                                ) : (
+                                    <>
+                                        <p className="total_gastos_valor">
+                                            {formatCurrency(totalMesActual)}
+                                        </p>
+
+                                        <p className="total_gastos_subtexto">
+                                            {gastoTotalRegistrado} gastos en total registrados este mes (débito y efectivo).
+                                        </p>
+                                    </>
+                                )}
+                            </div>
+
+                            <div className="card_analisis card_categoria">
+                                <div className="card_titulo_block">
+                                    <h2>Gastos por Categoría</h2>
+                                </div>
+
+                                {categoriasPie.length > 0 ? (
+                                    <div className="categoria_layout">
+                                        <div className="pie_visual_wrap">
+                                            <div
+                                                className="pie_visual"
+                                                style={{ background: `conic-gradient(${pieGradient})` }}
+                                            />
+                                        </div>
+
+                                        <div className="categoria_leyenda">
+                                            {categoriasPie.map((categoria, index) => (
+                                                <div key={categoria.name} className="categoria_item">
+                                                    <span
+                                                        className="categoria_dot"
+                                                        style={{ backgroundColor: categoryPalette[index % categoryPalette.length] }}
+                                                    />
+                                                    <div>
+                                                        <p className="categoria_nombre">{categoria.name}</p>
+                                                        <p className="categoria_monto">
+                                                            {formatCurrency(categoria.amount)}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            ))}
+
+                                            <div className="categoria_mayor_box">
+                                                <span className="categoria_mayor_dot" />
+                                                <p>
+                                                    Mayor gasto: <strong>{totalCategoriaTexto}</strong>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="analisis_empty_state analisis_empty_state_compact">
+                                        Aún no hay categorías para mostrar.
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
     );
 }
