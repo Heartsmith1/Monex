@@ -73,7 +73,8 @@
   padding: 12px 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   align-self: start;
-  margin-top: 0;
+  margin-top: -8px;
+  transform: translateY(-6px);
   width: 96%;
   min-width: 0;
   max-width: 96%;
@@ -167,9 +168,10 @@
 }
 
 .cupo_comparacion {
-  margin-top: 16px;
-  padding-top: 16px;
+  margin-top: 6px;
+  padding-top: 8px;
   border-top: 1px solid #e5e7eb;
+  transform: translateY(-6px);
 }
 
 .cupo_label {
