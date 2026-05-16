@@ -19,6 +19,7 @@ export function Home() {
     const navigate = useNavigate();
 
     const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+
     const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
 
     const [ultimosGastos, setUltimosGastos] = useState([]);
@@ -51,7 +52,7 @@ export function Home() {
 
             setUltimosGastos(
                 gastosOrdenados.slice(0, 5)
-                
+
             );
 
             const fechaActual = new Date();
@@ -120,7 +121,7 @@ export function Home() {
                         if (
                             esDelMesActual &&
                             gasto.paymentMethod ===
-                                "CREDITO"
+                            "CREDITO"
                         ) {
 
                             contadorGastosCredito++;
@@ -312,8 +313,8 @@ export function Home() {
                                             100
                                             ? "Presupuesto superado"
                                             : `${porcentajePresupuesto.toFixed(
-                                                  0
-                                              )}% de tu presupuesto utilizado`}
+                                                0
+                                            )}% de tu presupuesto utilizado`}
                                     </p>
                                 </div>
 
