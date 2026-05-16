@@ -51,6 +51,7 @@ export function Home() {
 
             setUltimosGastos(
                 gastosOrdenados.slice(0, 5)
+                
             );
 
             const fechaActual = new Date();
