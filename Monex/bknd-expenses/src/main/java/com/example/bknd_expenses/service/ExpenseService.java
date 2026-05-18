@@ -274,9 +274,11 @@ public class ExpenseService {
     }
 
     private BigDecimal calculateMonthlyInstallmentAmount(Expense expense) {
-        BigDecimal totalAmount = expense.getAmount().add(
-                expense.getCommission() != null ? expense.getCommission() : BigDecimal.ZERO
-        );
+        BigDecimal commission = expense.getCommission() != null ? expense.getCommission() : BigDecimal.ZERO;
+        BigDecimal commissionAmount = expense.getAmount()
+            .multiply(commission)
+            .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        BigDecimal totalAmount = expense.getAmount().add(commissionAmount);
 
         if (expense.getInstallments() == null || expense.getInstallments() <= 1) {
             return totalAmount;

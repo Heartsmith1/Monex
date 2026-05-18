@@ -289,7 +289,7 @@ export function Home() {
                         <div className="box_grafico_lineal_home">
 
                             <h1>
-                                Total Gastos del Mes
+                                Total Gastos del Mes/Sueldo del Mes
                             </h1>
 
                             <div className="resumen_total_mes_home">
@@ -299,6 +299,10 @@ export function Home() {
                                     <span className="total_mes_home">
                                         {formatAmount(
                                             totalMes
+                                        )}
+                                        /
+                                        {formatAmount(
+                                            sueldoMes
                                         )}
                                     </span>
 
@@ -475,7 +479,7 @@ export function Home() {
                         <div className="contenedor_pago_tarjeta_home">
 
                             <h2>
-                                Estimación Pago Mensual Tarjeta
+                                Gastos Con Tarjeta de Crédito del Mes
                             </h2>
 
                             <div className="contenido_pago_tarjeta_home">
