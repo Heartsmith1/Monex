@@ -204,6 +204,7 @@ export function EstMensual() {
     let deudaTotal = 0;
     let cuotasPendientes = 0;
     let totalCuotas = 0;
+    let totalGastadoCredito = 0;
 
     const now = new Date();
 
@@ -220,13 +221,18 @@ export function EstMensual() {
         expense.commission
       );
 
+      const commissionAmount =
+        amount * (commission / 100);
+
       const installments = Math.max(
         1,
         toNumber(expense.installments)
       );
 
       const totalWithCommission =
-        amount + commission;
+        amount + commissionAmount;
+
+      totalGastadoCredito += totalWithCommission;
 
       const monthlyPayment =
         totalWithCommission / installments;
@@ -325,13 +331,16 @@ export function EstMensual() {
           expense.commission
         );
 
+        const commissionAmount =
+          amount * (commission / 100);
+
         const installments = Math.max(
           1,
           toNumber(expense.installments)
         );
 
         const monthlyPayment =
-          (amount + commission) /
+          (amount + commissionAmount) /
           installments;
 
         const pendingInstallments =
@@ -340,7 +349,7 @@ export function EstMensual() {
         return {
           nombre: expense.name,
           monto: Math.round(
-            amount + commission
+            amount + commissionAmount
           ),
           cuotas: pendingInstallments,
           cuotasTotales: installments,
@@ -377,6 +386,9 @@ export function EstMensual() {
 
     return {
       totalEstimado: totalEstimadoFinal,
+      totalGastadoCredito: Math.round(
+        totalGastadoCredito
+      ),
       comprasConTarjeta:
         comprasTarjetaApi > 0
           ? comprasTarjetaApi
@@ -498,7 +510,7 @@ export function EstMensual() {
                   0
                 );
 
-              const spent = estimaciones.totalEstimado || 0;
+              const spent = estimaciones.totalGastadoCredito || 0;
               const cupo = cupoTarjeta || 0;
               const gastoPercent =
                 cupo > 0
@@ -535,11 +547,11 @@ export function EstMensual() {
                           {cupoTarjeta > 0 && (
                             <div className="cupo_comparacion">
                               <p className="cupo_label">
-                                Cupo disponible:
+                                Total gastado / cupo de tarjeta:
                               </p>
                               <p className="cupo_valor">
                                 $
-                                {estimaciones.totalEstimado.toLocaleString()}
+                                {spent.toLocaleString()}
                                 /$
                                 {cupoTarjeta.toLocaleString()}
                               </p>

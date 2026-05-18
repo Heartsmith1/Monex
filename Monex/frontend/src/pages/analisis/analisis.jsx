@@ -367,6 +367,7 @@ export function Analisis() {
 
         const amount = Number(gasto?.amount ?? 0);
         const commission = Number(gasto?.commission ?? 0);
+        const commissionAmount = amount * (commission / 100);
         const installments = Math.max(1, Number(gasto?.installments ?? 1));
 
         const startMonth = new Date(
@@ -381,7 +382,7 @@ export function Analisis() {
             return total;
         }
 
-        const monthlyPayment = (amount + commission) / installments;
+        const monthlyPayment = (amount + commissionAmount) / installments;
 
         return total + (Number.isNaN(monthlyPayment) ? 0 : monthlyPayment);
     }, 0);
@@ -394,7 +395,7 @@ export function Analisis() {
         ? `${categoriaMayor.name} (${Math.round(porcentajeCategoriaMayor)}%)`
         : "Sin categoría destacada";
 
-    const gastoTotalRegistrado = gastos.length;
+    const gastoTotalRegistrado = gastosMesActualVisible.length;
 
     return (
         // Contenedor principal y barra lateral
