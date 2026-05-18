@@ -28,6 +28,7 @@ export function Home() {
 
     const [totalMes, setTotalMes] = useState(0);
     const [sueldoMes, setSueldoMes] = useState(0);
+    
     const [cantidadGastosMes, setCantidadGastosMes] = useState(0);
 
     const [totalCreditoMes, setTotalCreditoMes] = useState(0);
