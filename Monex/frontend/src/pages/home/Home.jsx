@@ -33,6 +33,7 @@ export function Home() {
     const [cantidadGastosMes, setCantidadGastosMes] = useState(0);
 
     const [totalCreditoMes, setTotalCreditoMes] = useState(0);
+    
     const [cantidadGastosCreditoMes, setCantidadGastosCreditoMes] = useState(0);
 
     const cargarDatosHome = async () => {
