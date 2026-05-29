@@ -55,8 +55,6 @@ Este servicio maneja:
 - Base de datos: `usuarios` en PostgreSQL.
 - URL de conexion: `jdbc:postgresql://localhost:5432/usuarios`
 - Usuario BD: `postgres`
-- Contraseña BD: `1234`
-- JWT secret: `clave-super-secreta-para-testeo-1234567890` (en `application.properties`)
 - JWT expiration: `86400000` ms (24 horas)
 
 ### Endpoints principales
@@ -102,8 +100,6 @@ Este servicio maneja:
 - Base de datos: `categorias` en PostgreSQL.
 - URL de conexion: `jdbc:postgresql://localhost:5432/categorias`
 - Usuario BD: `postgres`
-- Contraseña BD: `1234`
-- JWT secret: `clave-super-secreta-para-testeo-1234567890` (en `application.properties`)
 
 ### Endpoints principales
 
@@ -140,8 +136,6 @@ Este servicio maneja:
 - Base de datos: `gastos` en PostgreSQL.
 - URL de conexion: `jdbc:postgresql://localhost:5432/gastos`
 - Usuario BD: `postgres`
-- Contraseña BD: `1234`
-- JWT secret: `clave-super-secreta-para-testeo-1234567890` (debe ser igual en todos los servicios)
 - JWT expiration: `86400000` ms (24 horas)
 
 ### Endpoints principales
@@ -207,9 +201,6 @@ Todos los backends permiten origen:
 
 Asegúrate de tener PostgreSQL corriendo localmente en `localhost:5432`.
 
-Credenciales por defecto esperadas:
-- Usuario: `postgres`
-- Contraseña: `1234`
 
 Las bases de datos se crearán automaticamente con `spring.jpa.hibernate.ddl-auto=update`.
 
