@@ -7,7 +7,7 @@
   width: 100%;
 }
 
-.fondo_imagen {
+.fondo_imagen_registro {
   flex: 1;
   background-image: url("/src/assets/img/fondo_login.png");
   background-size: cover;
@@ -17,66 +17,76 @@
 
 .img_logo_registro{
   display: block;
-  width: min(90vw, 1000px);
+  width: 1000px;
   margin: 20px auto 0 auto;
-  margin-left: -240px;
+  margin-left: -250px;
   margin-bottom: -70px;
 }
 
 .img_registro{
   display: flex;
   width: 200px;
-  margin-left: 200px;
+  margin-left: -0px;
   margin-bottom: -150px;
 }
 
-.register {
+.register_registro {
   flex: 1; 
   background-color: #4CAF50;
   display: flex;            
   justify-content: center;   
   align-items: center; 
-  padding: 40px 0; /* Agrega algo de espacio vertical */
+  padding: 40px 20px;
   overflow-y: auto;  
 }
 
-.text_usuario{
+.register_contenido_registro {
+  width: min(100%, 520px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.text_usuario_registro{
   display: block;
-  margin-left: 30px;
   color: white;
   font-family: 'Outfit', sans-serif;
   font-size: 20px;
   font-weight: 700;
-  margin-left: -20px;
+  margin: 0 0 8px 0;
+  width: 100%;
+  text-align: left;
 }
 
-.text_email{
+.text_email_registro{
   display: block;
-  margin-left: 30px;
   color: white;
   font-family: 'Outfit', sans-serif;
   font-size: 20px;
   font-weight: 700;
-  margin-left: -20px;
+  margin: 0 0 8px 0;
+  width: 100%;
+  text-align: left;
 }
 
-.input_group {
+.input_group_registro {
   position: relative;
   margin-bottom: 25px;
-  width: min(100%, 500px);
+  width: 100%;
+  max-width: 520px;
 }
 
-.input_wrapper {
+.input_wrapper_registro {
   position: relative;
-
-  width: min(100%, 500px);
+  width: 100%;
 }
 
-.input_usuario {
+.input_usuario_registro {
   font-family: 'Outfit', sans-serif;
   font-size: 20px;
   font-weight: 700;
-  width: min(100%, 500px);
+  width: 100%;
   height: 60px;
   background: #24282C;
   backdrop-filter: blur(4px);
@@ -91,14 +101,14 @@
   display: block;
   margin: 0;
   box-sizing: border-box;
-  margin-left: -20px;
+  margin-left: 0;
 }
 
-.input_email {
+.input_email_registro {
   font-family: 'Outfit', sans-serif;
   font-size: 20px;
   font-weight: 700;
-  width: min(100%, 500px);
+  width: 100%;
   height: 60px;
   background: #24282C;
   backdrop-filter: blur(4px);
@@ -113,17 +123,17 @@
   display: block;
   margin: 0;
   box-sizing: border-box;
-  margin-left: -20px;
+  margin-left: 0;
  
 }
 
-.input_email:focus {
+.input_email_registro:focus {
   box-shadow: 0 0 0 2px #D1B475;
   opacity: 0.7;
 }
 
-.input_icon_email,
-.input_icon_password {
+.input_icon_email_registro,
+.input_icon_password_registro {
   position: absolute;
   right: 30px;
   top: 50%;
@@ -132,21 +142,22 @@
   cursor: pointer; /* Indica que el icono es clicable */
 }
 
-.text_contraseña{
+.text_contraseña_registro{
     font-family: 'Outfit', sans-serif;
     font-size: 20px;    
     font-weight: 700;
     display: block;
-    margin-left: 30px;
     color: white;
-    margin-left: -20px;
+    margin: 0 0 8px 0;
+    width: 100%;
+  text-align: left;
 }
 
-.input_contraseña{
+.input_contraseña_registro{
     font-family: 'Outfit', sans-serif;
     font-size: 20px;
     font-weight: 700;
-    width: min(100%, 500px);
+    width: 100%;
     height: 60px;
     background: #24282C;
     backdrop-filter: blur(4px);
@@ -161,24 +172,31 @@
     display: block;
     margin: 0;
     box-sizing: border-box;
-    margin-left: -20px;
+    margin-left: 0;
 }
 
-.error {
+.error_registro {
     color: #d51313;
     font-size: 12px;
     margin-top: 5px;
 }
 
-.contenedor-botones {
+.form_register_registro {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contenedor-botones_registro {
    display: flex;
     flex-direction: column;
-    align-items: center; /* Esto es suficiente para centrar */
+    align-items: center;
     gap: 15px;
     width: 100%;        /* Asegúrate de que el contenedor ocupe el ancho disponible */
     margin-top: 20px;   /* Un poco de aire respecto al último input */
     font-family: 'Outfit', sans-serif;
-    margin-left: -70px;
+  margin-left: 0;
     
 }
 
@@ -193,6 +211,8 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  display: block;
+  margin: 0 auto;
 }
 
 .boton_registrarse:hover {
@@ -206,42 +226,42 @@
     height: auto;
   }
 
-  .fondo_imagen {
+  .fondo_imagen_registro {
     display: none;
   }
 
-  .register {
+  .register_registro {
     width: 100%;
-    padding: 32px 20px;
-    align-items: flex-start;
+    padding: 32px 18px;
+    align-items: center;
   }
 
   .img_logo_registro {
-    width: min(88vw, 420px);
-    margin: 0 auto 20px auto;
-  }
-
-  .img_registro {
-    width: 140px;
+    width: min(82vw, 360px);
     margin: 0 auto 18px auto;
   }
 
-  .input_group,
-  .input_wrapper,
-  .input_usuario,
-  .input_email,
-  .input_contraseña {
+  .img_registro {
+    width: 96px;
+    margin: 0 auto 12px auto;
+  }
+
+  .input_group_registro,
+  .input_wrapper_registro,
+  .input_usuario_registro,
+  .input_email_registro,
+  .input_contraseña_registro {
     width: 100%;
     margin-left: 0;
   }
 
-  .text_usuario,
-  .text_email,
-  .text_contraseña {
+  .text_usuario_registro,
+  .text_email_registro,
+  .text_contraseña_registro {
     margin-left: 0;
   }
 
-  .contenedor-botones {
+  .contenedor-botones_registro {
     margin-left: 0;
     width: 100%;
   }
@@ -253,22 +273,22 @@
 }
 
 @media (max-width: 520px) {
-  .register {
+  .register_registro {
     padding: 24px 16px;
   }
 
-  .text_usuario,
-  .text_email,
-  .text_contraseña,
-  .input_usuario,
-  .input_email,
-  .input_contraseña {
+  .text_usuario_registro,
+  .text_email_registro,
+  .text_contraseña_registro,
+  .input_usuario_registro,
+  .input_email_registro,
+  .input_contraseña_registro {
     font-size: 16px;
   }
 
-  .input_usuario,
-  .input_email,
-  .input_contraseña {
+  .input_usuario_registro,
+  .input_email_registro,
+  .input_contraseña_registro {
     height: 52px;
   }
 
