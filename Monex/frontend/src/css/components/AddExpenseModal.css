@@ -13,7 +13,7 @@
 }
 
 .expense-modal-container {
-    width: 760px;
+    width: min(96vw, 760px);
     background: #f4f4f4;
     border-radius: 16px;
     padding: 40px;
@@ -116,7 +116,7 @@
 
 .expense-btn-cancel,
 .expense-btn-save {
-    width: 220px;
+    width: min(100%, 220px);
     height: 52px;
     border: none;
     border-radius: 10px;
@@ -171,5 +171,26 @@
     .expense-btn-cancel,
     .expense-btn-save {
         width: 100%;
+    }
+}
+
+@media (max-width: 520px) {
+    .expense-modal-container {
+        width: 96%;
+        padding: 22px 16px;
+    }
+
+    .expense-modal-title {
+        font-size: 28px;
+        margin-bottom: 24px;
+    }
+
+    .expense-modal-group label {
+        font-size: 14px;
+    }
+
+    .expense-modal-group input,
+    .expense-modal-group select {
+        height: 46px;
     }
 }

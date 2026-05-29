@@ -275,3 +275,47 @@
     color: white;
     border-color: #45ad4d;
 }
+
+@media (max-width: 900px) {
+    .contenido_Gastos {
+        padding: 122px 16px 20px 16px;
+    }
+
+    .barra_Gastos {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+        padding: 18px 16px;
+    }
+
+    .input_con_icono_gastos,
+    .input_Fecha_Gastos,
+    .select_Gastos {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .tabla_expenses {
+        overflow-x: auto;
+    }
+
+    .tabla_expenses table {
+        min-width: 980px;
+    }
+
+    .paginacion_gastos {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 520px) {
+    .contenido_Gastos h1 {
+        font-size: 24px;
+    }
+
+    .tabla_expenses table {
+        min-width: 860px;
+    }
+}

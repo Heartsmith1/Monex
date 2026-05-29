@@ -459,3 +459,38 @@
         justify-content: flex-start;
     }
 }
+
+@media (max-width: 640px) {
+    .contenido_anilisis {
+        padding-top: 118px;
+        padding-inline: 12px;
+    }
+
+    .analisis_header h1 {
+        font-size: 26px;
+    }
+
+    .analisis_banner {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .card_titulo_block_row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .monto_estimacion,
+    .total_gastos_valor,
+    .card_total_loading {
+        font-size: 32px;
+    }
+
+    .grafico_linea_container {
+        height: 220px;
+    }
+
+    .badge_variacion {
+        width: 100%;
+    }
+}

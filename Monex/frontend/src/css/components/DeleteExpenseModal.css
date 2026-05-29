@@ -12,7 +12,7 @@
 }
 
 .modal_eliminar_gasto {
-    width: 620px;
+    width: min(96vw, 620px);
     background-color: #f1f2f4;
     border-radius: 10px;
     padding: 35px 55px;
@@ -92,4 +92,25 @@
 
 .btn_confirmar_eliminar:hover {
     background-color: #e05f55;
+}
+
+@media (max-width: 520px) {
+    .modal_eliminar_gasto {
+        width: 96%;
+        padding: 24px 18px;
+    }
+
+    .modal_eliminar_gasto h2 {
+        font-size: 22px;
+    }
+
+    .modal_botones {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .btn_cancelar_modal,
+    .btn_confirmar_eliminar {
+        width: 100%;
+    }
 }

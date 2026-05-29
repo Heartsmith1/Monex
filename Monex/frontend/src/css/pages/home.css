@@ -344,3 +344,109 @@
 .btn_ver_todos_home:hover {
     opacity: 0.75;
 }
+
+@media (max-width: 1200px) {
+    .layout_home {
+        flex-direction: column;
+    }
+
+    .col_izquierda,
+    .col_derecha {
+        width: 100%;
+    }
+
+    .box_grafico_lineal_home,
+    .box_grafico_torta_home,
+    .contendor_ultimos_gastos,
+    .contenedor_pago_tarjeta_home {
+        height: auto;
+        min-height: 0;
+    }
+
+    .contenido_pago_tarjeta_home {
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 900px) {
+    .home_page_content {
+        padding-top: 120px;
+    }
+
+    .home_page_content > h1 {
+        margin-left: 16px;
+        font-size: 24px;
+    }
+
+    .layout_home {
+        padding: 16px;
+        gap: 16px;
+    }
+
+    .resumen_total_mes_home,
+    .contenido_pago_tarjeta_home {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .total_mes_home,
+    .monto_pago_tarjeta_home {
+        font-size: 36px;
+    }
+
+    .texto_base_presupuesto_home {
+        max-width: 100%;
+    }
+
+    .icono_tarjeta_credito_home {
+        width: 110px;
+    }
+
+    .btn_detalle_tarjeta_home {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .tabla_ultimos_gastos_home {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .tabla_ultimos_gastos_home table {
+        min-width: 640px;
+    }
+}
+
+@media (max-width: 520px) {
+    .home_page_content {
+        padding-top: 112px;
+    }
+
+    .home_page_content > h1 {
+        font-size: 22px;
+    }
+
+    .box_grafico_lineal_home,
+    .box_grafico_torta_home,
+    .contendor_ultimos_gastos,
+    .contenedor_pago_tarjeta_home {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .total_mes_home,
+    .monto_pago_tarjeta_home {
+        font-size: 30px;
+    }
+
+    .texto_presupuesto_home,
+    .texto_base_presupuesto_home p,
+    .cantidad_pago_tarjeta_home {
+        font-size: 14px;
+    }
+
+    .icono_tarjeta_credito_home {
+        width: 92px;
+    }
+}
