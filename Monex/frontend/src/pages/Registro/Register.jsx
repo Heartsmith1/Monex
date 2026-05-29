@@ -162,9 +162,9 @@ export function Register (){
 
     return(
     <div className="contenedor_registro">
-      <div className="fondo_imagen"></div>
-      <div className="register">
-        <div className="register_contenido">
+      <div className="fondo_imagen_registro"></div>
+      <div className="register_registro">
+        <div className="register_contenido_registro">
           <img 
             src={usuario} 
             className="img_registro" 
@@ -177,12 +177,12 @@ export function Register (){
             </div>
           )}
 
-          <form className="form_register" onSubmit={handleSubmit}>
-            <div className="input_group">
-              <label className="text_usuario">Nombre usuario</label>
-              <div className="input_wrapper">
+          <form className="form_register_registro" onSubmit={handleSubmit}>
+            <div className="input_group_registro">
+              <label className="text_usuario_registro">Nombre usuario</label>
+              <div className="input_wrapper_registro">
                 <input
-                  className="input_usuario"
+                  className="input_usuario_registro"
                   type="text"
                   placeholder="Ingresa tu nombre"
                   value={nombre}
@@ -207,11 +207,11 @@ export function Register (){
               </span>
             </div>
 
-            <div className="input_group">
-              <label className="text_email">Email</label>
-              <div className="input_wrapper">
+            <div className="input_group_registro">
+              <label className="text_email_registro">Email</label>
+              <div className="input_wrapper_registro">
                 <input
-                  className="input_email"
+                  className="input_email_registro"
                   type="text"
                   placeholder="Ingresa tu correo electronico"
                   value={email}
@@ -226,11 +226,11 @@ export function Register (){
               </span>
             </div>
 
-            <div className="input_group">
-              <label className="text_contraseña">Contraseña</label>
-              <div className="input_wrapper">
+            <div className="input_group_registro">
+              <label className="text_contraseña_registro">Contraseña</label>
+              <div className="input_wrapper_registro">
                 <input 
-                  className="input_contraseña"
+                  className="input_contraseña_registro"
                   type={showPassword ? "text" : "password"}
                   placeholder="Ingresa tu contraseña"
                   value={contraseña}
@@ -242,18 +242,18 @@ export function Register (){
                 <img 
                   src={ocultar} 
                   alt="icono contraseña" 
-                  className="input_icon_password" 
+                  className="input_icon_password_registro" 
                   onClick={() => setShowPassword(!showPassword)}
                 />
               </div>
               <span style={{ color: colorMensajeContraseña }}>{mensajeContraseña}</span>
             </div>
 
-            <div className="input_group">
-              <label className="text_contraseña">Repetir contraseña</label>
-              <div className="input_wrapper">
+            <div className="input_group_registro">
+              <label className="text_contraseña_registro">Repetir contraseña</label>
+              <div className="input_wrapper_registro">
                 <input 
-                  className="input_contraseña"
+                  className="input_contraseña_registro"
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Repite tu contraseña"
                   value={confirmarContraseña}
@@ -265,13 +265,13 @@ export function Register (){
                 <img 
                   src={ocultar} 
                   alt="icono contraseña" 
-                  className="input_icon_password" 
+                  className="input_icon_password_registro" 
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 />
               </div>
               <span style={{ color: colorMensajeContraseñas }}>{mensajeContraseñas}</span>
             </div>
-            <div className="contenedor-botones">
+            <div className="contenedor-botones_registro">
               <button className="boton_registrarse" type="submit">Registrarse</button>
             </div>
           </form>

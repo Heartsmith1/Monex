@@ -149,6 +149,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
+  width: 100%;
 }
 
 .usuario_avatar_container {
@@ -170,10 +171,17 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
+    min-width: 0;
+    flex: 1;
 }
 
 .texto_email_sidebar{
   color: black;
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .icono_Usuario {
@@ -250,6 +258,14 @@
 
   .usuario_info {
     justify-content: center;
+  }
+
+  .usuario_datos {
+    align-items: center;
+  }
+
+  .texto_email_sidebar {
+    max-width: 100%;
   }
 
   .boton_logout {
