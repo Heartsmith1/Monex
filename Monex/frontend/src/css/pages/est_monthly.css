@@ -479,3 +479,73 @@
     height: 200px;
   }
 }
+
+@media (max-width: 640px) {
+  .est_mensual_layout {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .contenedor_est_mensual {
+    margin-top: 112px;
+    padding: 12px;
+  }
+
+  .est_header h1 {
+    font-size: 26px;
+  }
+
+  .est_descripcion {
+    font-size: 16px;
+  }
+
+  .est_content {
+    flex-direction: column;
+  }
+
+  .est_table_card,
+  .est_chart_card,
+  .est_resumen {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .est_monto {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .monto_valor {
+    font-size: 32px;
+  }
+
+  .monto_texto {
+    max-width: none;
+    font-size: 15px;
+  }
+
+  .est_chart {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .chart_axis {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0;
+  }
+
+  .chart_plot {
+    min-height: 220px;
+    overflow-x: auto;
+  }
+
+  .est_meses {
+    grid-template-columns: 1fr;
+  }
+
+  .alerta_texto {
+    left: 0;
+    max-width: none;
+  }
+}
