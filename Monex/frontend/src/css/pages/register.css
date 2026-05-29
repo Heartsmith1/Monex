@@ -17,7 +17,7 @@
 
 .img_logo_registro{
   display: block;
-  width: 1000px;
+  width: min(90vw, 1000px);
   margin: 20px auto 0 auto;
   margin-left: -240px;
   margin-bottom: -70px;
@@ -63,20 +63,20 @@
 .input_group {
   position: relative;
   margin-bottom: 25px;
-  width: 500px;
+  width: min(100%, 500px);
 }
 
 .input_wrapper {
   position: relative;
 
-  width: 500px;
+  width: min(100%, 500px);
 }
 
 .input_usuario {
   font-family: 'Outfit', sans-serif;
   font-size: 20px;
   font-weight: 700;
-  width: 500px;
+  width: min(100%, 500px);
   height: 60px;
   background: #24282C;
   backdrop-filter: blur(4px);
@@ -98,7 +98,7 @@
   font-family: 'Outfit', sans-serif;
   font-size: 20px;
   font-weight: 700;
-  width: 500px;
+  width: min(100%, 500px);
   height: 60px;
   background: #24282C;
   backdrop-filter: blur(4px);
@@ -146,7 +146,7 @@
     font-family: 'Outfit', sans-serif;
     font-size: 20px;
     font-weight: 700;
-    width: 500px;
+    width: min(100%, 500px);
     height: 60px;
     background: #24282C;
     backdrop-filter: blur(4px);
@@ -197,4 +197,82 @@
 
 .boton_registrarse:hover {
     background-color: #bc9e62; /* Oscurece un poco al pasar el mouse */
+}
+
+@media (max-width: 900px) {
+  .contenedor_registro {
+    flex-direction: column;
+    min-height: 100vh;
+    height: auto;
+  }
+
+  .fondo_imagen {
+    display: none;
+  }
+
+  .register {
+    width: 100%;
+    padding: 32px 20px;
+    align-items: flex-start;
+  }
+
+  .img_logo_registro {
+    width: min(88vw, 420px);
+    margin: 0 auto 20px auto;
+  }
+
+  .img_registro {
+    width: 140px;
+    margin: 0 auto 18px auto;
+  }
+
+  .input_group,
+  .input_wrapper,
+  .input_usuario,
+  .input_email,
+  .input_contraseña {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .text_usuario,
+  .text_email,
+  .text_contraseña {
+    margin-left: 0;
+  }
+
+  .contenedor-botones {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .boton_registrarse {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .register {
+    padding: 24px 16px;
+  }
+
+  .text_usuario,
+  .text_email,
+  .text_contraseña,
+  .input_usuario,
+  .input_email,
+  .input_contraseña {
+    font-size: 16px;
+  }
+
+  .input_usuario,
+  .input_email,
+  .input_contraseña {
+    height: 52px;
+  }
+
+  .boton_registrarse {
+    height: 46px;
+  }
 }

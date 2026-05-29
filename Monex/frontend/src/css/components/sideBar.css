@@ -206,3 +206,67 @@
     width: 20px;
     height: 20px;
 }
+
+@media (max-width: 900px) {
+  .contenedor_sideBar {
+    width: 100%;
+    height: auto;
+    margin-top: 110px;
+    padding: 16px;
+    border-right: none;
+    border-bottom: 1px solid #ced4da;
+  }
+
+  .contenedor_botones {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .boton_inicio,
+  .boton_gastos,
+  .boton_categoria,
+  .boton_analisis,
+  .boton_est_mensual {
+    width: 100%;
+    margin-top: 0;
+    font-size: 16px;
+    height: 48px;
+  }
+
+  .boton_inicio img,
+  .boton_gastos img,
+  .boton_categoria img,
+  .boton_analisis img,
+  .boton_est_mensual img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .sidebar_footer {
+    margin-top: 20px;
+    padding-top: 20px;
+  }
+
+  .usuario_info {
+    justify-content: center;
+  }
+
+  .boton_logout {
+    width: 100%;
+    max-width: 320px;
+    margin: 20px auto 0 auto;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 520px) {
+  .contenedor_botones {
+    grid-template-columns: 1fr;
+  }
+
+  .usuario_info {
+    flex-direction: column;
+    text-align: center;
+  }
+}

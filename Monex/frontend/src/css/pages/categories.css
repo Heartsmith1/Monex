@@ -231,3 +231,52 @@
     color: white;
     border-color: #45ad4d;
 }
+
+@media (max-width: 900px) {
+    .contenido_Categorias {
+        padding: 122px 16px 20px 16px;
+    }
+
+    .barra_Categorias {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+    }
+
+    .input_con_icono {
+        width: 100%;
+        max-width: none;
+    }
+
+    .btn_Agregar_Categoria {
+        width: 100%;
+    }
+
+    .tabla_Categorias {
+        overflow-x: auto;
+    }
+
+    .tabla_Categorias table {
+        min-width: 720px;
+    }
+
+    .paginacion_Categorias {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 520px) {
+    .contenido_Categorias h1 {
+        font-size: 24px;
+    }
+
+    .contenido_Categorias > p {
+        margin-bottom: 20px;
+    }
+
+    .tabla_Categorias table {
+        min-width: 640px;
+    }
+}
