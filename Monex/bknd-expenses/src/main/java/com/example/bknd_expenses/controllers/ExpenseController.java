@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +49,34 @@ public class ExpenseController {
                     paymentMethod,
                     startDate,
                     endDate
+            );
+
+            return ResponseEntity.ok(expenses);
+        } catch (IllegalArgumentException ex) {
+            return handleIllegalArgument(ex);
+        }
+    }
+
+    @Operation(summary = "Listar gastos paginados con filtros opcionales", security = {@SecurityRequirement(name = "bearerAuth")})
+    @GetMapping("/paginadas")
+    public ResponseEntity<?> getExpensesPaged(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String paymentMethod,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        try {
+            Long userId = jwtService.getUserIdFromAuthorizationHeader(authHeader);
+
+            Page<ExpenseResponse> expenses = expenseService.getExpensesByFiltersPaged(
+                    userId,
+                    categoryId,
+                    paymentMethod,
+                    startDate,
+                    endDate,
+                    PageRequest.of(page, size)
             );
 
             return ResponseEntity.ok(expenses);

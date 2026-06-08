@@ -7,6 +7,8 @@ import com.example.bknd_expenses.entity.Expense;
 import com.example.bknd_expenses.entity.PaymentMethod;
 import com.example.bknd_expenses.repository.ExpenseRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -127,6 +129,55 @@ public class ExpenseService {
         return expenses.stream()
                 .map(this::mapToResponse)
                 .toList();
+    }
+
+    public Page<ExpenseResponse> getExpensesByFiltersPaged(
+            Long userId,
+            Long categoryId,
+            String paymentMethod,
+            LocalDate startDate,
+            LocalDate endDate,
+            Pageable pageable
+    ) {
+        boolean hasCategory = categoryId != null;
+        boolean hasPaymentMethod = paymentMethod != null && !paymentMethod.isBlank();
+        boolean hasDates = startDate != null && endDate != null;
+
+        if ((startDate == null) != (endDate == null)) {
+            throw new IllegalArgumentException("Debe enviar fecha de inicio y fecha de término");
+        }
+
+        if (hasDates) {
+            validateDateRange(startDate, endDate);
+        }
+
+        PaymentMethod method = hasPaymentMethod ? normalizePaymentMethod(paymentMethod) : null;
+
+        Page<Expense> expenses;
+
+        if (hasCategory && hasPaymentMethod && hasDates) {
+            expenses = expenseRepository.findByUserIdAndPaymentMethodAndCategoryIdAndDateBetween(
+                    userId, method, categoryId, startDate, endDate, pageable
+            );
+        } else if (hasCategory && hasDates) {
+            expenses = expenseRepository.findByUserIdAndCategoryIdAndDateBetween(
+                    userId, categoryId, startDate, endDate, pageable
+            );
+        } else if (hasPaymentMethod && hasDates) {
+            expenses = expenseRepository.findByUserIdAndPaymentMethodAndDateBetween(
+                    userId, method, startDate, endDate, pageable
+            );
+        } else if (hasCategory) {
+            expenses = expenseRepository.findByUserIdAndCategoryId(userId, categoryId, pageable);
+        } else if (hasPaymentMethod) {
+            expenses = expenseRepository.findByUserIdAndPaymentMethod(userId, method, pageable);
+        } else if (hasDates) {
+            expenses = expenseRepository.findByUserIdAndDateBetween(userId, startDate, endDate, pageable);
+        } else {
+            expenses = expenseRepository.findByUserId(userId, pageable);
+        }
+
+        return expenses.map(this::mapToResponse);
     }
 
     public ExpenseResponse updateExpense(Long id, ExpenseRequest request, Long userId) {
