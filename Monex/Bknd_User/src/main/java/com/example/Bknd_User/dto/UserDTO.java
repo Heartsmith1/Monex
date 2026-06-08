@@ -15,4 +15,5 @@ public class UserDTO {
     private String email;
     private Boolean enabled;
     private String role;
+    private Boolean googleLinked;
 }

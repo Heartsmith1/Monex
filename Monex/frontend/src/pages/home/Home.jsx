@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { SideBar } from "../../components/SideBar/SideBar";
+import { SideBarSwitcher } from "../../components/SideBar/SideBarSwitcher";
 import { Navbar } from "../../components/Navbar/Navbar";
 import AddExpenseModal from "../../components/Modal/AddExpenseModal";
 import CreditCardConfigModal from "../../components/Modal/CreditCardConfigModal";
@@ -235,7 +235,7 @@ export function Home() {
 
         <div className="contenedor_Home">
 
-            <SideBar />
+            <SideBarSwitcher />
 
             <div className="contenido_Home home_page_content">
 

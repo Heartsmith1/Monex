@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { SideBar } from "../../components/SideBar/SideBar";
+import { SideBarSwitcher } from "../../components/SideBar/SideBarSwitcher";
 import { Navbar } from "../../components/Navbar/Navbar";
 import alertaMensualIcon from "../../assets/icon/Alerta_mensual.png";
 import "../../css/pages/est_monthly.css";
@@ -450,7 +450,7 @@ export function EstMensual() {
 
   return (
     <div className="est_mensual_layout">
-      <SideBar />
+      <SideBarSwitcher />
 
       <Navbar
         onOpenExpenseModal={() =>

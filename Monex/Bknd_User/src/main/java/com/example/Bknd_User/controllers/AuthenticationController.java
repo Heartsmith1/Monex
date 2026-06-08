@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import com.example.Bknd_User.dto.LoginRequest;
 import com.example.Bknd_User.dto.LoginResponse;
+import com.example.Bknd_User.dto.GoogleLoginRequest;
 import com.example.Bknd_User.dto.RegisterRequest;
 import com.example.Bknd_User.dto.UserDTO;
 import com.example.Bknd_User.entity.User;
@@ -37,6 +38,13 @@ public class AuthenticationController {
     @PostMapping("login")
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
         String token = userService.intentarLogin(loginRequest.getEmail(), loginRequest.getPassword());
+        return ResponseEntity.ok(new LoginResponse(token, 86400000L));
+    }
+
+    @Operation(summary = "Login con Google", description = "Valida el token de Google, vincula o crea el usuario y devuelve un JWT propio.")
+    @PostMapping("google")
+    public ResponseEntity<LoginResponse> loginConGoogle(@RequestBody @Valid GoogleLoginRequest request) {
+        String token = userService.autenticarConGoogle(request.getIdToken());
         return ResponseEntity.ok(new LoginResponse(token, 86400000L));
     }
 

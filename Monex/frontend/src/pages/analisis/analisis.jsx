@@ -1,6 +1,6 @@
 // Importaciones de React, componentes, servicios y assets
 import { useEffect, useState } from "react";
-import { SideBar } from "../../components/SideBar/SideBar";
+import { SideBarSwitcher } from "../../components/SideBar/SideBarSwitcher";
 import { Navbar } from "../../components/Navbar/Navbar";
 import AddExpenseModal from "../../components/Modal/AddExpenseModal";
 import CreditCardConfigModal from "../../components/Modal/CreditCardConfigModal";
@@ -400,7 +400,7 @@ export function Analisis() {
     return (
         // Contenedor principal y barra lateral
         <div className="contenedor_analisis">
-            <SideBar />
+            <SideBarSwitcher />
 
             <div className="contenido_anilisis">
                 <Navbar 

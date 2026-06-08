@@ -1,0 +1,413 @@
+
+/* Estilos para PanelAdmin */
+
+/* Layout */
+.admin-dashboard {
+	display: flex;
+	flex-wrap: wrap;
+	gap: clamp(12px, 2vw, 24px);
+	margin: 0;
+	max-width: none;
+	padding: clamp(12px, 2.5vw, 32px);
+	width: 100%;
+}
+
+.contenido_Admin {
+	align-items: flex-start;
+	box-sizing: border-box;
+	display: flex;
+	justify-content: flex-start;
+	min-height: calc(100vh - 110px);
+	padding: 135px 12px 30px 12px;
+	width: 100%;
+}
+
+/* Overview / panel */
+.overview {
+	background: #fff;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+	flex: 1 1 320px;
+	min-height: auto;
+	padding: 16px;
+}
+
+.page-title {
+	color: #374151;
+	font-size: 30px;
+	margin: 0 0 8px 0;
+}
+
+.overview > p {
+	color: #374151;
+	font-weight: 600;
+}
+
+/* Tabla de usuarios */
+.tabla_Usuarios {
+	background-color: #eef0f2;
+	border-radius: 10px;
+	box-sizing: border-box;
+	margin-top: 18px;
+	padding: 12px;
+	width: 100%;
+}
+
+.tabla_Usuarios table {
+	background-color: white;
+	border-collapse: collapse;
+	border-radius: 10px;
+	box-sizing: border-box;
+	overflow: hidden;
+	table-layout: fixed;
+	width: 100%;
+}
+
+.tabla_Usuarios th {
+	background-color: #d9e2dc;
+	color: #374151;
+	font-size: 15px;
+	font-weight: bold;
+	padding: 14px 10px;
+	text-align: left;
+}
+
+.tabla_Usuarios td {
+	border-bottom: 1px solid #e5e7eb;
+	color: #374151;
+	font-size: 15px;
+	font-weight: 500;
+	padding: 14px 10px;
+}
+
+.tabla_Usuarios td:last-child {
+	white-space: nowrap;
+}
+
+/* User card */
+.user-card {
+	align-items: center;
+	background: #ffffff;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	min-width: 220px;
+	padding: 16px;
+}
+
+.avatar {
+	align-items: center;
+	background: linear-gradient(135deg,#4f46e5,#06b6d4);
+	border-radius: 50%;
+	color: #fff;
+	display: flex;
+	font-size: 22px;
+	font-weight: 700;
+	height: 64px;
+	justify-content: center;
+	width: 64px;
+}
+
+.user-info {
+	display: flex;
+	flex-direction: column;
+}
+
+.user-name {
+	color: #111827;
+	font-size: clamp(16px, 1.6vw, 20px);
+	margin: 0;
+}
+
+.user-email {
+	color: #6b7280;
+	font-size: clamp(12px, 1.2vw, 14px);
+	margin: 2px 0 0 0;
+}
+
+.actions {
+	margin-left: auto;
+}
+
+.logout-btn {
+	background: #ef4444;
+	border: none;
+	border-radius: 6px;
+	color: white;
+	cursor: pointer;
+	padding: 8px 12px;
+}
+
+.logout-btn:hover {
+	opacity: 0.95;
+}
+
+/* Buttons */
+.btn_editar {
+	background-color: #4caf50;
+	border: none;
+	border-radius: 8px;
+	color: #1f2937;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: bold;
+	margin-right: 10px;
+	padding: 6px 14px;
+}
+
+.btn_eliminar {
+	background-color: #e74c3c;
+	border: none;
+	border-radius: 8px;
+	color: #1f2937;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 6px 14px;
+}
+
+.paginacion_Usuarios {
+	color: #6b7280;
+	display: flex;
+	font-weight: 600;
+	justify-content: flex-end;
+	padding: 12px 8px 0 8px;
+}
+
+/* Chart styles */
+.chart_container {
+	margin-top: 12px;
+	margin-bottom: 12px;
+	width: 100%;
+}
+
+.chart_title {
+	color: #374151;
+	font-weight: 700;
+	margin: 0 0 8px 0;
+}
+
+.chart_svg {
+	width: 100%;
+	height: 140px;
+	display: block;
+}
+
+.chart_bar {
+	fill: #4f46e5;
+	opacity: 0.95;
+}
+
+.chart_label {
+	fill: #374151;
+	font-size: 2.4px;
+}
+
+/* New DIV-based bar chart styles */
+.chart_bars {
+	display: flex;
+	gap: 10px;
+	align-items: end;
+	height: 120px;
+	width: 100%;
+}
+
+.chart_column {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	flex: 1 1 0;
+}
+
+.bar_value {
+	color: #374151;
+	font-weight: 700;
+	font-size: 12px;
+	margin-bottom: 6px;
+}
+
+.bar_wrap {
+	width: 70%;
+	background: #e6e9ee;
+	height: 100%;
+	display: flex;
+	align-items: flex-end;
+	border-radius: 6px;
+	padding-bottom: 4px;
+	box-sizing: border-box;
+}
+
+.bar_fill {
+	width: 100%;
+	background: linear-gradient(180deg,#4f46e5,#06b6d4);
+	border-radius: 6px 6px 0 0;
+}
+
+.bar_label {
+	color: #374151;
+	font-size: 12px;
+	margin-top: 8px;
+	text-transform: lowercase;
+}
+
+/* Responsive rules */
+@media (min-width: 721px) {
+	.admin-dashboard {
+		align-items: start;
+		display: block;
+		gap: 24px;
+		width: 100%;
+	}
+
+	.overview {
+		padding: 24px 12px 40px 12px;
+		width: 100%;
+	}
+
+	.tabla_Usuarios {
+		width: 100%;
+	}
+
+	.tabla_Usuarios table {
+		width: 100%;
+	}
+
+	/* Forzar que el panel interior use el 100% del contenido disponible */
+	.admin-dashboard > .overview {
+		margin-left: 12px;
+		margin-right: 12px;
+		width: calc(100% - 24px);
+	}
+
+	.admin-dashboard > .overview .tabla_Usuarios {
+		margin-left: 12px;
+		margin-right: 12px;
+		width: calc(100% - 24px);
+	}
+}
+
+@media (min-width: 721px) and (max-width: 900px) {
+	.admin-dashboard {
+		gap: 18px;
+		padding: 18px;
+	}
+
+	.avatar {
+		font-size: 18px;
+		height: 52px;
+		width: 52px;
+	}
+
+	.user-card {
+		min-width: 300px;
+	}
+}
+
+@media (min-width: 901px) and (max-width: 1199px) {
+	.admin-dashboard {
+		padding: 20px;
+	}
+
+	.avatar {
+		font-size: 20px;
+		height: 56px;
+		width: 56px;
+	}
+}
+
+@media (min-width: 1200px) {
+	.admin-dashboard {
+		align-items: flex-start;
+		gap: 32px;
+		padding: clamp(20px, 2vw, 48px);
+	}
+
+	.user-card {
+		min-width: 340px;
+	}
+}
+
+@media (max-width: 720px) {
+	.admin-dashboard {
+		flex-direction: column;
+		gap: 12px;
+		padding: 16px;
+	}
+
+	.actions {
+		display: flex;
+		justify-content: flex-end;
+		margin-left: 0;
+		width: 100%;
+	}
+
+	.avatar {
+		font-size: 18px;
+		height: 56px;
+		width: 56px;
+	}
+
+	.overview {
+		min-height: auto;
+		order: 2;
+		padding-bottom: 40px;
+	}
+
+	.logout-btn {
+		padding: 8px 10px;
+	}
+
+	.user-card {
+		align-items: center;
+		flex-direction: row;
+		gap: 12px;
+		padding: 12px;
+	}
+}
+
+@media (max-width: 520px) {
+	.actions {
+		justify-content: center;
+	}
+
+	.avatar {
+		font-size: 16px;
+		height: 48px;
+		width: 48px;
+	}
+
+	.user-card {
+		align-items: center;
+		flex-direction: column;
+		text-align: center;
+	}
+
+	.user-info {
+		align-items: center;
+	}
+}
+
+@media (max-width: 360px) {
+	.admin-dashboard {
+		padding: 12px;
+	}
+
+	.avatar {
+		font-size: 14px;
+		height: 40px;
+		width: 40px;
+	}
+
+	.user-email {
+		font-size: 12px;
+	}
+
+	.user-name {
+		font-size: 16px;
+	}
+}
+
+
+
