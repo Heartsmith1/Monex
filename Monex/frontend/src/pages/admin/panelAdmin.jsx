@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
-import { SideBarAdmin } from "../../components/SideBar/SideBarAdmin";
+import { SideBarSwitcher } from "../../components/SideBar/SideBarSwitcher";
 import "../../css/pages/panelAdmin.css";
 
 export function PanelAdmin(){
@@ -141,7 +141,7 @@ export function PanelAdmin(){
 
     return(
         <div className="contenedor_Home">
-            <SideBarAdmin />
+            <SideBarSwitcher />
 
             <div className="contenido_Home">
                 <Navbar />

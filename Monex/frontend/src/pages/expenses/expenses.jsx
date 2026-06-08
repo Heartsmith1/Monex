@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SideBar } from "../../components/SideBar/SideBar";
+import { SideBarSwitcher } from "../../components/SideBar/SideBarSwitcher";
 import { Navbar } from "../../components/Navbar/Navbar";
 import AddExpenseModal from "../../components/Modal/AddExpenseModal";
 import EditExpenseModal from "../../components/Modal/EditExpenseModal";
@@ -244,7 +244,7 @@ export function Expenses() {
 
     return (
         <div className="contenedor_Home">
-            <SideBar />
+            <SideBarSwitcher />
 
             <div className="contenido_Home">
                 <Navbar 
