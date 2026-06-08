@@ -52,7 +52,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  flex: 0.86;
+  flex: 1.08;
   min-width: 0;
 }
 
@@ -75,12 +75,13 @@
   align-self: start;
   margin-top: -8px;
   transform: translateY(-6px);
-  width: 96%;
+  width: 100%;
   min-width: 0;
-  max-width: 96%;
+  max-width: none;
   display: flex;
   flex-direction: column; 
   max-height: 350px; 
+  overflow-x: auto;
 }
 
 .est_chart_card {
@@ -88,9 +89,9 @@
   border-radius: 12px;
   padding: 18px 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  width: 96%;
+  width: 100%;
   min-width: 0;
-  max-width: 96%;
+  max-width: none;
 }
 
 .est_resumen {
@@ -99,9 +100,9 @@
   padding: 18px 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   align-self: start;
-  width: 96%;
+  width: 100%;
   min-width: 0;
-  max-width: 96%;
+  max-width: none;
 }
 
 .est_card_header {
@@ -256,6 +257,7 @@
   flex: 1;
   min-height: 0;
   table-layout: fixed;
+  min-width: 720px;
 }
 
 .est_table thead {
@@ -306,7 +308,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  flex: 1.14;
+  flex: 0.92;
   min-width: 0;
 }
 
@@ -480,6 +482,63 @@
   }
 }
 
+@media (max-width: 1366px) {
+  .contenedor_est_mensual {
+    padding: 16px 18px 18px 16px;
+  }
+
+  .est_header h1 {
+    font-size: 30px;
+  }
+
+  .est_descripcion {
+    font-size: 18px;
+  }
+
+  .est_content {
+    flex-direction: column;
+  }
+
+  .est_main,
+  .est_sidebar {
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  .est_table_card,
+  .est_chart_card,
+  .est_resumen {
+    width: 100%;
+    max-width: none;
+  }
+
+  .est_table_card {
+    margin-top: 0;
+    transform: none;
+  }
+
+  .est_chart {
+    height: 240px;
+  }
+
+  .monto_valor {
+    font-size: 36px;
+  }
+
+  .monto_texto {
+    max-width: 320px;
+    font-size: 16px;
+  }
+
+  .resumen_label {
+    font-size: 18px;
+  }
+
+  .resumen_valor {
+    font-size: 16px;
+  }
+}
+
 @media (max-width: 640px) {
   .est_mensual_layout {
     flex-direction: column;
@@ -508,6 +567,10 @@
   .est_resumen {
     width: 100%;
     max-width: 100%;
+  }
+
+  .est_table {
+    min-width: 640px;
   }
 
   .est_monto {

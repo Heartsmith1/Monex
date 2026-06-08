@@ -35,7 +35,7 @@ export async function obtenerConfiguracionTarjeta() {
 
     if (!response.ok) {
         const error = await response.text();
-        throw new Error(error || "Error al obtener configuración de tarjeta");
+        throw new Error(error || "Debe configurar su tarjeta de crédito para acceder a esta información");
     }
 
     return await response.json();

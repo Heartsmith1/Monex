@@ -136,15 +136,77 @@
     margin-top: 5px;
 }
 
+.acciones_login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min(100%, 500px);
+    margin-top: 50px;
+    margin-left: 71px;
+    font-family: 'Outfit', sans-serif;
+}
+
 .contenedor-botones {
     display: flex;
-    flex-direction: column; /* Alinea los hijos verticalmente */
-    align-items: center;    /* Centra los botones horizontalmente */
-    gap: 15px;              /* Espacio exacto entre los dos botones */
-    margin-top: 50px;
-    margin-left: -160px;
-    font-family: 'Outfit', sans-serif;
-    
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.google_login_block {
+  margin-top: 0;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.google_login_separator {
+  position: relative;
+  width: 100%;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.google_login_separator::before,
+.google_login_separator::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: calc(50% - 18px);
+  height: 1px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.google_login_separator::before {
+  left: 0;
+}
+
+.google_login_separator::after {
+  right: 0;
+}
+
+.google_button_container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  min-height: 50px;
+}
+
+.google_login_message {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
 }
 
 .boton_ingresar{
@@ -154,7 +216,7 @@
     border: black;
     border-radius: 25px; /* Bordes redondeados modernos */
     width: 100%; /* Que ocupe lo mismo que los inputs */
-    max-width: 400px;
+    max-width: 320px;
     height: 50px;
     cursor: pointer;
     transition: transform 0.2s;
@@ -166,9 +228,8 @@
     border: black; /* Solo el borde */
     border-radius: 25px;
     width: 100%;
-    max-width: 400px;
+  max-width: 320px;
     height: 50px;
-    margin-top: 15px;
     font-weight: bold;
 }
 
@@ -223,8 +284,19 @@
   }
 
   .contenedor-botones {
-    margin-left: 0;
+    flex-direction: row;
+    gap: 14px;
+    max-width: 100%;
+  }
+
+  .google_login_block {
     width: 100%;
+    max-width: 100%;
+  }
+
+  .acciones_login {
+    width: 100%;
+    margin-left: 0;
   }
 
   .boton_ingresar,
@@ -259,5 +331,9 @@
   .boton_ingresar,
   .boton_registro {
     height: 46px;
+  }
+
+  .contenedor-botones {
+    flex-direction: column;
   }
 }

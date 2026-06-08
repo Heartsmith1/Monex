@@ -33,8 +33,15 @@ public class User implements UserDetails {
     @Email
     private String email;
     
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
+
+    @Column(nullable = false)
+    @Default
+    private Boolean googleLinked = false;
+
+    @Column(unique = true)
+    private String googleId;
     
     @Column(nullable = false)
     @Default

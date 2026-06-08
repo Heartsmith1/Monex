@@ -57,7 +57,7 @@ public class TarjetaController {
             
             if (response == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Configuración no encontrada");
+                        .body("Debe configurar su tarjeta de crédito para acceder a esta información");
             }
             
             return ResponseEntity.ok(response);
