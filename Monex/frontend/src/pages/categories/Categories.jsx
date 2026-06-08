@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SideBar } from "../../components/SideBar/SideBar";
+import { SideBarSwitcher } from "../../components/SideBar/SideBarSwitcher";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { EditcategoriesModal } from "../../components/Modal/EditcategoriesModal";
 import { AddCategoryModal } from "../../components/Modal/AddCategoryModal";
@@ -158,7 +158,7 @@ export function Categorias() {
 
     return (
         <div className="contenedor_Home">
-            <SideBar />
+            <SideBarSwitcher />
 
             <div className="contenido_Home">
                 <Navbar 
