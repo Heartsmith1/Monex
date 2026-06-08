@@ -182,6 +182,7 @@ public class UserController {
                 .email(user.getEmail())
                 .enabled(user.getEnabled())
                 .role(user.getRole())
+                .googleLinked(user.getGoogleLinked())
                 .build();
     }
     

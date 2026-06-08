@@ -26,13 +26,21 @@
         flex-shrink: 0;
 }
 .btn_Agregar_Gasto {
-    background-color: #45ad4d;
     color: white;
     padding: 8px 18px;
     font-weight: bold;
     font-family: 'Poppins', sans-serif;
     margin-right: 30px;
     cursor: pointer;
+    display: flex; /* Usar flexbox para alinear contenido */
+    align-items: center; /* Centrar verticalmente */
+    justify-content: space-between; /* Empujar texto a la izquierda, imagen a la derecha */
+    width: 223px; /* Aumentado el ancho */
+    height: 42px;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 10px;
+    font-size: 20px;
 }
 
 .user_config_container {

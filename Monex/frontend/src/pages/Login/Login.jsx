@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import usuario from "../../assets/icon/icono_usuario_blanco.png"
 import frameee from "../../assets/icon/Frameee.png"
 import logo from "../../assets/logo/Logo_Monex_Azul.png"
@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 export function Login (){
 
     const navigate = useNavigate();
+  const googleButtonRef = useRef(null);
 
     const [email, setEmail] = useState("");
     const [contraseña, setContraseña] = useState("");
@@ -20,6 +21,10 @@ export function Login (){
     const [colorMensajeContraseña, setColorMensajeContraseña] = useState("");
     const [mensajeEmail, setMensajeEmail] = useState("");
     const [colorMensajeEmail, setColorMensajeEmail] = useState("");
+    const [googleHabilitado, setGoogleHabilitado] = useState(false);
+    const [googleSdkListo, setGoogleSdkListo] = useState(false);
+    const [mensajeGoogle, setMensajeGoogle] = useState("");
+    const [colorMensajeGoogle, setColorMensajeGoogle] = useState("");
 
     // --- Expresiones regulares para validación ---
     //const regexEmail = /^[a-zA-Z0-9._%+-]+@(duocuc\.cl|gmail\.com|duocProfesor\.com)$/;
@@ -45,6 +50,104 @@ const validarContraseña = (valor) => {
         return true;
     }
 };
+
+  const iniciarSesionConGoogle = async (idToken) => {
+    try {
+      const res = await fetch("http://localhost:8081/api/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        throw new Error(text || "No se pudo iniciar sesión con Google");
+      }
+
+      const data = await res.json();
+      const token = data.access_token;
+
+      if (token) {
+        localStorage.setItem("token", token);
+      }
+
+      sessionStorage.setItem("usuario", JSON.stringify(data));
+      navigate("/home");
+    } catch (error) {
+      console.error(error);
+      setMensajeGoogle(error.message || "Error al iniciar sesión con Google");
+      setColorMensajeGoogle("red");
+    }
+  };
+
+  useEffect(() => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+    if (!clientId) {
+      console.warn("Falta configurar VITE_GOOGLE_CLIENT_ID para habilitar Google.");
+      setGoogleHabilitado(true);
+      setMensajeGoogle("Crea frontend/.env con VITE_GOOGLE_CLIENT_ID para mostrar el botón de Google.");
+      setColorMensajeGoogle("#f2c94c");
+      return undefined;
+    }
+
+    setGoogleHabilitado(true);
+
+    if (window.google?.accounts?.id) {
+      setGoogleSdkListo(true);
+      return undefined;
+    }
+
+    const scriptId = "google-gsi-client";
+    const existingScript = document.getElementById(scriptId);
+
+    const handleLoad = () => {
+      setGoogleSdkListo(true);
+    };
+
+    if (existingScript) {
+      existingScript.addEventListener("load", handleLoad);
+      return () => existingScript.removeEventListener("load", handleLoad);
+    }
+
+    const script = document.createElement("script");
+    script.id = scriptId;
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    script.onload = handleLoad;
+    document.body.appendChild(script);
+
+    return () => {
+      script.onload = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+    if (!googleHabilitado || !googleSdkListo || !clientId || !googleButtonRef.current || !window.google?.accounts?.id) {
+      return;
+    }
+
+    googleButtonRef.current.innerHTML = "";
+
+    window.google.accounts.id.initialize({
+      client_id: clientId,
+      callback: (response) => {
+        if (response?.credential) {
+          iniciarSesionConGoogle(response.credential);
+        }
+      },
+    });
+
+    window.google.accounts.id.renderButton(googleButtonRef.current, {
+      theme: "outline",
+      size: "large",
+      width: 360,
+      text: "continue_with",
+    });
+  }, [googleHabilitado, googleSdkListo]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -147,10 +250,26 @@ return(
                   </div>
                   <span style={{ color: colorMensajeContraseña }}>{mensajeContraseña}</span>
             </div>
-            
-            <div className="contenedor-botones">
-              <button className="boton_ingresar" type="submit">Iniciar sesión</button>
-              <button className="boton_registro" type="button" onClick={() => navigate("/Register")}>Registraste</button>
+
+            <div className="acciones_login">
+              <div className="contenedor-botones">
+                <button className="boton_ingresar" type="submit">Iniciar sesión</button>
+                <button className="boton_registro" type="button" onClick={() => navigate("/Register")}>Registraste</button>
+              </div>
+
+              {googleHabilitado && (
+                <>
+                  <div className="google_login_separator">o</div>
+                  <div className="google_login_block">
+                    <div className="google_button_container" ref={googleButtonRef}></div>
+                    {mensajeGoogle && (
+                      <span style={{ color: colorMensajeGoogle }} className="google_login_message">
+                        {mensajeGoogle}
+                      </span>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
 
           </form>

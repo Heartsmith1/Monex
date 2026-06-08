@@ -1,5 +1,11 @@
 package com.example.Bknd_User.service;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,9 +17,16 @@ import com.example.Bknd_User.dto.CreditCardConfigRequest;
 import com.example.Bknd_User.dto.CreditCardConfigResponse;
 import com.example.Bknd_User.repository.UserRepository;
 import com.example.Bknd_User.repository.CreditCardConfigRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class UserServices {
+
+    @Value("${google.client-id:}")
+    private String googleClientId;
     
     @Autowired
     private UserRepository userRepository;
@@ -26,10 +39,17 @@ public class UserServices {
     
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final ObjectMapper objectMapper = new ObjectMapper();
     
     public String intentarLogin(String email, String password) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BadCredentialsException("Email o contraseña incorrectos"));
+
+        if (user.getPassword() == null || user.getPassword().isBlank()) {
+            throw new BadCredentialsException("Esta cuenta debe iniciar sesión con Google");
+        }
         
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadCredentialsException("Email o contraseña incorrectos");
@@ -47,6 +67,14 @@ public class UserServices {
     }
     
     public User registrar(String username, String email, String password) {
+        return registrarLocal(username, email, password);
+    }
+
+    public User registrarLocal(String username, String email, String password) {
+        if (password == null || password.isBlank()) {
+            throw new IllegalArgumentException("La contraseña es requerida para usuarios creados localmente");
+        }
+
         // Validar ambos primero
         boolean emailExists = userRepository.existsByEmail(email);
         boolean usernameExists = userRepository.existsByUsername(username);
@@ -64,6 +92,8 @@ public class UserServices {
                 .username(username)
                 .email(email)
                 .password(passwordEncoder.encode(password))
+                .googleLinked(false)
+                .googleId(null)
                 .enabled(true)
                 .accountNonExpired(true)
                 .accountNonLocked(true)
@@ -72,6 +102,46 @@ public class UserServices {
                 .build();
         
         return userRepository.save(nuevoUsuario);
+    }
+
+    public User vincularGoogle(String username, String email, String googleId) {
+        User existingUser = userRepository.findByEmail(email).orElse(null);
+
+        if (existingUser != null) {
+            existingUser.setGoogleLinked(true);
+
+            if (googleId != null && !googleId.isBlank()) {
+                existingUser.setGoogleId(googleId);
+            }
+
+            if (existingUser.getUsername() == null || existingUser.getUsername().isBlank()) {
+                existingUser.setUsername(username);
+            }
+
+            return userRepository.save(existingUser);
+        }
+
+        User nuevoUsuario = User.builder()
+                .username(username)
+                .email(email)
+                .password(null)
+                .googleLinked(true)
+                .googleId(googleId)
+                .enabled(true)
+                .accountNonExpired(true)
+                .accountNonLocked(true)
+                .credentialsNonExpired(true)
+                .role("USER")
+                .build();
+
+        return userRepository.save(nuevoUsuario);
+    }
+
+    public String autenticarConGoogle(String idToken) {
+        GoogleProfile profile = validarTokenGoogle(idToken);
+        User user = vincularGoogle(profile.username(), profile.email(), profile.googleId());
+
+        return jwtService.generarToken(user);
     }
     
     public User actualizarUsuario(Long id, UserUpdateRequest updateRequest) {
@@ -119,6 +189,10 @@ public class UserServices {
         if (user == null) {
             return false;
         }
+
+        if (user.getPassword() == null || user.getPassword().isBlank()) {
+            return false;
+        }
         
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
             return false;
@@ -164,4 +238,45 @@ public class UserServices {
                 .cupoTarjeta(config.getCupoTarjeta())
                 .build();
     }
+
+    private GoogleProfile validarTokenGoogle(String idToken) {
+        try {
+            String url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + idToken;
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != 200) {
+                throw new BadCredentialsException("No se pudo validar el inicio de sesión con Google");
+            }
+
+            JsonNode json = objectMapper.readTree(response.body());
+            String aud = json.path("aud").asText("");
+            String email = json.path("email").asText("");
+            String emailVerified = json.path("email_verified").asText("false");
+            String googleId = json.path("sub").asText("");
+            String name = json.path("name").asText("");
+
+            if (googleClientId != null && !googleClientId.isBlank() && !googleClientId.equals(aud)) {
+                throw new BadCredentialsException("El token de Google no coincide con el cliente configurado");
+            }
+
+            if (email.isBlank() || googleId.isBlank() || !"true".equalsIgnoreCase(emailVerified)) {
+                throw new BadCredentialsException("La cuenta de Google no es válida");
+            }
+
+            String username = (name == null || name.isBlank()) ? email.split("@")[0] : name;
+            return new GoogleProfile(username, email, googleId);
+        } catch (IOException e) {
+            throw new BadCredentialsException("No se pudo procesar la respuesta de Google");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new BadCredentialsException("No se pudo validar el inicio de sesión con Google");
+        }
+    }
+
+    private record GoogleProfile(String username, String email, String googleId) {}
 }
