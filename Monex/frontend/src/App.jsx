@@ -13,10 +13,12 @@ import { Categorias } from './pages/categories/Categories';
 import { Login } from './pages/Login/Login';
 import { Home } from './pages/home/Home';
 import { SideBar } from './components/SideBar/SideBar';
+import { SideBarAdmin } from './components/SideBar/SideBarAdmin';
 import { Register } from './pages/Registro/Register';
 import { Expenses } from './pages/expenses/expenses';
 import { EstMensual } from './pages/est_monthly/est_monthly';
 import { Analisis } from './pages/analisis/analisis';
+import { PanelAdmin } from './pages/admin/panelAdmin';
 
 function App() {
 
@@ -27,11 +29,13 @@ function App() {
           <Route path="/" element={<Login/>}/>
           <Route path="/Home" element={<Home/>}/>
           <Route path="/SideBar" element={<SideBar/>}/> 
+          <Route path="/SideBarAdmin" element={<SideBarAdmin/>}/>
           <Route path="/Register" element={<Register/>}/>
           <Route path="/categorias" element={<Categorias/>}/>
           <Route path="/Gastos" element={<Expenses/>}/>
           <Route path="/est_monthly" element={<EstMensual/>}/>
           <Route path="/Analisis" element={<Analisis/>}/>
+          <Route path="/PanelAdmin" element={<PanelAdmin/>}/>
         </Routes>
       </Router>
     </>
