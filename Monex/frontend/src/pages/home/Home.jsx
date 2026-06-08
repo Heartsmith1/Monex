@@ -19,7 +19,6 @@ export function Home() {
     const navigate = useNavigate();
 
     const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
-
     const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
     const [ultimosGastos, setUltimosGastos] = useState([]);
     
