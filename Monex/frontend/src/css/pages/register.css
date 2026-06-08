@@ -3,7 +3,8 @@
 /*-----------------------------------*/
 .contenedor_registro {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   width: 100%;
 }
 
@@ -17,10 +18,8 @@
 
 .img_logo_registro{
   display: block;
-  width: 1000px;
-  margin: 20px auto 0 auto;
-  margin-left: -250px;
-  margin-bottom: -70px;
+  width: min(100%, 420px);
+  margin: 0 auto 18px auto;
 }
 
 .img_registro{
@@ -38,6 +37,7 @@
   align-items: center; 
   padding: 40px 20px;
   overflow-y: auto;  
+  min-width: 0;
 }
 
 .register_contenido_registro {

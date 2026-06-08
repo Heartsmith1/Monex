@@ -3,12 +3,14 @@
 /*-----------------------------------*/
 .contenedor_login {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   width: 100%;
 }
 
 .fondo_imagen {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   background-image: url("/src/assets/img/fondo_login.png");
   background-size: cover; 
   background-position: center;
@@ -17,54 +19,59 @@
 
 .img_logo{
   display: block;
-  width: min(90vw, 1000px);
-  margin: 20px auto 0 auto;
-  margin-left: -240px;
+  width: min(100%, 420px);
+  margin: 0 auto 24px auto;
 }
 
 .img_login{
   display: flex;
-  width: 200px;
-  margin-left: 200px;
-  margin-bottom: -150px;
+  width: clamp(120px, 18vw, 180px);
+  margin: 0 auto -24px auto;
 }
 
 .login {
-  flex: 1; 
+  flex: 1 1 0;
+  min-width: 0;
   background-color: #4CAF50;
-  display: flex;            
-  justify-content: center;   
-  align-items: center;   
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(24px, 4vw, 48px) clamp(18px, 3vw, 56px);
+  overflow-y: auto;
+}
+
+.login_contenido {
+  width: min(100%, 520px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .text_email{
   display: block;
-  margin-left: 30px;
   color: white;
   font-family: 'Outfit', sans-serif;
   font-size: 20px;
   font-weight: 700;
-  margin-left: -20px;
+  margin-left: 0;
 }
 
 .input_group {
   position: relative;
-  margin-left: 71px;
   margin-bottom: 25px; 
-  width: min(100%, 500px);
+  width: 100%;
 }
 
 .input_wrapper {
   position: relative;
-
-  width: min(100%, 500px);
+  width: 100%;
 }
 
 .input_email {
   font-family: 'Outfit', sans-serif;
   font-size: 20px;
   font-weight: 700;
-  width: min(100%, 500px);
+  width: 100%;
   height: 60px;
   background: #24282C;
   backdrop-filter: blur(4px);
@@ -79,7 +86,7 @@
   display: block;
   margin: 0;
   box-sizing: border-box;
-  margin-left: -20px;
+  margin-left: 0;
  
 }
 
@@ -103,16 +110,15 @@
     font-size: 20px;    
     font-weight: 700;
     display: block;
-    margin-left: 30px;
     color: white;
-    margin-left: -20px;
+  margin-left: 0;
 }
 
 .input_contraseña{
     font-family: 'Outfit', sans-serif;
     font-size: 20px;
     font-weight: 700;
-    width: min(100%, 500px);
+    width: 100%;
     height: 60px;
     background: #24282C;
     backdrop-filter: blur(4px);
@@ -127,7 +133,7 @@
     display: block;
     margin: 0;
     box-sizing: border-box;
-    margin-left: -20px;
+    margin-left: 0;
 }
 
 .error {
@@ -140,9 +146,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: min(100%, 500px);
-    margin-top: 50px;
-    margin-left: 71px;
+  width: 100%;
+  max-width: 520px;
+  margin-top: 34px;
+  margin-left: 0;
     font-family: 'Outfit', sans-serif;
 }
 
@@ -153,13 +160,13 @@
     align-items: center;
     gap: 16px;
     width: 100%;
-    max-width: 500px;
+    max-width: none;
 }
 
 .google_login_block {
   margin-top: 0;
   width: 100%;
-  max-width: 500px;
+  max-width: none;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -216,7 +223,7 @@
     border: black;
     border-radius: 25px; /* Bordes redondeados modernos */
     width: 100%; /* Que ocupe lo mismo que los inputs */
-    max-width: 320px;
+    max-width: 240px;
     height: 50px;
     cursor: pointer;
     transition: transform 0.2s;
@@ -228,7 +235,7 @@
     border: black; /* Solo el borde */
     border-radius: 25px;
     width: 100%;
-  max-width: 320px;
+  max-width: 240px;
     height: 50px;
     font-weight: bold;
 }
@@ -258,6 +265,11 @@
     width: 100%;
     padding: 32px 20px;
     align-items: flex-start;
+  }
+
+  .login_contenido {
+    width: 100%;
+    max-width: none;
   }
 
   .img_logo {
