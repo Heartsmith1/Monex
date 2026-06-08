@@ -1,6 +1,8 @@
 package com.example.Bknd_User.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
@@ -76,6 +78,32 @@ public class UserController {
 
         User user = jwtService.comprobarToken(authHeader);
         return ResponseEntity.ok(convertirADTO(user));
+    }
+
+    @Operation(summary = "Listar usuarios paginados", description = "Retorna usuarios de forma paginada. Solo disponible para ADMIN")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Usuarios obtenidos correctamente"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado"),
+        @ApiResponse(responseCode = "401", description = "No autorizado")
+    })
+    @GetMapping("/admin")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> listarUsuariosPaginados(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @Parameter(hidden = true)
+            @RequestHeader("Authorization") String authHeader) {
+
+        User authUser = jwtService.comprobarToken(authHeader);
+
+        if (!"ADMIN".equalsIgnoreCase(authUser.getRole())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Solo administradores pueden ver los usuarios");
+        }
+
+        Page<UserDTO> usuarios = userService.listarUsuariosPaginados(PageRequest.of(page, size))
+                .map(this::convertirADTO);
+
+        return ResponseEntity.ok(usuarios);
     }
 
     @Operation(summary = "Estadística de usuarios por mes", description = "Retorna la cantidad de usuarios registrados agrupados por mes. Solo disponible para usuarios ADMIN")
