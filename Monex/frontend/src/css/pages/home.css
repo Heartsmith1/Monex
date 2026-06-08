@@ -4,6 +4,7 @@
 
 .home_page_content {
     flex: 1;
+    min-width: 0;
     padding-top: 120px;
     box-sizing: border-box;
     overflow-x: hidden;

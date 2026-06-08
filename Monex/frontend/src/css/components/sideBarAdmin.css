@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
 .contenedor_sideBar{
-  width: 283px;
+  width: clamp(240px, 20vw, 283px);
   height: calc(100vh - 110px); /* El alto total menos el alto de la navbar */
   margin-top: 100px;
   left: 0;
@@ -20,7 +20,8 @@
   display: flex; /* Usar flexbox para alinear contenido */
   align-items: center; /* Centrar verticalmente */
   justify-content: space-between; /* Empujar texto a la izquierda, imagen a la derecha */
-  width: 223px; /* Aumentado el ancho */
+  width: 100%;
+  max-width: 223px; /* Aumentado el ancho */
   height: 42px;
   margin-top: 40px;
   background-color: #4CAF50;
@@ -42,7 +43,8 @@
   display: flex; /* Usar flexbox para alinear contenido */
   align-items: center; /* Centrar verticalmente */
   justify-content: space-between; /* Empujar texto a la izquierda, imagen a la derecha */
-  width: 223px; /* Aumentado el ancho */
+  width: 100%;
+  max-width: 223px; /* Aumentado el ancho */
   height: 42px;
   margin-top: 40px;
   background-color: #4CAF50;
@@ -60,7 +62,8 @@
   align-items: center;
   justify-content: space-between;
   margin-top: 80px; /* Ajuste de la separación vertical */
-  width: 223px; /* Aumentado el ancho */
+  width: 100%;
+  max-width: 223px; /* Aumentado el ancho */
   background-color: #4CAF50;
   padding: 10px 15px;
   height: 42px;
@@ -79,7 +82,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 223px; /* Aumentado el ancho */
+  width: 100%;
+  max-width: 223px; /* Aumentado el ancho */
   height: 42px;
   margin-top: 30px; /* Ajuste de la separación vertical */
   background-color: #4CAF50;
@@ -99,7 +103,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 223px; /* Aumentado el ancho */
+  width: 100%;
+  max-width: 223px; /* Aumentado el ancho */
   height: 42px;
   margin-top: 30px; /* Ajuste de la separación vertical */
   background-color: #4CAF50;
@@ -120,7 +125,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 223px; /* Aumentado el ancho */
+  width: 100%;
+  max-width: 223px; /* Aumentado el ancho */
   height: 42px;
   margin-top: 30px; /* Ajuste de la separación vertical */
   background-color: #4CAF50;
@@ -254,6 +260,7 @@
   .boton_analisis,
   .boton_est_mensual {
     width: 100%;
+    max-width: none;
     margin-top: 0;
     font-size: 16px;
     height: 48px;
