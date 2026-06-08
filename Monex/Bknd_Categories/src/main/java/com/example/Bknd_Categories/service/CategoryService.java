@@ -4,6 +4,8 @@ import com.example.Bknd_Categories.dto.CategoryRequest;
 import com.example.Bknd_Categories.dto.CategoryResponse;
 import com.example.Bknd_Categories.entity.Category;
 import com.example.Bknd_Categories.repository.CategoryRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,11 @@ public class CategoryService {
                 .stream()
                 .map(this::toResponse)
                 .toList();
+    }
+
+    public Page<CategoryResponse> listAllPaged(Long userId, Pageable pageable) {
+        return categoryRepository.findByCreatedByUserId(userId, pageable)
+                .map(this::toResponse);
     }
 
     public CategoryResponse getById(Long id, Long userId) {

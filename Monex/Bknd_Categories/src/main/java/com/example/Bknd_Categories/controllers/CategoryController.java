@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +41,29 @@ public class CategoryController {
             Long userId = jwtService.getUserIdFromAuthorizationHeader(authHeader);
             List<CategoryResponse> categories = categoryService.listAll(userId);
             return ResponseEntity.ok(categories);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+        }
+    }
+
+    @Operation(summary = "Listar categorías paginadas del usuario autenticado")
+    @GetMapping("/paginadas")
+    public ResponseEntity<?> listPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @Parameter(hidden = true)
+            @RequestHeader("Authorization") String authHeader) {
+
+        try {
+            Long userId = jwtService.getUserIdFromAuthorizationHeader(authHeader);
+
+            Page<CategoryResponse> categories = categoryService.listAllPaged(
+                    userId,
+                    PageRequest.of(page, size)
+            );
+
+            return ResponseEntity.ok(categories);
+
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
         }
