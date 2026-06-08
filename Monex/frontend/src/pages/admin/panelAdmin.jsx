@@ -29,7 +29,7 @@ export function PanelAdmin(){
                 if (!response.ok) {
                     return;
                 }
-
+                
                 const data = await response.json();
                 setUsuario({
                     username: data.username || "Usuario",
