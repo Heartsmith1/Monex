@@ -11,83 +11,73 @@ import java.util.List;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
-    List<Expense> findByUserId(Long userId);
+        List<Expense> findByUserId(Long userId);
 
-    Page<Expense> findByUserId(Long userId, Pageable pageable);
+        Page<Expense> findByUserId(Long userId, Pageable pageable);
 
-    List<Expense> findByUserIdAndPaymentMethod(Long userId, PaymentMethod paymentMethod);
+        List<Expense> findByUserIdAndPaymentMethod(Long userId, PaymentMethod paymentMethod);
 
-    Page<Expense> findByUserIdAndPaymentMethod(
-            Long userId,
-            PaymentMethod paymentMethod,
-            Pageable pageable
-    );
+        Page<Expense> findByUserIdAndPaymentMethod(
+                        Long userId,
+                        PaymentMethod paymentMethod,
+                        Pageable pageable);
 
-    List<Expense> findByUserIdAndCategoryId(Long userId, Long categoryId);
+        List<Expense> findByUserIdAndCategoryId(Long userId, Long categoryId);
 
-    Page<Expense> findByUserIdAndCategoryId(
-            Long userId,
-            Long categoryId,
-            Pageable pageable
-    );
+        Page<Expense> findByUserIdAndCategoryId(
+                        Long userId,
+                        Long categoryId,
+                        Pageable pageable);
 
-    List<Expense> findByUserIdAndDateBetween(
-            Long userId,
-            LocalDate startDate,
-            LocalDate endDate
-    );
+        List<Expense> findByUserIdAndDateBetween(
+                        Long userId,
+                        LocalDate startDate,
+                        LocalDate endDate);
 
-    Page<Expense> findByUserIdAndDateBetween(
-            Long userId,
-            LocalDate startDate,
-            LocalDate endDate,
-            Pageable pageable
-    );
+        Page<Expense> findByUserIdAndDateBetween(
+                        Long userId,
+                        LocalDate startDate,
+                        LocalDate endDate,
+                        Pageable pageable);
 
-    List<Expense> findByUserIdAndCategoryIdAndDateBetween(
-            Long userId,
-            Long categoryId,
-            LocalDate startDate,
-            LocalDate endDate
-    );
+        List<Expense> findByUserIdAndCategoryIdAndDateBetween(
+                        Long userId,
+                        Long categoryId,
+                        LocalDate startDate,
+                        LocalDate endDate);
 
-    Page<Expense> findByUserIdAndCategoryIdAndDateBetween(
-            Long userId,
-            Long categoryId,
-            LocalDate startDate,
-            LocalDate endDate,
-            Pageable pageable
-    );
+        Page<Expense> findByUserIdAndCategoryIdAndDateBetween(
+                        Long userId,
+                        Long categoryId,
+                        LocalDate startDate,
+                        LocalDate endDate,
+                        Pageable pageable);
 
-    List<Expense> findByUserIdAndPaymentMethodAndDateBetween(
-            Long userId,
-            PaymentMethod paymentMethod,
-            LocalDate startDate,
-            LocalDate endDate
-    );
+        List<Expense> findByUserIdAndPaymentMethodAndDateBetween(
+                        Long userId,
+                        PaymentMethod paymentMethod,
+                        LocalDate startDate,
+                        LocalDate endDate);
 
-    Page<Expense> findByUserIdAndPaymentMethodAndDateBetween(
-            Long userId,
-            PaymentMethod paymentMethod,
-            LocalDate startDate,
-            LocalDate endDate,
-            Pageable pageable
-    );
+        Page<Expense> findByUserIdAndPaymentMethodAndDateBetween(
+                        Long userId,
+                        PaymentMethod paymentMethod,
+                        LocalDate startDate,
+                        LocalDate endDate,
+                        Pageable pageable);
 
-    List<Expense> findByUserIdAndPaymentMethodAndCategoryIdAndDateBetween(
-            Long userId,
-            PaymentMethod paymentMethod,
-            Long categoryId,
-            LocalDate startDate,
-            LocalDate endDate
-    );
+        List<Expense> findByUserIdAndPaymentMethodAndCategoryIdAndDateBetween(
+                        Long userId,
+                        PaymentMethod paymentMethod,
+                        Long categoryId,
+                        LocalDate startDate,
+                        LocalDate endDate);
 
-    Page<Expense> findByUserIdAndPaymentMethodAndCategoryIdAndDateBetween(
-            Long userId,
-            PaymentMethod paymentMethod,
-            Long categoryId,
-            LocalDate startDate,
-            LocalDate endDate,
-            Pageable pageable
-    );
+        Page<Expense> findByUserIdAndPaymentMethodAndCategoryIdAndDateBetween(
+                        Long userId,
+                        PaymentMethod paymentMethod,
+                        Long categoryId,
+                        LocalDate startDate,
+                        LocalDate endDate,
+                        Pageable pageable);
 }
