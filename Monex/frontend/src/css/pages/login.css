@@ -19,14 +19,15 @@
 
 .img_logo{
   display: block;
-  width: min(100%, 420px);
-  margin: 0 auto 24px auto;
+  width: 100%;
+  max-width: 1000px;
+  margin: -12px auto -48px auto;
 }
 
 .img_login{
   display: flex;
-  width: clamp(120px, 18vw, 180px);
-  margin: 0 auto -24px auto;
+  width: 200px;
+  margin: 0 auto -150px auto;
 }
 
 .login {
@@ -41,7 +42,15 @@
 }
 
 .login_contenido {
-  width: min(100%, 520px);
+  width: min(100%, 1000px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form_login {
+  width: 100%;
+  max-width: 520px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -147,7 +156,7 @@
     flex-direction: column;
     align-items: center;
   width: 100%;
-  max-width: 520px;
+  max-width: 500px;
   margin-top: 34px;
   margin-left: 0;
     font-family: 'Outfit', sans-serif;
@@ -223,7 +232,7 @@
     border: black;
     border-radius: 25px; /* Bordes redondeados modernos */
     width: 100%; /* Que ocupe lo mismo que los inputs */
-    max-width: 240px;
+    max-width: 320px;
     height: 50px;
     cursor: pointer;
     transition: transform 0.2s;
@@ -235,7 +244,7 @@
     border: black; /* Solo el borde */
     border-radius: 25px;
     width: 100%;
-  max-width: 240px;
+  max-width: 320px;
     height: 50px;
     font-weight: bold;
 }
@@ -273,8 +282,8 @@
   }
 
   .img_logo {
-    width: min(88vw, 420px);
-    margin: 0 auto 20px auto;
+    width: min(92vw, 560px);
+    margin: -6px auto -28px auto;
   }
 
   .img_login {

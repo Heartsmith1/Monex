@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import usuario from "../../assets/icon/icono_usuario_blanco.png"
 import frameee from "../../assets/icon/Frameee.png"
 import logo from "../../assets/logo/Logo_Monex_Azul.png"
 import ocultar from "../../assets/icon/ocultar_contrasena.png"
@@ -165,11 +164,6 @@ export function Register (){
       <div className="fondo_imagen_registro"></div>
       <div className="register_registro">
         <div className="register_contenido_registro">
-          <img 
-            src={usuario} 
-            className="img_registro" 
-            alt="Imagen logo usuario" 
-          />
           <img src={logo} alt="Logo Monex azul" className="img_logo_registro" />
           {mensajeExito && (
             <div style={{ color: "#0d47a1", fontWeight: "bold", marginBottom: 10, textAlign: "center" }}>

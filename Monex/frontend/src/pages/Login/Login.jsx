@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import usuario from "../../assets/icon/icono_usuario_blanco.png"
 import frameee from "../../assets/icon/Frameee.png"
 import logo from "../../assets/logo/Logo_Monex_Azul.png"
 import ocultar from "../../assets/icon/ocultar_contrasena.png"
@@ -201,11 +200,6 @@ return(
 
       <div className="login">
         <div className="login_contenido">
-          <img 
-            src={usuario} 
-            className="img_login" 
-            alt="Imagen logo usuario" 
-          />
           <img src={logo} alt="Logo Monex azul" className="img_logo" />
 
           <form className="form_login" onSubmit={handleSubmit}>

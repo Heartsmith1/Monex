@@ -17,13 +17,13 @@
     gap: 20px;
 }
 .img_logo_navbar{
-    width: clamp(180px, 24vw, 320px);
-        height: 110px;
-        display: block;
+    width: clamp(220px, 28vw, 380px);
+    height: 110px;
+    display: block;
     object-fit: contain;
-    margin-left: 0;
-        margin-right: auto;
-        flex-shrink: 0;
+    margin-left: -160px;
+    margin-right: auto;
+    flex-shrink: 0;
 }
 .btn_Agregar_Gasto {
     color: white;
@@ -80,7 +80,7 @@
     .img_logo_navbar {
         width: min(60vw, 260px);
         height: auto;
-        margin-left: 0;
+        margin-left: -8px;
         order: 1;
     }
 
