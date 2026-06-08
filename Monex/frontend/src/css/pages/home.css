@@ -69,11 +69,14 @@
 }
 
 .resumen_total_mes_home {
+    .resumen_total_mes_home {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    margin-top: 14px;
+    flex-direction: row; /* Forzar que estén en la misma fila */
+    flex-wrap: nowrap; /* Evitar que salten a la siguiente línea */
+    align-items: center; /* Alinear verticalmente al centro */
+    gap: 14px;
+}
+
 }
 
 .total_mes_home {

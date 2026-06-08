@@ -295,14 +295,8 @@ export function Home() {
 
                                 <div>
 
-                                    <span className="total_mes_home">
-                                        {formatAmount(
-                                            totalMes
-                                        )}
-                                        /
-                                        {formatAmount(
-                                            sueldoMes
-                                        )}
+                                    <span className="total_mes_home" style={{ whiteSpace: "nowrap", display: "inline-block" }}>
+                                        {formatAmount(totalMes)} / {formatAmount(sueldoMes)}
                                     </span>
 
                                     <p
