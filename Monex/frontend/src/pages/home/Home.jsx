@@ -22,7 +22,6 @@ export function Home() {
     const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
     const [ultimosGastos, setUltimosGastos] = useState([]);
     const [loadingGastos, setLoadingGastos] = useState(true);
-
     const [totalMes, setTotalMes] = useState(0);
     
     const [sueldoMes, setSueldoMes] = useState(0);
