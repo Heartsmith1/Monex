@@ -14,6 +14,8 @@ public class DatabaseMigrationConfig {
             jdbcTemplate.execute("ALTER TABLE IF EXISTS usuarios ADD COLUMN IF NOT EXISTS google_linked BOOLEAN NOT NULL DEFAULT FALSE");
             jdbcTemplate.execute("ALTER TABLE IF EXISTS usuarios ADD COLUMN IF NOT EXISTS google_id VARCHAR(255)");
             jdbcTemplate.execute("ALTER TABLE IF EXISTS usuarios ALTER COLUMN password DROP NOT NULL");
+
+            jdbcTemplate.execute("ALTER TABLE IF EXISTS usuarios ADD COLUMN IF NOT EXISTS created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
         };
     }
 }

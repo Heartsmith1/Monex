@@ -77,6 +77,27 @@ public class UserController {
         User user = jwtService.comprobarToken(authHeader);
         return ResponseEntity.ok(convertirADTO(user));
     }
+
+    @Operation(summary = "Estadística de usuarios por mes", description = "Retorna la cantidad de usuarios registrados agrupados por mes. Solo disponible para usuarios ADMIN")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Estadística generada correctamente"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado"),
+        @ApiResponse(responseCode = "401", description = "No autorizado")
+    })
+    @GetMapping("/admin/stats/users-by-month")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> obtenerUsuariosPorMes(
+            @Parameter(hidden = true)
+            @RequestHeader("Authorization") String authHeader) {
+
+        User authUser = jwtService.comprobarToken(authHeader);
+
+        if (!"ADMIN".equalsIgnoreCase(authUser.getRole())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Solo administradores pueden ver esta estadística");
+        }
+
+        return ResponseEntity.ok(userService.obtenerUsuariosPorMes());
+    }
     
     @Operation(summary = "Actualizar usuario", description = "Actualiza la información de un usuario específico")
     @ApiResponses(value = {

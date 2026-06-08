@@ -5,22 +5,24 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.example.Bknd_User.entity.User;
-import com.example.Bknd_User.entity.CreditCardConfig;
-import com.example.Bknd_User.dto.UserUpdateRequest;
+
 import com.example.Bknd_User.dto.CreditCardConfigRequest;
 import com.example.Bknd_User.dto.CreditCardConfigResponse;
-import com.example.Bknd_User.repository.UserRepository;
+import com.example.Bknd_User.dto.UserUpdateRequest;
+import com.example.Bknd_User.entity.CreditCardConfig;
+import com.example.Bknd_User.entity.User;
 import com.example.Bknd_User.repository.CreditCardConfigRepository;
+import com.example.Bknd_User.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class UserServices {
@@ -75,11 +77,9 @@ public class UserServices {
             throw new IllegalArgumentException("La contraseña es requerida para usuarios creados localmente");
         }
 
-        // Validar ambos primero
         boolean emailExists = userRepository.existsByEmail(email);
         boolean usernameExists = userRepository.existsByUsername(username);
         
-        // Construir mensaje con ambos errores si aplica
         if (emailExists && usernameExists) {
             throw new IllegalArgumentException("El email ya está registrado. El nombre de usuario ya está registrado");
         } else if (emailExists) {
@@ -237,6 +237,16 @@ public class UserServices {
                 .sueldoMes(config.getSueldoMes())
                 .cupoTarjeta(config.getCupoTarjeta())
                 .build();
+    }
+
+    public List<Map<String, Object>> obtenerUsuariosPorMes() {
+        return userRepository.obtenerUsuariosPorMes()
+                .stream()
+                .map(resultado -> Map.of(
+                        "mes", resultado[0],
+                        "cantidad", resultado[1]
+                ))
+                .toList();
     }
 
     private GoogleProfile validarTokenGoogle(String idToken) {

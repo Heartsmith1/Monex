@@ -7,10 +7,12 @@ import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -59,10 +61,14 @@ public class User implements UserDetails {
     @Default
     private Boolean credentialsNonExpired = true;
 
-    // 🔥 NUEVO: rol del usuario (USER o ADMIN)
     @Column(nullable = false)
     @Default
     private String role = "USER";
+
+    // NUEVO: fecha de creación del usuario
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
