@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -76,7 +77,11 @@ public class ExpenseController {
                     paymentMethod,
                     startDate,
                     endDate,
-                    PageRequest.of(page, size)
+                    PageRequest.of(
+                            page,
+                            size,
+                            Sort.by(Sort.Direction.ASC, "id")
+                    )
             );
 
             return ResponseEntity.ok(expenses);

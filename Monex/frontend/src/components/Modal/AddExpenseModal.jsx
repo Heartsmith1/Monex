@@ -6,7 +6,7 @@ import { obtenerCategorias } from "../../services/categoriesService";
 function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
 
     const [nombre, setNombre] = useState("");
-    const [categoria, setCategoria] = useState(""); //n
+    const [categoria, setCategoria] = useState("");
     const [monto, setMonto] = useState("");
     const [comision, setComision] = useState("0");
     const [fechaIngreso, setFechaIngreso] = useState("");
@@ -19,7 +19,7 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
         const cargarCategorias = async () => {
             try {
                 const data = await obtenerCategorias();
-                setCategorias(data);
+                setCategorias(Array.isArray(data) ? data : []);
             } catch (error) {
                 console.error("Error al cargar categorías:", error);
             }
@@ -84,7 +84,7 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
 
         } catch (error) {
             console.error("Error al guardar gasto:", error);
-            alert("Error al guardar gasto");
+            alert(error.message || "Error al guardar gasto");
         }
     };
 
@@ -246,7 +246,7 @@ function AddExpenseModal({ isOpen, onClose, onExpenseCreated }) {
                     <div className="expense-modal-buttons">
                         <button
                             type="button"
-                            className="expense-btn-cancel" 
+                            className="expense-btn-cancel"
                             onClick={onClose}
                         >
                             Cancelar

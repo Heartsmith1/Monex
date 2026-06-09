@@ -8,7 +8,7 @@ import CreditCardConfigModal from "../../components/Modal/CreditCardConfigModal"
 import lupa from "../../assets/icon/material-symbols_search.png";
 
 import {
-    obtenerGastos,
+    obtenerGastosPaginados,
     actualizarGasto
 } from "../../services/expensesService";
 
@@ -28,8 +28,10 @@ export function Expenses() {
     const [categoriaFiltro, setCategoriaFiltro] = useState("");
     const [fechaFiltro, setFechaFiltro] = useState("");
 
-    const [paginaActual, setPaginaActual] = useState(1);
+    const [paginaActual, setPaginaActual] = useState(0);
     const gastosPorPagina = 5;
+    const [totalPaginas, setTotalPaginas] = useState(0);
+    const [totalElementos, setTotalElementos] = useState(0);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -45,13 +47,21 @@ export function Expenses() {
     const [metodoPagoEditado, setMetodoPagoEditado] = useState("EFECTIVO");
     const [cuotasEditadas, setCuotasEditadas] = useState("1");
 
-    const fetchExpenses = async () => {
+    const fetchExpenses = async (pagina = paginaActual) => {
         try {
             setLoading(true);
 
-            const data = await obtenerGastos();
+            const data = await obtenerGastosPaginados({
+                page: pagina,
+                size: gastosPorPagina,
+                categoryId: categoriaFiltro || null,
+                startDate: fechaFiltro || null,
+                endDate: fechaFiltro || null
+            });
 
-            setExpenses(Array.isArray(data) ? data : []);
+            setExpenses(data.content || []);
+            setTotalPaginas(data.totalPages || 0);
+            setTotalElementos(data.totalElements || 0);
             setError(null);
         } catch (err) {
             console.error("Error:", err);
@@ -71,12 +81,15 @@ export function Expenses() {
     };
 
     useEffect(() => {
-        fetchExpenses();
         fetchCategorias();
     }, []);
 
     useEffect(() => {
-        setPaginaActual(1);
+        fetchExpenses(paginaActual);
+    }, [paginaActual, categoriaFiltro, fechaFiltro]);
+
+    useEffect(() => {
+        setPaginaActual(0);
     }, [busqueda, categoriaFiltro, fechaFiltro]);
 
     const formatPaymentMethod = (method) => {
@@ -114,7 +127,6 @@ export function Expenses() {
 
     const handleEdit = (expense) => {
         setGastoEditandoId(expense.id);
-
         setNombreEditado(expense.name || "");
         setCategoriaEditada(String(expense.categoryId || ""));
         setMontoEditado(String(expense.amount || ""));
@@ -122,7 +134,6 @@ export function Expenses() {
         setFechaEditada(expense.date || "");
         setMetodoPagoEditado(expense.paymentMethod || "EFECTIVO");
         setCuotasEditadas(String(expense.installments || "1"));
-
         setIsEditExpenseModalOpen(true);
     };
 
@@ -140,23 +151,17 @@ export function Expenses() {
             const gastoActualizado = {
                 name: nombreEditado,
                 categoryId: Number(categoriaEditada),
-
                 categoryName:
                     categoriaSeleccionada?.name ||
                     categoriaSeleccionada?.nombre ||
                     "",
-
                 amount: Number(montoEditado),
-
                 commission:
                     metodoPagoEditado === "CREDITO"
                         ? Number(comisionEditada || 0)
                         : 0,
-
                 date: fechaEditada,
-
                 paymentMethod: metodoPagoEditado,
-
                 installments:
                     metodoPagoEditado === "CREDITO"
                         ? Number(cuotasEditadas || 1)
@@ -166,7 +171,7 @@ export function Expenses() {
             await actualizarGasto(gastoEditandoId, gastoActualizado);
 
             cerrarModalEditarGasto();
-            fetchExpenses();
+            fetchExpenses(paginaActual);
         } catch (err) {
             console.error("Error al actualizar gasto:", err);
             alert("Error al actualizar gasto");
@@ -199,9 +204,15 @@ export function Expenses() {
                 throw new Error("Error al eliminar el gasto");
             }
 
-            setExpenses(expenses.filter((expense) => expense.id !== id));
-
             cerrarModalEliminarGasto();
+
+            const nuevaPagina =
+                expenses.length === 1 && paginaActual > 0
+                    ? paginaActual - 1
+                    : paginaActual;
+
+            setPaginaActual(nuevaPagina);
+            fetchExpenses(nuevaPagina);
         } catch (err) {
             console.error(err);
             alert("Error al eliminar el gasto");
@@ -211,36 +222,15 @@ export function Expenses() {
     const expensesFiltrados = expenses.filter((expense) => {
         const nombre = expense.name || "";
         const id = String(expense.id || "");
-        const categoriaId = String(expense.categoryId || "");
-        const fecha = expense.date || "";
 
-        const coincideBusqueda =
+        return (
             nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-            id.includes(busqueda);
-
-        const coincideCategoria =
-            categoriaFiltro === "" ||
-            categoriaId === categoriaFiltro;
-
-        const coincideFecha =
-            fechaFiltro === "" ||
-            fecha === fechaFiltro;
-
-        return coincideBusqueda && coincideCategoria && coincideFecha;
+            id.includes(busqueda)
+        );
     });
 
-    const totalPaginas = Math.ceil(
-        expensesFiltrados.length / gastosPorPagina
-    );
-
-    const indiceInicial =
-        (paginaActual - 1) * gastosPorPagina;
-
-    const indiceFinal =
-        indiceInicial + gastosPorPagina;
-
-    const expensesPaginados =
-        expensesFiltrados.slice(indiceInicial, indiceFinal);
+    const indiceInicial = paginaActual * gastosPorPagina;
+    const indiceFinal = indiceInicial + expenses.length;
 
     return (
         <div className="contenedor_Home">
@@ -254,18 +244,14 @@ export function Expenses() {
 
                 <AddExpenseModal
                     isOpen={isExpenseModalOpen}
-                    onClose={() =>
-                        setIsExpenseModalOpen(false)
-                    }
-                    onExpenseCreated={fetchExpenses}
+                    onClose={() => setIsExpenseModalOpen(false)}
+                    onExpenseCreated={() => fetchExpenses(paginaActual)}
                 />
 
                 <CreditCardConfigModal
                     isOpen={isConfigModalOpen}
-                    onClose={() =>
-                        setIsConfigModalOpen(false)
-                    }
-                    onConfigSaved={fetchExpenses}
+                    onClose={() => setIsConfigModalOpen(false)}
+                    onConfigSaved={() => fetchExpenses(paginaActual)}
                 />
 
                 <div className="contenido_Gastos">
@@ -288,9 +274,7 @@ export function Expenses() {
                                 placeholder="Buscar gasto por nombre"
                                 className="input_Buscar_Gastos"
                                 value={busqueda}
-                                onChange={(e) =>
-                                    setBusqueda(e.target.value)
-                                }
+                                onChange={(e) => setBusqueda(e.target.value)}
                             />
                         </div>
 
@@ -298,27 +282,20 @@ export function Expenses() {
                             className="input_Fecha_Gastos"
                             type="date"
                             value={fechaFiltro}
-                            onChange={(e) =>
-                                setFechaFiltro(e.target.value)
-                            }
+                            onChange={(e) => setFechaFiltro(e.target.value)}
                         />
 
                         <select
                             className="select_Gastos"
                             value={categoriaFiltro}
-                            onChange={(e) =>
-                                setCategoriaFiltro(e.target.value)
-                            }
+                            onChange={(e) => setCategoriaFiltro(e.target.value)}
                         >
                             <option value="">
                                 Todas las categorías
                             </option>
 
                             {categorias.map((cat) => (
-                                <option
-                                    key={cat.id}
-                                    value={cat.id}
-                                >
+                                <option key={cat.id} value={cat.id}>
                                     {cat.name || cat.nombre}
                                 </option>
                             ))}
@@ -365,11 +342,9 @@ export function Expenses() {
                                         </thead>
 
                                         <tbody className="body_tabla_gastos">
-                                            {expensesPaginados.map((expense) => (
+                                            {expensesFiltrados.map((expense) => (
                                                 <tr key={expense.id}>
-                                                    <td>
-                                                        {expense.name || "Sin nombre"}
-                                                    </td>
+                                                    <td>{expense.name || "Sin nombre"}</td>
 
                                                     <td>
                                                         {expense.categoryName ||
@@ -377,9 +352,7 @@ export function Expenses() {
                                                             `Categoría ${expense.categoryId}`}
                                                     </td>
 
-                                                    <td>
-                                                        {expense.date || "Sin fecha"}
-                                                    </td>
+                                                    <td>{expense.date || "Sin fecha"}</td>
 
                                                     <td>
                                                         {formatPaymentMethod(
@@ -387,9 +360,7 @@ export function Expenses() {
                                                         )}
                                                     </td>
 
-                                                    <td>
-                                                        {formatAmount(expense.amount)}
-                                                    </td>
+                                                    <td>{formatAmount(expense.amount)}</td>
 
                                                     <td>
                                                         {shouldShowCreditFields(
@@ -412,18 +383,14 @@ export function Expenses() {
                                                     <td>
                                                         <button
                                                             className="boton_editar_expenses"
-                                                            onClick={() =>
-                                                                handleEdit(expense)
-                                                            }
+                                                            onClick={() => handleEdit(expense)}
                                                         >
                                                             Editar
                                                         </button>
 
                                                         <button
                                                             className="boton_eliminar_expenses"
-                                                            onClick={() =>
-                                                                handleDelete(expense)
-                                                            }
+                                                            onClick={() => handleDelete(expense)}
                                                         >
                                                             Eliminar
                                                         </button>
@@ -436,21 +403,14 @@ export function Expenses() {
                                     <div className="paginacion_gastos">
                                         <p>
                                             Mostrando {indiceInicial + 1} a{" "}
-                                            {Math.min(
-                                                indiceFinal,
-                                                expensesFiltrados.length
-                                            )}{" "}
-                                            de {expensesFiltrados.length} gastos
+                                            {Math.min(indiceFinal, totalElementos)}{" "}
+                                            de {totalElementos} gastos
                                         </p>
 
                                         <div className="botones_paginacion_gastos">
                                             <button
-                                                disabled={paginaActual === 1}
-                                                onClick={() =>
-                                                    setPaginaActual(
-                                                        paginaActual - 1
-                                                    )
-                                                }
+                                                disabled={paginaActual === 0}
+                                                onClick={() => setPaginaActual(paginaActual - 1)}
                                             >
                                                 ← Anterior
                                             </button>
@@ -459,18 +419,13 @@ export function Expenses() {
                                                 { length: totalPaginas },
                                                 (_, index) => (
                                                     <button
-                                                        key={index + 1}
+                                                        key={index}
                                                         className={
-                                                            paginaActual ===
-                                                                index + 1
+                                                            paginaActual === index
                                                                 ? "pagina_activa"
                                                                 : ""
                                                         }
-                                                        onClick={() =>
-                                                            setPaginaActual(
-                                                                index + 1
-                                                            )
-                                                        }
+                                                        onClick={() => setPaginaActual(index)}
                                                     >
                                                         {index + 1}
                                                     </button>
@@ -478,14 +433,8 @@ export function Expenses() {
                                             )}
 
                                             <button
-                                                disabled={
-                                                    paginaActual === totalPaginas
-                                                }
-                                                onClick={() =>
-                                                    setPaginaActual(
-                                                        paginaActual + 1
-                                                    )
-                                                }
+                                                disabled={paginaActual + 1 >= totalPaginas}
+                                                onClick={() => setPaginaActual(paginaActual + 1)}
                                             >
                                                 Siguiente →
                                             </button>

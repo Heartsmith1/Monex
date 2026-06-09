@@ -3,6 +3,7 @@ package com.example.Bknd_User.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
@@ -100,8 +101,13 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Solo administradores pueden ver los usuarios");
         }
 
-        Page<UserDTO> usuarios = userService.listarUsuariosPaginados(PageRequest.of(page, size))
-                .map(this::convertirADTO);
+        Page<UserDTO> usuarios = userService.listarUsuariosPaginados(
+                PageRequest.of(
+                        page,
+                        size,
+                        Sort.by(Sort.Direction.ASC, "id")
+                )
+        ).map(this::convertirADTO);
 
         return ResponseEntity.ok(usuarios);
     }

@@ -8,9 +8,11 @@ function obtenerToken() {
     }
 
     const usuarioGuardado = sessionStorage.getItem("usuario");
+
     if (usuarioGuardado) {
         try {
             const usuario = JSON.parse(usuarioGuardado);
+
             if (usuario?.access_token) {
                 localStorage.setItem("token", usuario.access_token);
                 return usuario.access_token;
@@ -20,11 +22,7 @@ function obtenerToken() {
         }
     }
 
-    if (!token) {
-        throw new Error("No hay token guardado. Debes iniciar sesión primero.");
-    }
-
-    return token;
+    throw new Error("No hay token guardado. Debes iniciar sesión primero.");
 }
 
 export async function obtenerCategorias() {
@@ -40,6 +38,27 @@ export async function obtenerCategorias() {
     if (!response.ok) {
         const error = await response.text();
         throw new Error(error || "Error al obtener categorías");
+    }
+
+    return await response.json();
+}
+
+export async function obtenerCategoriasPaginadas(page = 0, size = 5) {
+    const token = obtenerToken();
+
+    const response = await fetch(
+        `${API_URL}/paginadas?page=${page}&size=${size}`,
+        {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+
+    if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error || "Error al obtener categorías paginadas");
     }
 
     return await response.json();

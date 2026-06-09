@@ -1,7 +1,17 @@
 const API_URL = "http://localhost:8083/api/expenses";
 
-export const crearGasto = async (gasto) => {
+function obtenerToken() {
     const token = localStorage.getItem("token");
+
+    if (!token) {
+        throw new Error("No hay token guardado. Debes iniciar sesión primero.");
+    }
+
+    return token;
+}
+
+export const crearGasto = async (gasto) => {
+    const token = obtenerToken();
 
     const response = await fetch(API_URL, {
         method: "POST",
@@ -23,7 +33,7 @@ export const crearGasto = async (gasto) => {
 };
 
 export const obtenerGastos = async () => {
-    const token = localStorage.getItem("token");
+    const token = obtenerToken();
 
     const response = await fetch(API_URL, {
         method: "GET",
@@ -42,8 +52,56 @@ export const obtenerGastos = async () => {
     return await response.json();
 };
 
+export const obtenerGastosPaginados = async ({
+    page = 0,
+    size = 5,
+    categoryId = null,
+    paymentMethod = null,
+    startDate = null,
+    endDate = null,
+} = {}) => {
+    const token = obtenerToken();
+
+    const params = new URLSearchParams();
+
+    params.append("page", page);
+    params.append("size", size);
+
+    if (categoryId) {
+        params.append("categoryId", categoryId);
+    }
+
+    if (paymentMethod) {
+        params.append("paymentMethod", paymentMethod);
+    }
+
+    if (startDate) {
+        params.append("startDate", startDate);
+    }
+
+    if (endDate) {
+        params.append("endDate", endDate);
+    }
+
+    const response = await fetch(`${API_URL}/paginadas?${params.toString()}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error backend:", errorText);
+        console.error("Status:", response.status);
+        throw new Error(errorText || "Error al obtener gastos paginados");
+    }
+
+    return await response.json();
+};
+
 export const obtenerEstimacionMensual = async () => {
-    const token = localStorage.getItem("token");
+    const token = obtenerToken();
 
     const response = await fetch(`${API_URL}/monthly-estimate`, {
         method: "GET",
@@ -63,7 +121,7 @@ export const obtenerEstimacionMensual = async () => {
 };
 
 export const actualizarGasto = async (id, gasto) => {
-    const token = localStorage.getItem("token");
+    const token = obtenerToken();
 
     const response = await fetch(`${API_URL}/${id}`, {
         method: "PUT",

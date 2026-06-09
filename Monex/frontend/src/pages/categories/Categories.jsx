@@ -8,7 +8,7 @@ import AddExpenseModal from "../../components/Modal/AddExpenseModal";
 import CreditCardConfigModal from "../../components/Modal/CreditCardConfigModal";
 import lupa from "../../assets/icon/material-symbols_search.png";
 import {
-    obtenerCategorias,
+    obtenerCategoriasPaginadas,
     editarCategoria,
     crearCategoria,
     eliminarCategoria,
@@ -20,8 +20,10 @@ export function Categorias() {
     const [busqueda, setBusqueda] = useState("");
     const [loading, setLoading] = useState(true);
 
-    const [paginaActual, setPaginaActual] = useState(1);
+    const [paginaActual, setPaginaActual] = useState(0);
     const categoriasPorPagina = 5;
+    const [totalPaginas, setTotalPaginas] = useState(0);
+    const [totalElementos, setTotalElementos] = useState(0);
 
     const [modalEditar, setModalEditar] = useState(false);
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
@@ -39,11 +41,15 @@ export function Categorias() {
     const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
     const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
 
-    const cargarCategorias = async () => {
+    const cargarCategorias = async (pagina = paginaActual) => {
         try {
             setLoading(true);
-            const data = await obtenerCategorias();
-            setCategorias(data);
+
+            const data = await obtenerCategoriasPaginadas(pagina, categoriasPorPagina);
+
+            setCategorias(data.content || []);
+            setTotalPaginas(data.totalPages || 0);
+            setTotalElementos(data.totalElements || 0);
         } catch (error) {
             console.error("Error al cargar categorías:", error);
         } finally {
@@ -52,11 +58,11 @@ export function Categorias() {
     };
 
     useEffect(() => {
-        cargarCategorias();
-    }, []);
+        cargarCategorias(paginaActual);
+    }, [paginaActual]);
 
     useEffect(() => {
-        setPaginaActual(1);
+        setPaginaActual(0);
     }, [busqueda]);
 
     const abrirModalEditar = (categoria) => {
@@ -87,7 +93,7 @@ export function Categorias() {
             );
 
             cerrarModalEditar();
-            cargarCategorias();
+            cargarCategorias(paginaActual);
         } catch (error) {
             console.error("Error al editar categoría:", error);
             alert("Error al editar categoría");
@@ -116,7 +122,8 @@ export function Categorias() {
             await crearCategoria(nombreNuevo, descripcionNueva);
 
             cerrarModalAgregar();
-            cargarCategorias();
+            setPaginaActual(0);
+            cargarCategorias(0);
         } catch (error) {
             console.error("Error al crear categoría:", error);
             alert("Error al crear categoría");
@@ -138,7 +145,14 @@ export function Categorias() {
             await eliminarCategoria(id);
 
             cerrarModalEliminar();
-            cargarCategorias();
+
+            const nuevaPagina =
+                categorias.length === 1 && paginaActual > 0
+                    ? paginaActual - 1
+                    : paginaActual;
+
+            setPaginaActual(nuevaPagina);
+            cargarCategorias(nuevaPagina);
         } catch (error) {
             console.error("Error al eliminar categoría:", error);
             alert("Error al eliminar categoría");
@@ -151,10 +165,8 @@ export function Categorias() {
             .includes(busqueda.toLowerCase())
     );
 
-    const totalPaginas = Math.ceil(categoriasFiltradas.length / categoriasPorPagina);
-    const indiceInicial = (paginaActual - 1) * categoriasPorPagina;
-    const indiceFinal = indiceInicial + categoriasPorPagina;
-    const categoriasPaginadas = categoriasFiltradas.slice(indiceInicial, indiceFinal);
+    const indiceInicial = paginaActual * categoriasPorPagina;
+    const indiceFinal = indiceInicial + categorias.length;
 
     return (
         <div className="contenedor_Home">
@@ -220,7 +232,7 @@ export function Categorias() {
                                     </thead>
 
                                     <tbody>
-                                        {categoriasPaginadas.map((categoria) => (
+                                        {categoriasFiltradas.map((categoria) => (
                                             <tr key={categoria.id}>
                                                 <td>{categoria.name || categoria.nombre || "Sin nombre"}</td>
 
@@ -253,13 +265,13 @@ export function Categorias() {
                                 <div className="paginacion_Categorias">
                                     <p>
                                         Mostrando {indiceInicial + 1} a{" "}
-                                        {Math.min(indiceFinal, categoriasFiltradas.length)} de{" "}
-                                        {categoriasFiltradas.length} categorías
+                                        {Math.min(indiceFinal, totalElementos)} de{" "}
+                                        {totalElementos} categorías
                                     </p>
 
                                     <div className="botones_paginacion_Categorias">
                                         <button
-                                            disabled={paginaActual === 1}
+                                            disabled={paginaActual === 0}
                                             onClick={() => setPaginaActual(paginaActual - 1)}
                                         >
                                             ← Anterior
@@ -267,20 +279,20 @@ export function Categorias() {
 
                                         {Array.from({ length: totalPaginas }, (_, index) => (
                                             <button
-                                                key={index + 1}
+                                                key={index}
                                                 className={
-                                                    paginaActual === index + 1
+                                                    paginaActual === index
                                                         ? "pagina_activa_Categorias"
                                                         : ""
                                                 }
-                                                onClick={() => setPaginaActual(index + 1)}
+                                                onClick={() => setPaginaActual(index)}
                                             >
                                                 {index + 1}
                                             </button>
                                         ))}
 
                                         <button
-                                            disabled={paginaActual === totalPaginas}
+                                            disabled={paginaActual + 1 >= totalPaginas}
                                             onClick={() => setPaginaActual(paginaActual + 1)}
                                         >
                                             Siguiente →
