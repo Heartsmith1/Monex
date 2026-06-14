@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.example.Bknd_Categories.BkndCategoriesApplicationTests" time="5.409" tests="1" errors="0" skipped="0" failures="0" flakes="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.example.Bknd_Categories.controllers.CategoryControllerTest" time="0.943" tests="8" errors="0" skipped="0" failures="0" flakes="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -67,55 +67,52 @@
     <property name="java.class.version" value="65.0"/>
     <property name="LOGGED_APPLICATION_NAME" value="[Bknd_Categories] "/>
   </properties>
-  <testcase name="contextLoads" classname="com.example.Bknd_Categories.BkndCategoriesApplicationTests" time="0.368">
-    <system-out><![CDATA[00:29:04.128 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.example.Bknd_Categories.BkndCategoriesApplicationTests]: BkndCategoriesApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-00:29:04.253 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.example.Bknd_Categories.BkndCategoriesApplication for test class com.example.Bknd_Categories.BkndCategoriesApplicationTests
-00:29:04.369 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.example.Bknd_Categories.BkndCategoriesApplicationTests]: BkndCategoriesApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-00:29:04.369 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.example.Bknd_Categories.BkndCategoriesApplication for test class com.example.Bknd_Categories.BkndCategoriesApplicationTests
-
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
-
- :: Spring Boot ::                (v4.0.5)
-
-2026-06-14T00:29:04.682-04:00  INFO 18992 --- [Bknd_Categories] [           main] c.e.B.BkndCategoriesApplicationTests     : Starting BkndCategoriesApplicationTests using Java 21.0.11 with PID 18992 (started by carlo in C:\Users\carlo\OneDrive\Desktop\Monex\Monex\Bknd_Categories)
-2026-06-14T00:29:04.682-04:00  INFO 18992 --- [Bknd_Categories] [           main] c.e.B.BkndCategoriesApplicationTests     : No active profile set, falling back to 1 default profile: "default"
-2026-06-14T00:29:05.505-04:00  INFO 18992 --- [Bknd_Categories] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-14T00:29:05.575-04:00  INFO 18992 --- [Bknd_Categories] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 53 ms. Found 1 JPA repository interface.
-2026-06-14T00:29:06.101-04:00  INFO 18992 --- [Bknd_Categories] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-06-14T00:29:06.180-04:00  INFO 18992 --- [Bknd_Categories] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.7.Final
-2026-06-14T00:29:06.632-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-14T00:29:06.656-04:00  INFO 18992 --- [Bknd_Categories] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-14T00:29:06.829-04:00  INFO 18992 --- [Bknd_Categories] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1324e70a
-2026-06-14T00:29:06.831-04:00  INFO 18992 --- [Bknd_Categories] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-14T00:29:06.858-04:00  WARN 18992 --- [Bknd_Categories] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-06-14T00:29:06.883-04:00  INFO 18992 --- [Bknd_Categories] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [jdbc:postgresql://localhost:5432/categorias]
-	Database driver: PostgreSQL JDBC Driver
-	Database dialect: PostgreSQLDialect
-	Database version: 18.4
-	Default catalog/schema: categorias/public
-	Autocommit mode: undefined/unknown
-	Isolation level: READ_COMMITTED [default READ_COMMITTED]
-	JDBC fetch size: none
-	Pool: DataSourceConnectionProvider
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2026-06-14T00:29:07.714-04:00  INFO 18992 --- [Bknd_Categories] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-14T00:29:07.782-04:00  INFO 18992 --- [Bknd_Categories] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-14T00:29:07.894-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-06-14T00:29:08.310-04:00  WARN 18992 --- [Bknd_Categories] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-14T00:29:08.837-04:00  INFO 18992 --- [Bknd_Categories] [           main] c.e.B.BkndCategoriesApplicationTests     : Started BkndCategoriesApplicationTests in 4.399 seconds (process running for 5.654)
+  <testcase name="update_ok" classname="com.example.Bknd_Categories.controllers.CategoryControllerTest" time="0.707">
+    <system-out><![CDATA[2026-06-14T00:29:09.494-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
+2026-06-14T00:29:09.494-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-06-14T00:29:09.494-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
 ]]></system-out>
-    <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
-WARNING: A Java agent has been loaded dynamically (C:\Users\carlo\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
-WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
-WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
-WARNING: Dynamic loading of agents will be disallowed by default in a future release
-]]></system-err>
+  </testcase>
+  <testcase name="getById_noExiste" classname="com.example.Bknd_Categories.controllers.CategoryControllerTest" time="0.028">
+    <system-out><![CDATA[2026-06-14T00:29:09.962-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
+2026-06-14T00:29:09.962-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-06-14T00:29:09.962-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+]]></system-out>
+  </testcase>
+  <testcase name="delete_noExiste" classname="com.example.Bknd_Categories.controllers.CategoryControllerTest" time="0.028">
+    <system-out><![CDATA[2026-06-14T00:29:09.991-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
+2026-06-14T00:29:09.991-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-06-14T00:29:09.991-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+]]></system-out>
+  </testcase>
+  <testcase name="create_duplicada" classname="com.example.Bknd_Categories.controllers.CategoryControllerTest" time="0.047">
+    <system-out><![CDATA[2026-06-14T00:29:10.034-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
+2026-06-14T00:29:10.035-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-06-14T00:29:10.035-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+]]></system-out>
+  </testcase>
+  <testcase name="delete_ok" classname="com.example.Bknd_Categories.controllers.CategoryControllerTest" time="0.022">
+    <system-out><![CDATA[2026-06-14T00:29:10.065-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
+2026-06-14T00:29:10.065-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-06-14T00:29:10.065-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+]]></system-out>
+  </testcase>
+  <testcase name="listAll_ok" classname="com.example.Bknd_Categories.controllers.CategoryControllerTest" time="0.035">
+    <system-out><![CDATA[2026-06-14T00:29:10.090-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
+2026-06-14T00:29:10.091-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-06-14T00:29:10.091-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+]]></system-out>
+  </testcase>
+  <testcase name="create_ok" classname="com.example.Bknd_Categories.controllers.CategoryControllerTest" time="0.029">
+    <system-out><![CDATA[2026-06-14T00:29:10.123-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
+2026-06-14T00:29:10.123-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-06-14T00:29:10.123-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+]]></system-out>
+  </testcase>
+  <testcase name="getById_ok" classname="com.example.Bknd_Categories.controllers.CategoryControllerTest" time="0.033">
+    <system-out><![CDATA[2026-06-14T00:29:10.167-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
+2026-06-14T00:29:10.167-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-06-14T00:29:10.169-04:00  INFO 18992 --- [Bknd_Categories] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+]]></system-out>
   </testcase>
 </testsuite>
