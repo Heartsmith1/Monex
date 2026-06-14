@@ -1,1 +1,3 @@
 com\example\Bknd_User\BkndUserApplicationTests.class
+com\example\Bknd_User\service\UserServicesTest.class
+com\example\Bknd_User\controllers\AuthenticationControllerTest.class

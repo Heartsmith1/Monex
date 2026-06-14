@@ -44,13 +44,13 @@ class AuthenticationControllerTest {
         @Test
         @DisplayName("POST /api/auth/login retorna token JWT")
         void login_ok() throws Exception {
-                when(userService.intentarLogin("test@demo.cl", "123456"))
+                when(userService.intentarLogin("test@demo.cl", "12345678"))
                                 .thenReturn("token-jwt");
 
                 String json = """
                                 {
                                 "email": "test@demo.cl",
-                                "password": "123456"
+                                "password": "12345678"
                                 }
                                 """;
 
@@ -58,8 +58,9 @@ class AuthenticationControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(json))
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.token").value("token-jwt"))
-                                .andExpect(jsonPath("$.expiresIn").value(86400000L));
+                                .andExpect(jsonPath("$.access_token").value("token-jwt"))
+                                .andExpect(jsonPath("$.token_type").value("Bearer"))
+                                .andExpect(jsonPath("$.expires_in").value(86400000L));
         }
 
         @Test
@@ -73,14 +74,14 @@ class AuthenticationControllerTest {
                                 .role("USER")
                                 .build();
 
-                when(userService.registrar("manuel", "manuel@demo.cl", "123456"))
+                when(userService.registrar("manuel", "manuel@demo.cl", "12345678"))
                                 .thenReturn(user);
 
                 String json = """
                                 {
                                 "username": "manuel",
                                 "email": "manuel@demo.cl",
-                                "password": "123456"
+                                "password": "12345678"
                                 }
                                 """;
 
@@ -96,14 +97,14 @@ class AuthenticationControllerTest {
         @Test
         @DisplayName("POST /api/auth/register retorna 400 si email ya existe")
         void register_emailDuplicado() throws Exception {
-                when(userService.registrar("manuel", "manuel@demo.cl", "123456"))
+                when(userService.registrar("manuel", "manuel@demo.cl", "12345678"))
                                 .thenThrow(new IllegalArgumentException("El email ya está registrado"));
 
                 String json = """
                                 {
                                 "username": "manuel",
                                 "email": "manuel@demo.cl",
-                                "password": "123456"
+                                "password": "12345678"
                                 }
                                 """;
 

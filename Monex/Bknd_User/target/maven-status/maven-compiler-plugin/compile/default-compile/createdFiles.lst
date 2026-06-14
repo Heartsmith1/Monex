@@ -1,6 +1,7 @@
 com\example\Bknd_User\dto\LoginRequest.class
 com\example\Bknd_User\BkndUserApplication.class
 com\example\Bknd_User\config\OpenAPIConfig.class
+com\example\Bknd_User\service\UserServices$GoogleProfile.class
 com\example\Bknd_User\dto\CreditCardConfigResponse$CreditCardConfigResponseBuilder.class
 com\example\Bknd_User\dto\UserDTO.class
 com\example\Bknd_User\repository\UserRepository.class
@@ -11,11 +12,13 @@ com\example\Bknd_User\dto\CreditCardConfigRequest.class
 com\example\Bknd_User\dto\RegisterRequest.class
 com\example\Bknd_User\entity\CreditCardConfig.class
 com\example\Bknd_User\repository\CreditCardConfigRepository.class
+com\example\Bknd_User\config\DatabaseMigrationConfig.class
 com\example\Bknd_User\config\JwtProperties.class
 com\example\Bknd_User\dto\UserUpdateRequest.class
 com\example\Bknd_User\entity\User$UserBuilder.class
 com\example\Bknd_User\controllers\UserController$ChangePasswordRequest.class
 com\example\Bknd_User\dto\LoginResponse.class
+com\example\Bknd_User\dto\GoogleLoginRequest.class
 com\example\Bknd_User\controllers\AuthenticationController.class
 com\example\Bknd_User\config\CorsConfig.class
 com\example\Bknd_User\entity\CreditCardConfig$CreditCardConfigBuilder.class
