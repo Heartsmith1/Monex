@@ -182,12 +182,12 @@ public class UserServices {
         return userRepository.save(user);
     }
     
-    public boolean eliminarUsuario(Long id) {
+    public boolean eliminarUsuario(Long id, String authHeader) {
         if (!userRepository.existsById(id)) {
             return false;
         }
 
-        eliminarDatosExternosDelUsuario(id);
+        eliminarDatosExternosDelUsuario(id, authHeader);
 
         creditCardConfigRepository.findByUserId(id)
                 .ifPresent(creditCardConfigRepository::delete);
@@ -196,22 +196,24 @@ public class UserServices {
         return true;
     }
 
-    private void eliminarDatosExternosDelUsuario(Long userId) {
-        eliminarEnMicroservicio(expensesServiceUrl + "/api/expenses/admin/user/" + userId, "gastos");
-        eliminarEnMicroservicio(categoriesServiceUrl + "/api/categorias/admin/user/" + userId, "categorías");
+    private void eliminarDatosExternosDelUsuario(Long userId, String authHeader) {
+        eliminarEnMicroservicio(expensesServiceUrl + "/api/expenses/admin/user/" + userId, "gastos", authHeader);
+        eliminarEnMicroservicio(categoriesServiceUrl + "/api/categorias/admin/user/" + userId, "categorías", authHeader);
     }
 
-    private void eliminarEnMicroservicio(String url, String nombreServicio) {
+    private void eliminarEnMicroservicio(String url, String nombreServicio, String authHeader) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
+                    .header("Authorization", authHeader)
                     .DELETE()
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() < 200 || response.statusCode() >= 300) {
-                throw new RuntimeException("No se pudieron eliminar los datos de " + nombreServicio);
+                throw new RuntimeException("No se pudieron eliminar los datos de " + nombreServicio
+                        + " (status " + response.statusCode() + "): " + response.body());
             }
 
         } catch (IOException e) {

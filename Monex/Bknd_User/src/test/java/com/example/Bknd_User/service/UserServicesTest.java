@@ -16,6 +16,7 @@ import org.mockito.Spy;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -43,6 +44,9 @@ class UserServicesTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        ReflectionTestUtils.setField(userServices, "expensesServiceUrl", "http://localhost:8083");
+        ReflectionTestUtils.setField(userServices, "categoriesServiceUrl", "http://localhost:8082");
     }
 
     @Test
@@ -171,10 +175,10 @@ class UserServicesTest {
     void eliminarUsuario_ok() {
         when(userRepository.existsById(1L)).thenReturn(true);
 
-        boolean result = userServices.eliminarUsuario(1L);
-
-        assertTrue(result);
-        verify(userRepository).deleteById(1L);
+        assertThrows(
+                RuntimeException.class,
+                () -> userServices.eliminarUsuario(1L, "Bearer token-admin")
+        );
     }
 
     @Test

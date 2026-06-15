@@ -189,7 +189,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         
-        boolean eliminado = userService.eliminarUsuario(id);
+        boolean eliminado = userService.eliminarUsuario(id, authHeader);
 
         if (!eliminado) {
             return ResponseEntity.notFound().build();
