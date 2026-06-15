@@ -147,6 +147,13 @@ public class ExpenseController {
         }
     }
 
+    @Operation(summary = "Eliminar gastos de un usuario")
+    @DeleteMapping("/admin/user/{userId}")
+    public ResponseEntity<?> deleteExpensesByUserId(@PathVariable Long userId) {
+        expenseService.deleteExpensesByUserId(userId);
+        return ResponseEntity.noContent().build();
+    }
+
     @Operation(summary = "Filtrar gastos por medio de pago", security = {@SecurityRequirement(name = "bearerAuth")})
     @GetMapping("/payment-method/{paymentMethod}")
     public ResponseEntity<?> getExpensesByPaymentMethod(

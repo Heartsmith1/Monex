@@ -89,6 +89,11 @@ public class CategoryService {
         categoryRepository.delete(existing);
     }
 
+    @Transactional
+    public void deleteCategoriesByUserId(Long userId) {
+        categoryRepository.deleteByCreatedByUserId(userId);
+    }
+
     private String normalizeName(String name) {
         return name == null ? "" : name.trim();
     }

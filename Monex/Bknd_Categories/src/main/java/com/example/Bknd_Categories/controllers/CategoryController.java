@@ -144,4 +144,11 @@ public class CategoryController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @Operation(summary = "Eliminar categorías de un usuario")
+    @DeleteMapping("/admin/user/{userId}")
+    public ResponseEntity<?> deleteCategoriesByUserId(@PathVariable Long userId) {
+        categoryService.deleteCategoriesByUserId(userId);
+        return ResponseEntity.noContent().build();
+    }
 }

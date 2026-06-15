@@ -205,6 +205,10 @@ public class ExpenseService {
         expenseRepository.delete(expense);
     }
 
+    public void deleteExpensesByUserId(Long userId) {
+        expenseRepository.deleteByUserId(userId);
+    }
+
     public MonthlyEstimateResponse calculateMonthlyEstimate(Long userId) {
         YearMonth currentMonth = YearMonth.now();
 

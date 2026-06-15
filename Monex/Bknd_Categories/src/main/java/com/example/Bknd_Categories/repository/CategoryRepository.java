@@ -19,4 +19,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     boolean existsByNameAndCreatedByUserId(String name, Long createdByUserId);
 
     boolean existsByNameAndCreatedByUserIdAndIdNot(String name, Long createdByUserId, Long id);
+
+    void deleteByCreatedByUserId(Long createdByUserId);
 }

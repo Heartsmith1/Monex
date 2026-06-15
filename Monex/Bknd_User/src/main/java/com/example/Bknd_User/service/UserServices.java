@@ -31,6 +31,12 @@ public class UserServices {
 
     @Value("${google.client-id:}")
     private String googleClientId;
+
+    @Value("${expenses.service.url}")
+    private String expensesServiceUrl;
+
+    @Value("${categories.service.url}")
+    private String categoriesServiceUrl;
     
     @Autowired
     private UserRepository userRepository;
@@ -181,8 +187,39 @@ public class UserServices {
             return false;
         }
 
+        eliminarDatosExternosDelUsuario(id);
+
+        creditCardConfigRepository.findByUserId(id)
+                .ifPresent(creditCardConfigRepository::delete);
+
         userRepository.deleteById(id);
         return true;
+    }
+
+    private void eliminarDatosExternosDelUsuario(Long userId) {
+        eliminarEnMicroservicio(expensesServiceUrl + "/api/expenses/admin/user/" + userId, "gastos");
+        eliminarEnMicroservicio(categoriesServiceUrl + "/api/categorias/admin/user/" + userId, "categorías");
+    }
+
+    private void eliminarEnMicroservicio(String url, String nombreServicio) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .DELETE()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                throw new RuntimeException("No se pudieron eliminar los datos de " + nombreServicio);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("No se pudo conectar con el microservicio de " + nombreServicio);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Se interrumpió la eliminación de datos de " + nombreServicio);
+        }
     }
     
     public boolean cambiarPassword(Long userId, String currentPassword, String newPassword) {

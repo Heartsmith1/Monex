@@ -80,4 +80,6 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
                         LocalDate startDate,
                         LocalDate endDate,
                         Pageable pageable);
+
+        void deleteByUserId(Long userId);
 }
