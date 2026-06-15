@@ -153,34 +153,50 @@ public class UserServices {
     }
     
     public User actualizarUsuario(Long id, UserUpdateRequest updateRequest) {
-        User user = userRepository.findById(id).orElse(null);
+    User user = userRepository.findById(id).orElse(null);
 
-        if (user == null) {
-            return null;
-        }
-        
-        if (updateRequest.getUsername() != null && !updateRequest.getUsername().isBlank()) {
-            String nuevoUsername = updateRequest.getUsername();
-
-            if (!nuevoUsername.equals(user.getUsername()) && userRepository.existsByUsername(nuevoUsername)) {
-                throw new IllegalArgumentException("El nombre de usuario ya está en uso");
-            }
-
-            user.setUsername(nuevoUsername);
-        }
-
-        if (updateRequest.getEmail() != null && !updateRequest.getEmail().isBlank()) {
-            String nuevoEmail = updateRequest.getEmail();
-
-            if (!nuevoEmail.equals(user.getEmail()) && userRepository.existsByEmail(nuevoEmail)) {
-                throw new IllegalArgumentException("El email ya está en uso");
-            }
-
-            user.setEmail(nuevoEmail);
-        }
-        
-        return userRepository.save(user);
+    if (user == null) {
+        return null;
     }
+
+    if (updateRequest.getUsername() != null && !updateRequest.getUsername().isBlank()) {
+        String nuevoUsername = updateRequest.getUsername();
+
+        if (!nuevoUsername.equals(user.getUsername()) && userRepository.existsByUsername(nuevoUsername)) {
+            throw new IllegalArgumentException("El nombre de usuario ya está en uso");
+        }
+
+        user.setUsername(nuevoUsername);
+    }
+
+    if (updateRequest.getEmail() != null && !updateRequest.getEmail().isBlank()) {
+        String nuevoEmail = updateRequest.getEmail();
+
+        if (!nuevoEmail.equals(user.getEmail()) && userRepository.existsByEmail(nuevoEmail)) {
+            throw new IllegalArgumentException("El email ya está en uso");
+        }
+
+        user.setEmail(nuevoEmail);
+    }
+
+    if (updateRequest.getRole() != null &&
+    !updateRequest.getRole().isBlank()) {
+
+    String nuevoRole = updateRequest.getRole().trim().toUpperCase();
+
+    if (!nuevoRole.equals("USER") &&
+        !nuevoRole.equals("ADMIN")) {
+
+        throw new IllegalArgumentException(
+            "Rol inválido. Solo se permite USER o ADMIN"
+        );
+    }
+
+    user.setRole(nuevoRole);
+}
+
+    return userRepository.save(user);
+}
     
     public boolean eliminarUsuario(Long id, String authHeader) {
         if (!userRepository.existsById(id)) {
