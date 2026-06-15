@@ -68,3 +68,22 @@ export async function guardarConfiguracionTarjeta({
 
     return await response.json();
 }
+
+export async function eliminarConfiguracionTarjeta() {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(API_CONFIG_TARJETA, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok && response.status !== 404) {
+        const error = await response.text();
+        throw new Error(error || "Error al eliminar configuración de tarjeta");
+    }
+
+    return response;
+}

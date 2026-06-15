@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { SideBarSwitcher } from "../../components/SideBar/SideBarSwitcher";
+import { DeleteUserModal } from "../../components/Modal/DeleteUserModal";
+import { eliminarConfiguracionTarjeta } from "../../services/usuarioService";
 import "../../css/pages/panelAdmin.css";
 
 export function PanelAdmin(){
@@ -15,6 +17,7 @@ export function PanelAdmin(){
     const usuariosPorPagina = 5;
     const [totalPaginas, setTotalPaginas] = useState(0);
     const [totalElementos, setTotalElementos] = useState(0);
+    const [usuarioParaEliminar, setUsuarioParaEliminar] = useState(null);
 
     useEffect(() => {
         const cargarUsuario = async () => {
@@ -116,25 +119,111 @@ export function PanelAdmin(){
         navigate("/");
     };
 
-    const handleEliminarUsuario = async (id) => {
-        if (!window.confirm("¿Eliminar usuario? Esta acción no se puede deshacer.")) return;
+    const abrirModalEliminarUsuario = (usuario) => {
+        setUsuarioParaEliminar(usuario);
+    };
+
+    const cerrarModalEliminarUsuario = () => {
+        setUsuarioParaEliminar(null);
+    };
+
+    const eliminarUsuarioConfirmado = async (id) => {
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            alert("No hay token de autenticación. Vuelve a iniciar sesión.");
+            return;
+        }
+
         try {
-            const response = await fetch(`http://localhost:8081/api/usuarios/${id}`, {
+            await eliminarConfiguracionTarjeta();
+        } catch (err) {
+            console.warn("No se pudo borrar la configuración de tarjeta previa al usuario:", err);
+            // Si la eliminación de tarjeta no es posible, aún intentamos eliminar el usuario.
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8081/api/users/${id}`, {
                 method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
             });
-            if (!response.ok) throw new Error("Error al eliminar");
-            
-            // Si es el último usuario en la página y no es la primera página, retroceder
+
+            if (!response.ok) {
+                const message = await response.text();
+                throw new Error(message || `Error al eliminar usuario (status ${response.status})`);
+            }
+
             const nuevaPagina = usuarios.length === 1 && paginaActual > 0 ? paginaActual - 1 : paginaActual;
+            setUsuarioParaEliminar(null);
             setPaginaActual(nuevaPagina);
             cargarUsuarios(nuevaPagina);
         } catch (err) {
             console.error(err);
-            alert("No se pudo eliminar el usuario.");
+            alert("No se pudo eliminar el usuario. " + (err.message || "Error de servidor"));
         }
     };
+
+    // Componente de paginación pequeño y accesible
+    function Pagination({ page, totalPages, totalItems, perPage, onChange }) {
+        if (!totalPages || totalPages <= 0) return null;
+
+        const start = page * perPage + 1;
+        const end = Math.min((page + 1) * perPage, totalItems);
+
+        const goPrev = () => onChange(Math.max(0, page - 1));
+        const goNext = () => onChange(Math.min(totalPages - 1, page + 1));
+
+        // Ventana de botones para no mostrar demasiados números
+        const maxButtons = 7;
+        let startIdx = Math.max(0, page - Math.floor(maxButtons / 2));
+        let endIdx = Math.min(totalPages, startIdx + maxButtons);
+        if (endIdx - startIdx < maxButtons) startIdx = Math.max(0, endIdx - maxButtons);
+
+        const pages = [];
+        for (let i = startIdx; i < endIdx; i++) pages.push(i);
+
+        return (
+            <nav className="paginacion_Usuarios" aria-label="Paginación de usuarios">
+                <p>
+                    Mostrando {start} a {end} de {totalItems} usuarios
+                </p>
+
+                <div className="botones_paginacion_Usuarios">
+                    <button onClick={goPrev} disabled={page === 0} aria-label="Página anterior">← Anterior</button>
+
+                    {startIdx > 0 && (
+                        <>
+                            <button onClick={() => onChange(0)}>1</button>
+                            {startIdx > 1 && <span className="dots">…</span>}
+                        </>
+                    )}
+
+                    {pages.map((i) => (
+                        <button
+                            key={i}
+                            className={page === i ? "pagina_activa_Usuarios" : ""}
+                            onClick={() => onChange(i)}
+                            aria-current={page === i ? "page" : undefined}
+                        >
+                            {i + 1}
+                        </button>
+                    ))}
+
+                    {endIdx < totalPages && (
+                        <>
+                            {endIdx < totalPages - 1 && <span className="dots">…</span>}
+                            <button onClick={() => onChange(totalPages - 1)}>{totalPages}</button>
+                        </>
+                    )}
+
+                    <button onClick={goNext} disabled={page + 1 >= totalPages} aria-label="Página siguiente">Siguiente →</button>
+                </div>
+            </nav>
+        );
+    }
 
     function UsersPerMonthChart({ stats, users }) {
         const months = [
@@ -308,50 +397,26 @@ export function PanelAdmin(){
                                                             <td>{u.role || u.roles || u.rol || '-'}</td>
                                                             <td>
                                                                 <button className="btn_editar">Editar</button>
-                                                                <button className="btn_eliminar" onClick={() => handleEliminarUsuario(u.id || u._id)}>Eliminar</button>
+                                                                <button className="btn_eliminar" onClick={() => abrirModalEliminarUsuario(u)}>Eliminar</button>
                                                             </td>
                                                         </tr>
                                                     ))
                                                 )}
                                             </tbody>
                                         </table>
-                                        <div className="paginacion_Usuarios">
-                                            <p>
-                                                Mostrando {paginaActual * usuariosPorPagina + 1} a{" "}
-                                                {Math.min((paginaActual + 1) * usuariosPorPagina, totalElementos)} de{" "}
-                                                {totalElementos} usuarios
-                                            </p>
+                                        <Pagination
+                                            page={paginaActual}
+                                            totalPages={totalPaginas}
+                                            totalItems={totalElementos}
+                                            perPage={usuariosPorPagina}
+                                            onChange={(p) => setPaginaActual(p)}
+                                        />
 
-                                            <div className="botones_paginacion_Usuarios">
-                                                <button
-                                                    disabled={paginaActual === 0}
-                                                    onClick={() => setPaginaActual(paginaActual - 1)}
-                                                >
-                                                    ← Anterior
-                                                </button>
-
-                                                {Array.from({ length: totalPaginas }, (_, index) => (
-                                                    <button
-                                                        key={index}
-                                                        className={
-                                                            paginaActual === index
-                                                                ? "pagina_activa_Usuarios"
-                                                                : ""
-                                                        }
-                                                        onClick={() => setPaginaActual(index)}
-                                                    >
-                                                        {index + 1}
-                                                    </button>
-                                                ))}
-
-                                                <button
-                                                    disabled={paginaActual + 1 >= totalPaginas}
-                                                    onClick={() => setPaginaActual(paginaActual + 1)}
-                                                >
-                                                    Siguiente →
-                                                </button>
-                                            </div>
-                                        </div>
+                                        <DeleteUserModal
+                                            usuario={usuarioParaEliminar}
+                                            cerrarModal={cerrarModalEliminarUsuario}
+                                            eliminarUsuarioConfirmado={eliminarUsuarioConfirmado}
+                                        />
                                     </>
                                 )}
                             </div>

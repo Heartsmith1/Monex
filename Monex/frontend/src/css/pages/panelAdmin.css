@@ -169,11 +169,100 @@
 }
 
 .paginacion_Usuarios {
-	color: #6b7280;
 	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 14px;
+	height: 48px;
+	padding: 6px 12px;
+	border: 1px solid #e5e7eb;
+	border-radius: 10px;
+	background-color: #ffffff;
+	color: #374151;
 	font-weight: 600;
-	justify-content: flex-end;
-	padding: 12px 8px 0 8px;
+	font-size: 14px;
+}
+
+.paginacion_Usuarios p {
+	margin: 0;
+	color: #6b7280;
+	font-weight: 600;
+	font-size: 14px;
+}
+
+.botones_paginacion_Usuarios {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.botones_paginacion_Usuarios button {
+	background: #ffffff;
+	border: 1px solid #d1d5db;
+	color: #374151;
+	padding: 6px 10px;
+	border-radius: 6px;
+	cursor: pointer;
+	font-weight: 700;
+	font-size: 14px;
+	min-width: 40px;
+	height: 36px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.botones_paginacion_Usuarios button:hover:not(:disabled) {
+	background: #f8fafc;
+}
+
+.botones_paginacion_Usuarios button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+	background: #f3f4f6;
+}
+
+.botones_paginacion_Usuarios button.pagina_activa_Usuarios {
+	background: #45ad4d;
+	border: 1px solid #10b981;
+	color: #ffffff;
+	box-shadow: 0 6px 14px rgba(16,185,129,0.18);
+	border-radius: 10px;
+	min-width: 42px;
+	height: 42px;
+	padding: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Ensure non-active buttons keep a subtle white background and border */
+.botones_paginacion_Usuarios button:not(.pagina_activa_Usuarios) {
+	background: #ffffff;
+}
+
+.botones_paginacion_Usuarios .dots {
+	color: #9ca3af;
+	padding: 0 6px;
+	font-weight: 700;
+}
+
+.botones_paginacion_Usuarios button:focus {
+	outline: 3px solid rgba(16,185,129,0.18);
+	outline-offset: 2px;
+}
+
+/* Small screens: stack text above controls */
+@media (max-width: 520px) {
+	.paginacion_Usuarios {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 8px;
+		height: auto;
+	}
+	.botones_paginacion_Usuarios {
+		justify-content: center;
+	}
 }
 
 /* Chart styles */
