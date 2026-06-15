@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { SideBarSwitcher } from "../../components/SideBar/SideBarSwitcher";
 import { DeleteUserModal } from "../../components/Modal/DeleteUserModal";
-import { eliminarConfiguracionTarjeta } from "../../services/usuarioService";
 import "../../css/pages/panelAdmin.css";
 
 export function PanelAdmin(){
@@ -50,8 +49,11 @@ export function PanelAdmin(){
         };
 
         cargarUsuario();
-        cargarUsuarios(paginaActual);
         cargarEstadisticasUsuarios();
+    }, []);
+
+    useEffect(() => {
+        cargarUsuarios(paginaActual);
     }, [paginaActual]);
 
     const cargarUsuarios = async (pagina = paginaActual) => {
@@ -62,7 +64,12 @@ export function PanelAdmin(){
                 method: "GET",
                 headers: { Authorization: `Bearer ${token}` },
             });
-            if (!response.ok) return setUsuarios([]);
+
+            if (!response.ok) {
+                const message = await response.text();
+                throw new Error(message || `Error al cargar usuarios (status ${response.status})`);
+            }
+
             const data = await response.json();
             
             // Extraer usuarios
@@ -136,13 +143,6 @@ export function PanelAdmin(){
         }
 
         try {
-            await eliminarConfiguracionTarjeta();
-        } catch (err) {
-            console.warn("No se pudo borrar la configuración de tarjeta previa al usuario:", err);
-            // Si la eliminación de tarjeta no es posible, aún intentamos eliminar el usuario.
-        }
-
-        try {
             const response = await fetch(`http://localhost:8081/api/users/${id}`, {
                 method: "DELETE",
                 headers: {
@@ -160,6 +160,7 @@ export function PanelAdmin(){
             setUsuarioParaEliminar(null);
             setPaginaActual(nuevaPagina);
             cargarUsuarios(nuevaPagina);
+            cargarEstadisticasUsuarios();
         } catch (err) {
             console.error(err);
             alert("No se pudo eliminar el usuario. " + (err.message || "Error de servidor"));
